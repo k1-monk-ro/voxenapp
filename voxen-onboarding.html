@@ -261,6 +261,7 @@ html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
       <button class="opt" data-val="alcohol"><span class="opt-emoji">🍷</span><span class="opt-body"><span class="opt-title">Alcool</span><span class="opt-desc">Vreau să reduc sau să mă opresc</span></span><span class="opt-check"></span></button>
       <button class="opt" data-val="substances"><span class="opt-emoji">💊</span><span class="opt-body"><span class="opt-title">Substanțe</span><span class="opt-desc">Recuperare din consum de substanțe</span></span><span class="opt-check"></span></button>
       <button class="opt" data-val="gambling"><span class="opt-emoji">🎰</span><span class="opt-body"><span class="opt-title">Jocuri de noroc</span><span class="opt-desc">Pariuri, cazinou, jocuri online</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="depression"><span class="opt-emoji">🌫️</span><span class="opt-body"><span class="opt-title">Depresie sau blocaj emoțional</span><span class="opt-desc">Mă simt blocat, fără energie, retras</span></span><span class="opt-check"></span></button>
       <button class="opt" data-val="other"><span class="opt-emoji">🌱</span><span class="opt-body"><span class="opt-title">Altceva</span><span class="opt-desc">Un alt obicei pe care vreau să-l schimb</span></span><span class="opt-check"></span></button>
     </div>
     <div class="nav">
@@ -298,6 +299,8 @@ html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
       <button class="opt" data-val="social"><span class="opt-emoji">🥂</span><span class="opt-body"><span class="opt-title">Ieșirile sociale</span></span><span class="opt-check"></span></button>
       <button class="opt" data-val="conflict"><span class="opt-emoji">💢</span><span class="opt-body"><span class="opt-title">Certurile</span></span><span class="opt-check"></span></button>
       <button class="opt" data-val="boredom"><span class="opt-emoji">🕳️</span><span class="opt-body"><span class="opt-title">Plictiseala</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="insomnia"><span class="opt-emoji">😴</span><span class="opt-body"><span class="opt-title">Insomnia</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="isolation"><span class="opt-emoji">🚪</span><span class="opt-body"><span class="opt-title">Izolarea</span></span><span class="opt-check"></span></button>
     </div>
     <div class="nav">
       <button class="btn btn-ghost" onclick="prev()">Înapoi</button>
@@ -377,8 +380,8 @@ html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
   <!-- STEP 8 — CELE 3 CĂI -->
   <div class="step" data-step="7">
     <div class="eyebrow">Cum te însoțește Voxen</div>
-    <h2 class="serif">Trei căi.<br>Același drum.</h2>
-    <p class="lead">Voxen nu e o singură funcție — sunt trei moduri de sprijin care lucrează împreună. Le poți folosi pe toate sau doar pe cele de care ai nevoie.</p>
+    <h2 class="serif">Patru căi.<br>Același drum.</h2>
+    <p class="lead">Voxen nu e o singură funcție — sunt patru moduri de sprijin care lucrează împreună. Le poți folosi pe toate sau doar pe cele de care ai nevoie.</p>
 
     <div class="ways">
       <a class="way" href="voxen-companion.html">
@@ -387,6 +390,14 @@ html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
           <div class="way-title">Companion AI</div>
           <div class="way-desc">Vorbești un minut, oricând. Voxen ascultă cum ești de fapt — și e acolo, mai ales în serile grele.</div>
           <span class="way-link">Descoperă Companion →</span>
+        </div>
+      </a>
+      <a class="way" href="voxen-emotional.html">
+        <div class="way-icon" style="background:rgba(175,169,236,.15);color:var(--soft)">🌫️</div>
+        <div class="way-body">
+          <div class="way-title">Blocaj emoțional</div>
+          <div class="way-desc">Când nu mai ai energie, chef, sau direcție. Pași mici care te pun în mișcare — fără presiune.</div>
+          <span class="way-link">Descoperă instrumentele →</span>
         </div>
       </a>
       <a class="way" href="voxen-therapy.html">
@@ -551,7 +562,9 @@ const TRIGGER_PLAN = {
   loneliness: 'Singurătatea — ai pregătit dinainte 2 persoane cărora le poți scrie un simplu „salut". Conexiunea, chiar și scurtă, întrerupe spirala.',
   social: 'Ieșirile sociale — decide înainte de a pleca ce vei bea/face și cu ce mergi acasă. Un plan dinainte e mai puternic decât voința din moment.',
   conflict: 'Certurile — după un conflict, regula e: nimic în următoarea oră. Deschide Voxen, lasă valul să treacă. Decizia se ia după ce emoția scade.',
-  boredom: 'Plictiseala — ține o listă scurtă de 3 lucruri mici de făcut când apare golul. Plictiseala e un declanșator real, tratează-l ca atare.'
+  boredom: 'Plictiseala — ține o listă scurtă de 3 lucruri mici de făcut când apare golul. Plictiseala e un declanșator real, tratează-l ca atare.',
+  insomnia: 'Insomnia — pune telefonul la încărcat în altă cameră cu o oră înainte de somn. Dacă nu adormi în 20 de minute, ridică-te și fă ceva plictisitor, apoi încearcă din nou.',
+  isolation: 'Izolarea — când simți impulsul să anulezi o întâlnire sau să nu răspunzi, fă opusul: trimite un mesaj scurt, oricui, orice. Conexiunea nu trebuie să fie profundă ca să funcționeze.'
 };
 
 // Rutina zilnică în funcție de momentul ales
@@ -563,7 +576,8 @@ function buildPlan(){
   // — Intro personalizat —
   const struggleWord = {
     alcohol:'cu alcoolul', substances:'cu substanțele',
-    gambling:'cu jocurile de noroc', other:'cu obiceiul pe care vrei să-l schimbi'
+    gambling:'cu jocurile de noroc', depression:'cu blocajul emoțional',
+    other:'cu obiceiul pe care vrei să-l schimbi'
   }[answers.struggle] || '';
   const stageIntro = {
     thinking:'Faptul că te gândiști la asta e deja primul pas — și e un pas real.',
@@ -571,7 +585,13 @@ function buildPlan(){
     months:'Ai un drum în spate. Acum contează să-l menții — și Voxen te ajută să nu-l pierzi.',
     relapse:'Reîncepi, și asta cere curaj. O recădere nu șterge nimic din ce ai construit.'
   }[answers.stage] || '';
-  document.getElementById('planIntro').textContent = stageIntro;
+  // Intro special pentru depresie
+  if(answers.struggle === 'depression') {
+    document.getElementById('planIntro').textContent = 'Ce simți acum — lipsa de energie, senzația de blocare, retragerea — nu e lene și nu e vina ta. E ceva prin care trec mulți oameni, și există ieșire. Hai să facem primul pas mic împreună.';
+  } else {
+    // Intro setat mai sus cu verificare depression
+  }
+  // Intro setat mai sus cu verificare depression
 
   // — Secțiunea 1: Declanșatori —
   const tWrap = document.getElementById('planTriggers');
@@ -597,6 +617,10 @@ function buildPlan(){
     journalLine,
     'Voxen e cu tine oricând ai nevoie, ziua sau noaptea. Ascultă nu doar ce spui, ci cum o spui — dacă te aude alunecând, va fi acolo cu un instrument potrivit.',
   ];
+  // Linie specifică depresie
+  if(answers.struggle === 'depression') {
+    daily.push('Voxen urmărește tiparele din jurnalele tale. Dacă observă semne de retragere prelungită, îți va sugera blând să vorbești cu un specialist — fără presiune, fără judecată.');
+  }
   if(answers.support === 'therapist'){
     daily.push('Rezumatul tău emoțional se pregătește automat pentru terapeut — ajungi la ședință fără să repeți totul de la zero.');
   } else if(answers.support === 'group'){
@@ -620,12 +644,18 @@ function buildPlan(){
     'Zilele 1–2 — Înregistrează primul tău jurnal vocal. Scopul nu e să sune bine, e doar să începi.',
     'Ziua 3 — Explorează modulul de recuperare și alege un instrument care ți se pare util.',
   ];
-  if(answers.stage === 'thinking'){
+  if(answers.struggle === 'depression') {
+    week.push('Ziua 4 — Deschide o fereastră sau ieși afară 5 minute. Nu trebuie să faci nimic — doar schimbă aerul. Mișcarea mică deblochează.');
+  } else if(answers.stage === 'thinking'){
     week.push('Ziua 4 — Citește experiențele altora din secțiunea de grupuri. Vezi că nu ești singur.');
   } else {
     week.push('Ziua 4 — Marchează prima ta mică victorie în aplicație. Progresul mic, văzut, contează.');
   }
-  week.push('Ziua 5 — Identifică în Voxen momentul tău cel mai greu și pregătește un plan pentru el.');
+  if(answers.struggle === 'depression') {
+    week.push('Ziua 5 — Trimite un mesaj scurt cuiva — oricui, orice. „Salut" e suficient. Conexiunea sparge izolarea.');
+  } else {
+    week.push('Ziua 5 — Identifică în Voxen momentul tău cel mai greu și pregătește un plan pentru el.');
+  }
   if(answers.support === 'alone' || answers.support === 'group'){
     week.push('Ziua 6 — Aruncă o privire la un cerc de sprijin Voxen. Doar privești — fără presiune.');
   } else {

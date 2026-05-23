@@ -155,6 +155,17 @@ body{background:var(--void);color:var(--white);font-family:'Syne',sans-serif;ove
 footer{border-top:.5px solid var(--border);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
 .fbrand{font-size:15px;font-weight:700;color:var(--text2)}
 .fcopy{font-size:11px;color:#4A4670}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
+html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
+  animation-play-state:paused!important;
+}
 </style>
 
 <!-- ═══ VOXEN i18n MODULE ═══ -->
@@ -181,7 +192,7 @@ window.voxenHooks = window.voxenHooks || [];
   const T = {
     ro:{
       footer_brand:'terapie',
-      back:'← voxen',
+      back:'← Acasă',
       nav_companion:'Companion AI', nav_therapy:'Terapie', nav_groups:'Grupuri de sprijin',
       // Companion
       comp_chip:'Companion emoțional · Powered by Claude AI',
@@ -283,7 +294,7 @@ window.voxenHooks = window.voxenHooks || [];
     },
     en:{
       footer_brand:'therapy',
-      back:'← voxen',
+      back:'← Home',
       nav_companion:'AI Companion', nav_therapy:'Therapy', nav_groups:'Support Groups',
       comp_chip:'Emotional companion · Powered by Claude AI',
       comp_h1:'It hears you.<br><em>It understands you.</em><br>Always there.',
@@ -382,7 +393,7 @@ window.voxenHooks = window.voxenHooks || [];
     },
     fr:{
       footer_brand:'thérapie',
-      back:'← voxen',
+      back:'← Accueil',
       nav_companion:'Compagnon IA', nav_therapy:'Thérapie', nav_groups:'Groupes de soutien',
       comp_chip:'Compagnon émotionnel · Propulsé par Claude AI',
       comp_h1:'Il vous entend.<br><em>Il vous comprend.</em><br>Toujours là.',
@@ -481,7 +492,7 @@ window.voxenHooks = window.voxenHooks || [];
     },
     de:{
       footer_brand:'Therapie',
-      back:'← voxen',
+      back:'← Startseite',
       nav_companion:'KI-Begleiter', nav_therapy:'Therapie', nav_groups:'Selbsthilfegruppen',
       comp_chip:'Emotionaler Begleiter · Powered by Claude AI',
       comp_h1:'Er hört dich.<br><em>Er versteht dich.</em><br>Immer da.',
@@ -580,7 +591,7 @@ window.voxenHooks = window.voxenHooks || [];
     },
     zh:{
       footer_brand:'治疗',
-      back:'← voxen',
+      back:'← 首页',
       nav_companion:'AI伴侣', nav_therapy:'治疗', nav_groups:'支持小组',
       comp_chip:'情感伴侣 · 由 Claude AI 驱动',
       comp_h1:'它倾听您。<br><em>它理解您。</em><br>始终在您身边。',
@@ -679,7 +690,7 @@ window.voxenHooks = window.voxenHooks || [];
     },
     ja:{
       footer_brand:'療法',
-      back:'← voxen',
+      back:'← ホーム',
       nav_companion:'AIコンパニオン', nav_therapy:'療法', nav_groups:'サポートグループ',
       comp_chip:'感情コンパニオン · Claude AI搭載',
       comp_h1:'あなたを聞いている。<br><em>あなたを理解している。</em><br>いつもそこにいる。',
@@ -778,7 +789,7 @@ window.voxenHooks = window.voxenHooks || [];
     },
     ru:{
       footer_brand:'терапия',
-      back:'← voxen',
+      back:'← Главная',
       nav_companion:'ИИ-компаньон', nav_therapy:'Терапия', nav_groups:'Группы поддержки',
       comp_chip:'Эмоциональный компаньон · На базе Claude AI',
       comp_h1:'Он слышит тебя.<br><em>Он понимает тебя.</em><br>Всегда рядом.',
@@ -943,7 +954,7 @@ window.voxenHooks = window.voxenHooks || [];
 <canvas id="cvs"></canvas>
 
 <div class="topbar">
-  <a class="back-link" href="voxen-landing-multilingual__6_.html"><span data-t="back">← voxen</span></a>
+  <a class="back-link" href="voxen-home.html"><span data-t="back">← Acasă</span></a>
   <div class="brand">voxen</div>
   <nav class="nav-links">
     <a class="nav-link" href="voxen-companion.html"><span data-t="nav_companion">Companion AI</span></a>
@@ -1303,5 +1314,13 @@ function resetBooking() {
   renderCal(); renderSlots();
 }
 </script>
+
+<script>
+document.addEventListener('visibilitychange', function(){
+  if(document.hidden) document.documentElement.classList.add('vx-paused');
+  else document.documentElement.classList.remove('vx-paused');
+});
+</script>
+
 </body>
 </html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxen — Autoexcludere jocuri de noroc</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--void:#0D0B1A;--surface:#1A1630;--card:#201C38;--border:#2E2850;--purple:#534AB7;--mid:#7F77DD;--soft:#AFA9EC;--mist:#EEEDFE;--teal:#1D9E75;--teal-soft:rgba(29,158,117,.14);--amber:#EF9F27;--warm:#D4537E;--white:#F0EFF8;--text2:#8B88C3}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--void);color:var(--white);font-family:'Syne',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;padding-bottom:90px}
+.serif{font-family:'Instrument Serif',Georgia,serif}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:.5px solid var(--border);position:sticky;top:0;background:var(--void);z-index:10}
+.brand{font-weight:700;font-size:18px;letter-spacing:-.02em}
+.back-link{color:var(--text2);text-decoration:none;font-size:14px;transition:color .2s}
+.back-link:hover{color:var(--white)}
+.wrap{max-width:700px;margin:0 auto;padding:0 22px}
+
+.hero{padding:60px 0 40px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;background:rgba(239,159,39,.12);border:.5px solid rgba(239,159,39,.2);font-size:12px;font-weight:600;color:var(--amber);margin-bottom:22px}
+.hero h1{font-family:'Instrument Serif',Georgia,serif;font-size:42px;font-weight:400;line-height:1.1;margin-bottom:16px}
+.hero h1 em{font-style:italic;color:var(--amber)}
+.hero-sub{font-size:15px;color:var(--text2);line-height:1.6;max-width:480px;margin:0 auto}
+
+.section{padding:40px 0}
+.section-label{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:14px}
+.section-title{font-family:'Instrument Serif',Georgia,serif;font-size:30px;font-weight:400;line-height:1.15;margin-bottom:12px}
+.section-sub{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:28px;max-width:520px}
+
+/* Canale autoexcludere */
+.channels{display:flex;flex-direction:column;gap:14px}
+.channel{background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:24px}
+.channel-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.channel-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.channel-title{font-size:17px;font-weight:700}
+.channel-tag{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:100px;margin-left:auto}
+.channel-desc{font-size:13.5px;color:var(--text2);line-height:1.65;margin-bottom:14px}
+.channel-action{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s}
+.channel-action.primary{background:var(--purple);color:var(--mist)}
+.channel-action.primary:hover{background:var(--mid)}
+.channel-action.secondary{background:transparent;border:.5px solid var(--border);color:var(--white)}
+.channel-action.secondary:hover{border-color:var(--purple)}
+.channel-steps{margin-top:14px;padding-top:14px;border-top:.5px solid var(--border)}
+.channel-step{display:flex;gap:11px;padding:8px 0;font-size:13.5px;line-height:1.55;color:var(--soft)}
+.channel-step-num{color:var(--amber);font-weight:700;flex-shrink:0;width:18px}
+
+/* Operatori */
+.ops-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.op-card{background:var(--card);border:.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;text-decoration:none;transition:border-color .2s}
+.op-card:hover{border-color:var(--purple)}
+.op-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:4px}
+.op-link{font-size:11px;color:var(--mid)}
+
+/* Angajament / check-in */
+.commitment{background:linear-gradient(150deg,var(--purple),#3D3590);border-radius:22px;padding:32px 24px;text-align:center;margin-top:8px}
+.commitment h3{font-family:'Instrument Serif',Georgia,serif;font-size:28px;color:var(--mist);margin-bottom:10px}
+.commitment p{font-size:14px;color:var(--soft);line-height:1.6;margin-bottom:22px;max-width:400px;margin-left:auto;margin-right:auto}
+.commit-btn{background:var(--mist);color:var(--void);border:none;border-radius:14px;padding:15px 32px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.commit-btn:hover{background:#fff}
+.commit-date{font-size:13px;color:var(--soft);margin-top:14px;display:none}
+
+/* Counter */
+.counter-card{background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:28px;text-align:center;margin-top:18px;display:none}
+.counter-days{font-family:'Instrument Serif',Georgia,serif;font-size:64px;color:var(--teal);line-height:1}
+.counter-label{font-size:14px;color:var(--text2);margin-top:8px}
+.counter-since{font-size:12px;color:var(--text2);margin-top:4px}
+
+/* Check-in */
+.checkin{background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:24px;margin-top:14px;display:none}
+.checkin-title{font-size:16px;font-weight:700;margin-bottom:10px}
+.checkin-q{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.checkin-btns{display:flex;gap:10px}
+.checkin-btn{flex:1;padding:12px;border-radius:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.checkin-btn.yes{background:var(--teal-soft);color:var(--teal)}
+.checkin-btn.no{background:rgba(212,83,126,.15);color:var(--warm)}
+.checkin-btn:hover{opacity:.8}
+.checkin-response{font-size:13px;color:var(--text2);margin-top:12px;line-height:1.6;display:none}
+
+.disclaimer{background:rgba(239,159,39,.08);border:.5px solid rgba(239,159,39,.25);border-radius:14px;padding:18px 20px;margin-top:32px;font-size:13px;color:var(--text2);line-height:1.6;display:flex;gap:12px;align-items:flex-start}
+.disclaimer-icon{font-size:18px;flex-shrink:0}
+
+.safebar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:.5px solid var(--border);padding:14px 22px;display:flex;align-items:center;gap:12px;justify-content:center;z-index:20}
+.safebar-text{font-size:12px;color:var(--text2)}
+.safebar-btn{background:rgba(212,83,126,.16);color:var(--warm);border:.5px solid rgba(212,83,126,.4);border-radius:10px;padding:9px 16px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap}
+
+@media(max-width:560px){.hero h1{font-size:34px}.ops-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+html.vx-paused *{animation-play-state:paused!important}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back-link" href="voxen-home.html">← Acasă</a>
+  <div class="brand">voxen</div>
+  <div style="width:60px"></div>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🎰 Instrument de recuperare</div>
+    <h1 class="serif">Oprește-te azi.<br><em>Nu mâine.</em></h1>
+    <p class="hero-sub">Autoexcluderea e cel mai puternic instrument legal pe care îl ai. Îți blochezi accesul la jocuri — nu prin voință, ci prin lege. Voxen te ghidează pas cu pas.</p>
+  </div>
+
+  <!-- CE E AUTOEXCLUDEREA -->
+  <div class="section">
+    <div class="section-label">Ce trebuie să știi</div>
+    <div class="section-title serif">Autoexcluderea,<br>explicată simplu.</div>
+    <div class="section-sub">E un drept legal al tău, nu o favoare. Odată ce depui cererea, operatorii sunt OBLIGAȚI prin lege să-ți blocheze accesul. Nu mai depinde de voința ta — depinde de lege.</div>
+  </div>
+
+  <!-- CANALE DE DEPUNERE -->
+  <div class="section">
+    <div class="section-label">Cum te autoexcluzi — 4 căi oficiale</div>
+    <div class="section-title serif">Alege calea care<br>ți se potrivește.</div>
+    <div class="section-sub">Conform Ordinului ONJN nr. 79/2025, publicat în Monitorul Oficial pe 17 iunie 2025. Toate căile duc la același rezultat: ești înscris în baza de date națională a persoanelor autoexcluse.</div>
+
+    <div class="channels">
+
+      <div class="channel">
+        <div class="channel-head">
+          <div class="channel-icon" style="background:var(--teal-soft)">🏢</div>
+          <div class="channel-title">La sediul ONJN</div>
+          <span class="channel-tag" style="background:var(--teal-soft);color:var(--teal)">Cel mai rapid</span>
+        </div>
+        <div class="channel-desc">Te prezinți personal la sediul central ONJN din București sau la oricare sediu teritorial. Cererea e procesată pe loc. Ai nevoie doar de actul de identitate.</div>
+        <a href="https://onjn.gov.ro/relatii-publice/autoexcludere/" target="_blank" rel="noopener" class="channel-action primary">Sedii ONJN + formular →</a>
+        <div class="channel-steps">
+          <div class="channel-step"><span class="channel-step-num">1</span><span>Mergi la cel mai apropiat sediu ONJN cu buletinul/cartea de identitate.</span></div>
+          <div class="channel-step"><span class="channel-step-num">2</span><span>Completezi cererea de autoexcludere pe loc (formularul ți-l dau ei).</span></div>
+          <div class="channel-step"><span class="channel-step-num">3</span><span>Cererea e validată imediat. Ești înscris în baza de date în câteva minute.</span></div>
+        </div>
+      </div>
+
+      <div class="channel">
+        <div class="channel-head">
+          <div class="channel-icon" style="background:rgba(83,74,183,.15)">📧</div>
+          <div class="channel-title">Prin e-mail</div>
+          <span class="channel-tag" style="background:rgba(83,74,183,.15);color:var(--mid)">De acasă</span>
+        </div>
+        <div class="channel-desc">Trimiți cererea completată la autoexcludere@onjn.gov.ro. Necesită semnătură electronică calificată (de la un furnizor acreditat).</div>
+        <a href="mailto:autoexcludere@onjn.gov.ro" class="channel-action primary">autoexcludere@onjn.gov.ro →</a>
+      </div>
+
+      <div class="channel">
+        <div class="channel-head">
+          <div class="channel-icon" style="background:rgba(239,159,39,.14)">⚖️</div>
+          <div class="channel-title">Prin notar sau avocat</div>
+          <span class="channel-tag" style="background:rgba(239,159,39,.14);color:var(--amber)">Cu asistență</span>
+        </div>
+        <div class="channel-desc">Faci o declarație pe propria răspundere, autentificată de notar sau atestată de avocat. Ei o trimit direct la ONJN în numele tău. Procesată în ziua înregistrării.</div>
+      </div>
+
+      <div class="channel">
+        <div class="channel-head">
+          <div class="channel-icon" style="background:rgba(212,83,126,.14)">🎰</div>
+          <div class="channel-title">Direct la operator</div>
+          <span class="channel-tag" style="background:rgba(212,83,126,.14);color:var(--warm)">Atenție</span>
+        </div>
+        <div class="channel-desc">Poți depune cererea la orice operator licențiat — fizic la agenție sau pe platforma online. Operatorul e obligat legal să o transmită la ONJN în maxim 2 zile lucrătoare.</div>
+        <div class="channel-steps">
+          <div class="channel-step"><span class="channel-step-num">⚠</span><span>Atenție: autoexcluderea la operator acoperă doar agențiile terestre. Pentru online, trebuie să te autoexcluzi separat din contul personal de pe fiecare platformă.</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OPERATORI ONLINE PRINCIPALI -->
+  <div class="section">
+    <div class="section-label">Autoexcludere online — operatori principali</div>
+    <div class="section-title serif">Închide-ți conturile<br>pe fiecare platformă.</div>
+    <div class="section-sub">Pentru jocuri online, trebuie să te autoexcluzi din contul personal pe fiecare site separat. Mai jos, link-uri directe către secțiunea de autoexcludere a principalilor operatori licențiați în România.</div>
+
+    <div class="ops-grid">
+      <a class="op-card" href="https://www.superbet.ro/joc-responsabil" target="_blank" rel="noopener"><div class="op-name">Superbet</div><div class="op-link">Joc responsabil →</div></a>
+      <a class="op-card" href="https://www.betano.ro/page/responsible-gambling" target="_blank" rel="noopener"><div class="op-name">Betano</div><div class="op-link">Joc responsabil →</div></a>
+      <a class="op-card" href="https://www.unibet.ro/responsible-gaming" target="_blank" rel="noopener"><div class="op-name">Unibet</div><div class="op-link">Joc responsabil →</div></a>
+      <a class="op-card" href="https://www.netbet.ro/joc-responsabil" target="_blank" rel="noopener"><div class="op-name">Netbet</div><div class="op-link">Joc responsabil →</div></a>
+      <a class="op-card" href="https://www.vlad-cazino.ro/joc-responsabil" target="_blank" rel="noopener"><div class="op-name">Vlad Cazino</div><div class="op-link">Joc responsabil →</div></a>
+      <a class="op-card" href="https://www.fortuna.ro/joc-responsabil" target="_blank" rel="noopener"><div class="op-name">Fortuna</div><div class="op-link">Joc responsabil →</div></a>
+    </div>
+  </div>
+
+  <!-- ANGAJAMENTUL -->
+  <div class="section">
+    <div class="section-label">Marcarea momentului</div>
+
+    <div class="commitment" id="commitBlock">
+      <h3 class="serif">Azi iau decizia.</h3>
+      <p>Când ești pregătit — după ce ai depus cererea de autoexcludere — apasă butonul de mai jos. Voxen va ține minte acest moment și îți va arăta câte zile ai câștigat.</p>
+      <button class="commit-btn" id="commitBtn" onclick="commitNow()">Am depus cererea de autoexcludere</button>
+      <div class="commit-date" id="commitDate"></div>
+    </div>
+
+    <!-- Counterul de zile -->
+    <div class="counter-card" id="counterCard">
+      <div class="counter-days" id="counterDays">0</div>
+      <div class="counter-label">zile de la decizia ta</div>
+      <div class="counter-since" id="counterSince"></div>
+    </div>
+
+    <!-- Check-in periodic -->
+    <div class="checkin" id="checkinCard">
+      <div class="checkin-title">Check-in de angajament</div>
+      <div class="checkin-q" id="checkinQ"></div>
+      <div class="checkin-btns">
+        <button class="checkin-btn yes" onclick="checkinResponse(true)">Da, am menținut decizia</button>
+        <button class="checkin-btn no" onclick="checkinResponse(false)">Am cedat</button>
+      </div>
+      <div class="checkin-response" id="checkinResp"></div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <span class="disclaimer-icon">⚖️</span>
+    <span>Voxen nu poate verifica tehnic dacă autoexcluderea a fost procesată de ONJN sau de operatori. Informațiile de pe această pagină sunt ghid, nu consiliere juridică. Verificarea statutului de autoexcludere se face prin ONJN la autoexcludere@onjn.gov.ro. Datele tale de angajament rămân doar pe dispozitivul tău.</span>
+  </div>
+
+  <div style="height:80px" aria-hidden="true"></div>
+</div>
+
+<div class="safebar">
+  <span class="safebar-text">Treci printr-un moment greu?</span>
+  <a href="tel:112" class="safebar-btn">Ajutor acum</a>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// AUTOEXCLUDERE — Angajament + Check-in
+// ═══════════════════════════════════════
+
+function loadCommitment() {
+  try {
+    const raw = localStorage.getItem('voxen_gambling_commitment');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return null;
+}
+
+function saveCommitment(data) {
+  try { localStorage.setItem('voxen_gambling_commitment', JSON.stringify(data)); } catch(e) {}
+}
+
+function commitNow() {
+  const now = new Date();
+  const data = {
+    date: now.toISOString(),
+    checkins: [],
+    lastCheckin: null,
+  };
+  saveCommitment(data);
+  renderState();
+}
+
+function renderState() {
+  const data = loadCommitment();
+  if (!data) return;
+
+  // Ascunde butonul de angajament, arată counterul
+  document.getElementById('commitBlock').querySelector('.commit-btn').style.display = 'none';
+  const cd = document.getElementById('commitDate');
+  cd.style.display = 'block';
+  const commitDate = new Date(data.date);
+  cd.textContent = 'Angajament luat pe ' + commitDate.toLocaleDateString('ro-RO', {day:'numeric',month:'long',year:'numeric'});
+
+  // Counter
+  const days = Math.floor((Date.now() - commitDate.getTime()) / (1000*60*60*24));
+  const counterCard = document.getElementById('counterCard');
+  counterCard.style.display = 'block';
+  document.getElementById('counterDays').textContent = days;
+  document.getElementById('counterSince').textContent =
+    'De la ' + commitDate.toLocaleDateString('ro-RO', {day:'numeric',month:'long',year:'numeric'});
+
+  // Check-in — la fiecare 7 zile
+  const daysSinceCheckin = data.lastCheckin
+    ? Math.floor((Date.now() - new Date(data.lastCheckin).getTime()) / (1000*60*60*24))
+    : days;
+
+  if (daysSinceCheckin >= 7 && days >= 7) {
+    const checkinCard = document.getElementById('checkinCard');
+    checkinCard.style.display = 'block';
+    document.getElementById('checkinQ').textContent =
+      'Au trecut ' + days + ' zile de la decizia ta de autoexcludere. Cum a mers?';
+  }
+}
+
+function checkinResponse(maintained) {
+  const data = loadCommitment();
+  if (!data) return;
+
+  data.lastCheckin = new Date().toISOString();
+  data.checkins.push({ date: data.lastCheckin, maintained });
+  saveCommitment(data);
+
+  const resp = document.getElementById('checkinResp');
+  resp.style.display = 'block';
+  document.querySelector('.checkin-btns').style.display = 'none';
+
+  if (maintained) {
+    const days = Math.floor((Date.now() - new Date(data.date).getTime()) / (1000*60*60*24));
+    resp.textContent = days + ' zile. Fiecare zi contează. Voxen vede drumul pe care l-ai făcut.';
+    resp.style.color = 'var(--teal)';
+  } else {
+    resp.innerHTML = 'O recădere nu șterge drumul pe care l-ai făcut. '
+      + 'Nu e rușine — e un moment din care înveți. '
+      + 'Dacă vrei, poți depune din nou cererea de autoexcludere. '
+      + '<br><br>Voxen e aici. Hai să vorbim despre ce s-a întâmplat.'
+      + '<br><a href="voxen-companion.html" style="color:var(--mid);font-weight:600;margin-top:8px;display:inline-block">Deschide jurnalul vocal →</a>';
+    resp.style.color = 'var(--text2)';
+  }
+}
+
+// Pauza animații
+document.addEventListener('visibilitychange', function(){
+  if(document.hidden) document.documentElement.classList.add('vx-paused');
+  else document.documentElement.classList.remove('vx-paused');
+});
+
+// Init
+renderState();
+</script>
+</body>
+</html>

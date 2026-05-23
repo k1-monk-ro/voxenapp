@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxen — Recuperare substanțe</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--void:#0D0B1A;--surface:#1A1630;--card:#201C38;--border:#2E2850;--purple:#534AB7;--mid:#7F77DD;--soft:#AFA9EC;--mist:#EEEDFE;--teal:#1D9E75;--teal-soft:rgba(29,158,117,.14);--amber:#EF9F27;--warm:#D4537E;--white:#F0EFF8;--text2:#8B88C3}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--void);color:var(--white);font-family:'Syne',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;padding-bottom:90px}
+.serif{font-family:'Instrument Serif',Georgia,serif}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:.5px solid var(--border);position:sticky;top:0;background:var(--void);z-index:10}
+.brand{font-weight:700;font-size:18px}.back-link{color:var(--text2);text-decoration:none;font-size:14px}.back-link:hover{color:var(--white)}
+.wrap{max-width:700px;margin:0 auto;padding:0 22px}
+.hero{padding:60px 0 40px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;background:rgba(83,74,183,.12);border:.5px solid rgba(83,74,183,.25);font-size:12px;font-weight:600;color:var(--mid);margin-bottom:22px}
+.hero h1{font-family:'Instrument Serif',Georgia,serif;font-size:42px;font-weight:400;line-height:1.1;margin-bottom:16px}
+.hero h1 em{font-style:italic;color:var(--mid)}
+.hero-sub{font-size:15px;color:var(--text2);line-height:1.6;max-width:480px;margin:0 auto}
+.section{padding:40px 0}
+.section-label{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:14px}
+.section-title{font-family:'Instrument Serif',Georgia,serif;font-size:30px;font-weight:400;line-height:1.15;margin-bottom:12px}
+.section-sub{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:28px;max-width:520px}
+.alert-box{display:flex;gap:14px;align-items:flex-start;background:rgba(212,83,126,.1);border:.5px solid rgba(212,83,126,.3);border-radius:16px;padding:20px;margin-bottom:20px}
+.alert-icon{font-size:24px;flex-shrink:0}.alert-body{flex:1}
+.alert-title{font-size:15px;font-weight:700;color:var(--warm);margin-bottom:6px}
+.alert-text{font-size:13px;color:var(--text2);line-height:1.6}
+.tools{display:flex;flex-direction:column;gap:14px}
+.tool{background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:24px;cursor:pointer;transition:border-color .2s}
+.tool:hover{border-color:var(--purple)}
+.tool-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.tool-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tool-title{font-size:17px;font-weight:700}
+.tool-tag{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:100px;margin-left:auto}
+.tool-desc{font-size:13.5px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.tool-steps{display:none;padding-top:12px;border-top:.5px solid var(--border)}
+.tool.open .tool-steps{display:block}
+.tool-step{display:flex;gap:11px;padding:8px 0;font-size:13.5px;line-height:1.55;color:var(--soft)}
+.tool-step-num{color:var(--mid);font-weight:700;flex-shrink:0;width:18px}
+.tool-hint{font-size:12px;color:var(--text2);margin-top:8px;text-align:right}
+.tool-hint::after{content:' ↓';color:var(--mid)}.tool.open .tool-hint::after{content:' ↑'}
+.resources{display:flex;flex-direction:column;gap:10px}
+.resource{display:flex;gap:14px;align-items:center;background:var(--card);border:.5px solid var(--border);border-radius:14px;padding:16px;text-decoration:none;transition:border-color .2s}
+.resource:hover{border-color:var(--purple)}
+.resource-icon{font-size:22px;flex-shrink:0}
+.resource-body{flex:1}
+.resource-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px}
+.resource-desc{font-size:12px;color:var(--text2)}
+.resource-arrow{color:var(--mid);font-size:16px}
+.commitment{background:linear-gradient(150deg,var(--purple),#3D3590);border-radius:22px;padding:32px 24px;text-align:center;margin-top:16px}
+.commitment h3{font-family:'Instrument Serif',Georgia,serif;font-size:28px;color:var(--mist);margin-bottom:10px}
+.commitment p{font-size:14px;color:var(--soft);line-height:1.6;margin-bottom:22px;max-width:400px;margin-left:auto;margin-right:auto}
+.commit-btn{background:var(--mist);color:var(--void);border:none;border-radius:14px;padding:15px 32px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.commit-btn:hover{background:#fff}
+.counter-card{background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:28px;text-align:center;margin-top:18px;display:none}
+.counter-days{font-family:'Instrument Serif',Georgia,serif;font-size:64px;color:var(--teal);line-height:1}
+.counter-label{font-size:14px;color:var(--text2);margin-top:8px}
+.counter-since{font-size:12px;color:var(--text2);margin-top:4px}
+.disclaimer{background:rgba(239,159,39,.08);border:.5px solid rgba(239,159,39,.25);border-radius:14px;padding:18px 20px;margin-top:32px;font-size:13px;color:var(--text2);line-height:1.6;display:flex;gap:12px}
+.disclaimer-icon{font-size:18px;flex-shrink:0}
+.safebar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:.5px solid var(--border);padding:14px 22px;display:flex;align-items:center;gap:12px;justify-content:center;z-index:20}
+.safebar-text{font-size:12px;color:var(--text2)}
+.safebar-btn{background:rgba(212,83,126,.16);color:var(--warm);border:.5px solid rgba(212,83,126,.4);border-radius:10px;padding:9px 16px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-decoration:none}
+@media(max-width:560px){.hero h1{font-size:34px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+html.vx-paused *{animation-play-state:paused!important}
+</style>
+</head>
+<body>
+<div class="topbar"><a class="back-link" href="voxen-home.html">← Acasă</a><div class="brand">voxen</div><div style="width:60px"></div></div>
+<div class="wrap">
+
+<div class="hero">
+  <div class="hero-badge">💊 Recuperare substanțe</div>
+  <h1 class="serif">Nu ești ce ai<br><em>consumat.</em></h1>
+  <p class="hero-sub">Dependența nu e un defect de caracter — e o boală cu tratament. Nu trebuie să fii pregătit perfect ca să faci primul pas. Trebuie doar să-l faci.</p>
+</div>
+
+<!-- ALERTĂ -->
+<div class="section">
+  <div class="alert-box">
+    <span class="alert-icon">⚠️</span>
+    <div class="alert-body">
+      <div class="alert-title">Supradoza e o urgență medicală</div>
+      <div class="alert-text">Dacă cineva a consumat și nu răspunde, are respirație slabă sau buzele vinete — sună IMEDIAT la 112. Nu te temi de consecințe: echipa medicală nu raportează poliției în situații de urgență medicală. Salvezi o viață.</div>
+    </div>
+  </div>
+</div>
+
+<!-- INSTRUMENTE -->
+<div class="section">
+  <div class="section-label">Instrumente</div>
+  <div class="section-title serif">Pași reali,<br>fără judecată.</div>
+  <div class="section-sub">Fiecare instrument de mai jos este folosit în practica clinică reală. Unele te ajută să te oprești, altele să fii mai în siguranță până ești pregătit. Ambele sunt valide.</div>
+
+  <div class="tools">
+
+    <div class="tool" onclick="this.classList.toggle('open')">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:rgba(212,83,126,.14)">🩺</div>
+        <div class="tool-title">Evaluarea medicală</div>
+        <span class="tool-tag" style="background:rgba(212,83,126,.14);color:var(--warm)">Primul pas</span>
+      </div>
+      <div class="tool-desc">Un medic nu te judecă — te evaluează. Fiecare substanță are un protocol de sevraj specific. Heroina, benzodiazepinele, alcoolul — sevrajul nesupravegheat poate fi periculos. Un medic te ghidează prin procesul sigur.</div>
+      <div class="tool-hint">Vezi cum</div>
+      <div class="tool-steps">
+        <div class="tool-step"><span class="tool-step-num">1</span><span>Sună la centrul de sănătate mintală din județul tău sau la medicul de familie. Spune direct ce consumi — confidențialitatea medicală te protejează.</span></div>
+        <div class="tool-step"><span class="tool-step-num">2</span><span>Medicul evaluează: ce substanțe, de cât timp, cât de des. Nu e un interogatoriu — e informația de care are nevoie ca să te ajute sigur.</span></div>
+        <div class="tool-step"><span class="tool-step-num">3</span><span>Pentru opioide: există terapie de substituție (metadonă, buprenorfină) — medicamente prescrise care elimină sevrajul și reduc pofta. Nu e "înlocuirea unui drog cu altul" — e medicină.</span></div>
+        <div class="tool-step"><span class="tool-step-num">4</span><span>Dezintoxicarea supravegheată medical durează de obicei 5-14 zile. Urmează recuperarea — și acolo Voxen te însoțește.</span></div>
+      </div>
+    </div>
+
+    <div class="tool" onclick="this.classList.toggle('open')">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:var(--teal-soft)">🛡️</div>
+        <div class="tool-title">Reducerea riscurilor</div>
+        <span class="tool-tag" style="background:var(--teal-soft);color:var(--teal)">Harm reduction</span>
+      </div>
+      <div class="tool-desc">Nu toți oamenii sunt pregătiți să se oprească acum. Asta nu înseamnă că nu merită ajutor. Reducerea riscurilor înseamnă: dacă nu poți opri azi, fă-o mai sigur. Fiecare risc redus e o viață protejată.</div>
+      <div class="tool-hint">Vezi principii</div>
+      <div class="tool-steps">
+        <div class="tool-step"><span class="tool-step-num">1</span><span>Nu consuma singur. Dacă ceva merge prost, cineva trebuie să sune la 112.</span></div>
+        <div class="tool-step"><span class="tool-step-num">2</span><span>Nu amesteca substanțe — mai ales opioide cu benzodiazepine sau alcool. Combinația deprimă respirația.</span></div>
+        <div class="tool-step"><span class="tool-step-num">3</span><span>Dacă ai făcut o pauză și reiei consumul, toleranța a scăzut. Doza de dinainte poate fi acum letală. Începe cu mult mai puțin.</span></div>
+        <div class="tool-step"><span class="tool-step-num">4</span><span>Acele curate, kit-uri de naloxonă (antidot pentru opioide), testarea substanțelor — sunt disponibile prin organizații de harm reduction. Nu e încurajare — e siguranță.</span></div>
+      </div>
+    </div>
+
+    <div class="tool" onclick="this.classList.toggle('open')">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:rgba(83,74,183,.15)">🎙</div>
+        <div class="tool-title">Jurnalul vocal de poftă</div>
+        <span class="tool-tag" style="background:rgba(83,74,183,.15);color:var(--mid)">Cu Voxen</span>
+      </div>
+      <div class="tool-desc">Când vine pofta, vorbește despre ea în loc să acționezi pe ea. Externalizarea vocală reduce intensitatea poftei — e un mecanism demonstrat în terapia cognitiv-comportamentală.</div>
+      <div class="tool-hint">Vezi cum</div>
+      <div class="tool-steps">
+        <div class="tool-step"><span class="tool-step-num">1</span><span>Pofta apare. Deschide Voxen. Spune exact ce simți: "Vreau să consum acum, pofta e puternică, sunt tensionat."</span></div>
+        <div class="tool-step"><span class="tool-step-num">2</span><span>Descrie pofta ca pe un val: vine, crește, atinge vârful, și SCADE. Valul durează 15-20 de minute. Dacă reziști vârful, scade.</span></div>
+        <div class="tool-step"><span class="tool-step-num">3</span><span>Continuă să vorbești cu Voxen până trece vârful. Nu trebuie să spui ceva inteligent — trebuie doar să vorbești, să externalizezi.</span></div>
+        <div class="tool-step"><span class="tool-step-num">4</span><span>După ce trece, marchează în Voxen: "Am trecut peste un val." Fiecare val trecut e o victorie reală.</span></div>
+      </div>
+    </div>
+
+    <div class="tool" onclick="this.classList.toggle('open')">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:rgba(239,159,39,.14)">📋</div>
+        <div class="tool-title">Planul de urgență personal</div>
+        <span class="tool-tag" style="background:rgba(239,159,39,.14);color:var(--amber)">Pregătire</span>
+      </div>
+      <div class="tool-desc">Construiești planul ÎNAINTE de poftă, nu în timpul ei. Când vine, nu gândești clar — doar execuți planul pregătit. E diferența între a reacționa și a fi pregătit.</div>
+      <div class="tool-hint">Vezi cum</div>
+      <div class="tool-steps">
+        <div class="tool-step"><span class="tool-step-num">1</span><span>Scrie (sau spune în Voxen) 3 lucruri pe care le faci IMEDIAT când vine pofta: suni pe cineva, ieși afară, deschizi Voxen.</span></div>
+        <div class="tool-step"><span class="tool-step-num">2</span><span>Scrie 2 persoane pe care le poți suna la orice oră — și spune-le dinainte că e posibil să suni.</span></div>
+        <div class="tool-step"><span class="tool-step-num">3</span><span>Identifică și elimină accesul la substanțe din casă. Dacă trebuie să faci efort ca să obții, ai timp să aplici planul.</span></div>
+        <div class="tool-step"><span class="tool-step-num">4</span><span>Revizuiește planul o dată pe săptămână — funcționează? Ce schimbi? Adaptează-l la ce ai învățat.</span></div>
+      </div>
+    </div>
+
+    <div class="tool" onclick="this.classList.toggle('open')">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:rgba(175,169,236,.14)">🏥</div>
+        <div class="tool-title">Comunitate terapeutică</div>
+        <span class="tool-tag" style="background:rgba(175,169,236,.14);color:var(--soft)">Rezidențial</span>
+      </div>
+      <div class="tool-desc">Pentru cazuri severe sau când mediul de acasă e parte din problemă, un centru rezidențial scoate omul din context. 30-90 de zile într-un loc sigur, cu terapie de grup și asistență medicală.</div>
+      <div class="tool-hint">Vezi opțiuni</div>
+      <div class="tool-steps">
+        <div class="tool-step"><span class="tool-step-num">1</span><span>Centrul "Insula Speranței" (Așezământul Nazaret, Șura Mică) — peste 30 de ani experiență, primul centru autorizat din România.</span></div>
+        <div class="tool-step"><span class="tool-step-num">2</span><span>Crucea Albastră — centre în mai multe județe, programe de 7-30 zile, prețuri accesibile.</span></div>
+        <div class="tool-step"><span class="tool-step-num">3</span><span>Centrele de sănătate mintală din sistemul public — internare gratuită prin Casa de Asigurări, cu trimitere de la medicul de familie.</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RESURSE -->
+<div class="section">
+  <div class="section-label">Resurse verificate România</div>
+  <div class="section-title serif">Ajutor real,<br>nu link-uri moarte.</div>
+  <div class="resources">
+    <a class="resource" href="tel:0800500200"><span class="resource-icon">📞</span><div class="resource-body"><div class="resource-name">TelVerde Antidrog — 0800.500.200</div><div class="resource-desc">Linie gratuită de informare și consiliere. Apel gratuit, confidențial.</div></div><span class="resource-arrow">→</span></a>
+    <a class="resource" href="https://www.dependenta.ro" target="_blank" rel="noopener"><span class="resource-icon">🏠</span><div class="resource-body"><div class="resource-name">Crucea Albastră România</div><div class="resource-desc">Centre rezidențiale de recuperare în mai multe județe.</div></div><span class="resource-arrow">→</span></a>
+    <a class="resource" href="https://www.tratament-dependenta.ro" target="_blank" rel="noopener"><span class="resource-icon">🏥</span><div class="resource-body"><div class="resource-name">Așezământul Nazaret</div><div class="resource-desc">Peste 30 ani experiență. Tratament rezidențial complet.</div></div><span class="resource-arrow">→</span></a>
+    <a class="resource" href="tel:112"><span class="resource-icon">🚑</span><div class="resource-body"><div class="resource-name">112 — Urgență supradoză</div><div class="resource-desc">Echipa medicală NU raportează poliției în urgențe medicale. Sună fără teamă.</div></div><span class="resource-arrow">→</span></a>
+    <a class="resource" href="voxen-therapy.html"><span class="resource-icon">🧑‍⚕️</span><div class="resource-body"><div class="resource-name">Terapie prin Voxen</div><div class="resource-desc">Găsește un terapeut specializat în dependențe.</div></div><span class="resource-arrow">→</span></a>
+  </div>
+</div>
+
+<!-- ANGAJAMENT -->
+<div class="section">
+  <div class="section-label">Momentul tău</div>
+  <div class="commitment" id="commitBlock">
+    <h3 class="serif">Azi fac primul pas.</h3>
+    <p>Nu trebuie să fii perfect. Nu trebuie să fii sigur. Trebuie doar să începi. Când ești pregătit, marcheaza ziua 1.</p>
+    <button class="commit-btn" id="commitBtn" onclick="commitNow()">Marchez ziua 1</button>
+  </div>
+  <div class="counter-card" id="counterCard">
+    <div class="counter-days" id="counterDays">0</div>
+    <div class="counter-label">zile curate</div>
+    <div class="counter-since" id="counterSince"></div>
+  </div>
+</div>
+
+<div class="disclaimer"><span class="disclaimer-icon">⚕️</span><span>Voxen nu oferă sfat medical. Dezintoxicarea de substanțe necesită supraveghere medicală. Reducerea riscurilor nu încurajează consumul — protejează viața. În situații de urgență sau supradoză, sună la <strong>112</strong>.</span></div>
+<div style="height:80px" aria-hidden="true"></div>
+</div>
+
+<div class="safebar"><span class="safebar-text">Treci printr-un moment greu?</span><a href="tel:112" class="safebar-btn">Ajutor acum</a></div>
+
+<script>
+function loadCommitment(){try{const r=localStorage.getItem('voxen_substances_commitment');if(r)return JSON.parse(r)}catch(e){}return null}
+function saveCommitment(d){try{localStorage.setItem('voxen_substances_commitment',JSON.stringify(d))}catch(e){}}
+function commitNow(){saveCommitment({date:new Date().toISOString()});renderState()}
+function renderState(){
+  const d=loadCommitment();if(!d)return;
+  document.getElementById('commitBtn').style.display='none';
+  const cd=new Date(d.date),days=Math.floor((Date.now()-cd.getTime())/(1000*60*60*24));
+  const cc=document.getElementById('counterCard');cc.style.display='block';
+  document.getElementById('counterDays').textContent=days;
+  document.getElementById('counterSince').textContent='De la '+cd.toLocaleDateString('ro-RO',{day:'numeric',month:'long',year:'numeric'});
+}
+document.addEventListener('visibilitychange',function(){if(document.hidden)document.documentElement.classList.add('vx-paused');else document.documentElement.classList.remove('vx-paused')});
+renderState();
+</script>
+</body>
+</html>

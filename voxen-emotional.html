@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxen — Blocaj emoțional</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--void:#0D0B1A;--surface:#1A1630;--card:#201C38;--border:#2E2850;--purple:#534AB7;--mid:#7F77DD;--soft:#AFA9EC;--mist:#EEEDFE;--teal:#1D9E75;--teal-soft:rgba(29,158,117,.14);--amber:#EF9F27;--warm:#D4537E;--white:#F0EFF8;--text2:#8B88C3}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--void);color:var(--white);font-family:'Syne',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;padding-bottom:90px}
+.serif{font-family:'Instrument Serif',Georgia,serif}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:.5px solid var(--border);position:sticky;top:0;background:var(--void);z-index:10}
+.brand{font-weight:700;font-size:18px;letter-spacing:-.02em}
+.back-link{color:var(--text2);text-decoration:none;font-size:14px;transition:color .2s}
+.back-link:hover{color:var(--white)}
+.nav-links{display:flex;gap:16px;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:13px;font-weight:600;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.wrap{max-width:700px;margin:0 auto;padding:0 22px}
+
+/* Hero */
+.hero{padding:60px 0 40px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;background:rgba(175,169,236,.12);border:.5px solid rgba(175,169,236,.2);font-size:12px;font-weight:600;color:var(--soft);margin-bottom:22px}
+.hero h1{font-family:'Instrument Serif',Georgia,serif;font-size:42px;font-weight:400;line-height:1.1;margin-bottom:16px}
+.hero h1 em{font-style:italic;color:var(--soft)}
+.hero-sub{font-size:15px;color:var(--text2);line-height:1.6;max-width:480px;margin:0 auto}
+
+/* Sections */
+.section{padding:40px 0}
+.section-label{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:14px}
+.section-title{font-family:'Instrument Serif',Georgia,serif;font-size:30px;font-weight:400;line-height:1.15;margin-bottom:12px}
+.section-sub{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:28px;max-width:520px}
+
+/* Understanding cards */
+.understand-grid{display:flex;flex-direction:column;gap:12px}
+.u-card{background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:22px;display:flex;gap:16px;align-items:flex-start}
+.u-emoji{font-size:28px;flex-shrink:0;margin-top:2px}
+.u-body h3{font-size:16px;font-weight:700;color:var(--white);margin-bottom:6px}
+.u-body p{font-size:13.5px;color:var(--text2);line-height:1.6}
+
+/* Tools */
+.tools-grid{display:flex;flex-direction:column;gap:14px}
+.tool{background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:24px;cursor:pointer;transition:border-color .2s}
+.tool:hover{border-color:var(--purple)}
+.tool-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.tool-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tool-title{font-size:17px;font-weight:700}
+.tool-tag{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:100px;margin-left:auto}
+.tool-desc{font-size:13.5px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.tool-steps{display:none;padding-top:12px;border-top:.5px solid var(--border)}
+.tool.open .tool-steps{display:block}
+.tool-step{display:flex;gap:11px;padding:9px 0;font-size:13.5px;line-height:1.55;color:var(--soft)}
+.tool-step-num{color:var(--mid);font-weight:700;flex-shrink:0;width:18px}
+.tool-hint{font-size:12px;color:var(--text2);margin-top:8px;text-align:right}
+.tool-hint::after{content:' ↓';color:var(--mid)}
+.tool.open .tool-hint::after{content:' ↑'}
+
+/* Triaj */
+.triaj{background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:28px;margin-top:8px}
+.triaj-title{font-family:'Instrument Serif',Georgia,serif;font-size:24px;margin-bottom:12px}
+.triaj-sub{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.triaj-signs{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.triaj-sign{display:flex;gap:10px;font-size:13.5px;color:var(--soft);line-height:1.5}
+.triaj-sign span:first-child{color:var(--amber);flex-shrink:0}
+.triaj-cta{display:flex;gap:12px;flex-wrap:wrap}
+.triaj-btn{padding:13px 22px;border-radius:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;text-decoration:none;text-align:center;transition:background .2s}
+.triaj-btn.primary{background:var(--purple);color:var(--mist)}
+.triaj-btn.primary:hover{background:var(--mid)}
+.triaj-btn.secondary{background:transparent;border:.5px solid var(--border);color:var(--white)}
+.triaj-btn.secondary:hover{border-color:var(--purple)}
+
+/* Disclaimer */
+.disclaimer{background:rgba(239,159,39,.08);border:.5px solid rgba(239,159,39,.25);border-radius:14px;padding:18px 20px;margin-top:32px;font-size:13px;color:var(--text2);line-height:1.6;display:flex;gap:12px;align-items:flex-start}
+.disclaimer-icon{font-size:18px;flex-shrink:0}
+
+/* Safebar */
+.safebar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:.5px solid var(--border);padding:14px 22px;display:flex;align-items:center;gap:12px;justify-content:center;z-index:20}
+.safebar-text{font-size:12px;color:var(--text2)}
+.safebar-btn{background:rgba(212,83,126,.16);color:var(--warm);border:.5px solid rgba(212,83,126,.4);border-radius:10px;padding:9px 16px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap}
+
+@media(max-width:560px){
+  .hero h1{font-size:34px}
+  .section-title{font-size:26px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+html.vx-paused *{animation-play-state:paused!important}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back-link" href="voxen-home.html">← Acasă</a>
+  <div class="brand">voxen</div>
+  <nav><ul class="nav-links">
+    <li><a href="voxen-companion.html">Companion</a></li>
+    <li><a href="voxen-therapy.html">Terapie</a></li>
+  </ul></nav>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🌫️ Sprijin emoțional</div>
+    <h1 class="serif">Nu e lene.<br><em>Nu e vina ta.</em></h1>
+    <p class="hero-sub">Blocajul emoțional — lipsa de energie, senzația că totul e prea mult, retragerea — este ceva prin care trec milioane de oameni. Nu trebuie "rezolvat" peste noapte. Trebuie înțeles, pas cu pas.</p>
+  </div>
+
+  <!-- PSIHOEDUCAȚIE — Înțelege ce ți se întâmplă -->
+  <div class="section">
+    <div class="section-label">Înțelege ce ți se întâmplă</div>
+    <div class="section-title serif">Blocajul emoțional<br>explicat simplu.</div>
+    <div class="section-sub">Nu ești "stricat". Creierul tău face ceva normal — se protejează. Iată ce se întâmplă de fapt.</div>
+
+    <div class="understand-grid">
+      <div class="u-card">
+        <span class="u-emoji">🔋</span>
+        <div class="u-body">
+          <h3>Bateria internă e goală</h3>
+          <p>Stresul prelungit, pierderile, lipsa somnului — toate consumă din resursele emoționale. Când bateria e la zero, creierul intră în mod de economie: oprește motivația, plăcerea, inițiativa. Nu e lene — e supraviețuire.</p>
+        </div>
+      </div>
+      <div class="u-card">
+        <span class="u-emoji">🌀</span>
+        <div class="u-body">
+          <h3>Cercul vicios al inactivității</h3>
+          <p>Când nu ai energie, nu faci nimic. Când nu faci nimic, te simți și mai rău. Te simți mai rău, deci ai și mai puțină energie. Cercul ăsta nu se sparge cu voință — se sparge cu un singur pas mic, oricât de mic.</p>
+        </div>
+      </div>
+      <div class="u-card">
+        <span class="u-emoji">🧊</span>
+        <div class="u-body">
+          <h3>Emoțiile înghețate</h3>
+          <p>Blocajul nu e absența emoțiilor — e excesul lor, congelat. Tristeța, furia, frica — toate prezente dar inaccesibile. Simți un "nimic" care e de fapt "prea mult deodată". E normal. Se dezgheață, dar are nevoie de timp și de blândețe.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTRUMENTE — Pași mici care te pun în mișcare -->
+  <div class="section">
+    <div class="section-label">Instrumente</div>
+    <div class="section-title serif">Pași mici care<br>sparg inerția.</div>
+    <div class="section-sub">Nu sunt "soluții pentru depresie" — sunt instrumente validate care te ajută să faci un singur lucru mic atunci când totul pare imposibil. Click pe oricare ca să vezi pașii.</div>
+
+    <div class="tools-grid">
+
+      <div class="tool" onclick="this.classList.toggle('open')">
+        <div class="tool-head">
+          <div class="tool-icon" style="background:var(--teal-soft)">🚶</div>
+          <div class="tool-title">Activarea comportamentală</div>
+          <span class="tool-tag" style="background:rgba(29,158,117,.14);color:var(--teal)">Fundamental</span>
+        </div>
+        <div class="tool-desc">Principiul contra-intuitiv care funcționează: nu aștepți motivația ca să acționezi — acționezi ca să apară motivația. Energia vine DUPĂ ce faci ceva, nu înainte.</div>
+        <div class="tool-hint">Vezi pașii</div>
+        <div class="tool-steps">
+          <div class="tool-step"><span class="tool-step-num">1</span><span>Alege un singur lucru mic. Nu "fac curățenie" — ci "ridic o farfurie de pe masă". Nu "fac sport" — ci "merg până la poartă și mă întorc".</span></div>
+          <div class="tool-step"><span class="tool-step-num">2</span><span>Fă-l fără să te gândești dacă ai chef. Cheful vine după, nu înainte. Asta nu e un slogan — e cel mai studiat principiu din terapia comportamentală.</span></div>
+          <div class="tool-step"><span class="tool-step-num">3</span><span>După ce l-ai făcut, observă cum te simți. De obicei: puțin mai bine. Nu dramatic, dar puțin. Acel "puțin" e real și contează.</span></div>
+          <div class="tool-step"><span class="tool-step-num">4</span><span>Mâine, repetă. Același lucru mic, sau altul. Nu mai mare — același nivel. Consistența bate intensitatea.</span></div>
+        </div>
+      </div>
+
+      <div class="tool" onclick="this.classList.toggle('open')">
+        <div class="tool-head">
+          <div class="tool-icon" style="background:rgba(83,74,183,.15)">💬</div>
+          <div class="tool-title">Jurnalul vocal de deblocare</div>
+          <span class="tool-tag" style="background:rgba(83,74,183,.15);color:var(--mid)">Cu Voxen</span>
+        </div>
+        <div class="tool-desc">Când totul e blocat înăuntru, a pune în cuvinte — chiar și fără sens, chiar și doar "nu știu ce simt" — e primul act de deblocare. Vocea externalizează ceea ce mintea ține captiv.</div>
+        <div class="tool-hint">Vezi pașii</div>
+        <div class="tool-steps">
+          <div class="tool-step"><span class="tool-step-num">1</span><span>Deschide Voxen. Nu pregăti nimic. Nu trebuie să "sune bine".</span></div>
+          <div class="tool-step"><span class="tool-step-num">2</span><span>Spune exact ce e: "Nu am chef de nimic" e perfect. "Nu știu ce simt" e perfect. "Mă simt gol" e perfect.</span></div>
+          <div class="tool-step"><span class="tool-step-num">3</span><span>Voxen ascultă. Nu te judecă, nu te sfătuiește nesolicitat. Doar te aude — și uneori asta e suficient.</span></div>
+          <div class="tool-step"><span class="tool-step-num">4</span><span>Peste câteva zile, ascultă-ți jurnalele anterioare. Vei observa lucruri pe care nu le-ai observat în moment.</span></div>
+        </div>
+      </div>
+
+      <div class="tool" onclick="this.classList.toggle('open')">
+        <div class="tool-head">
+          <div class="tool-icon" style="background:rgba(239,159,39,.14)">😴</div>
+          <div class="tool-title">Igiena somnului</div>
+          <span class="tool-tag" style="background:rgba(239,159,39,.14);color:var(--amber)">Bază</span>
+        </div>
+        <div class="tool-desc">Somnul slab și blocajul emoțional se hrănesc reciproc. Nu poți repara starea emoțională cu somnul distrus — și nu dormi bine când starea emoțională e la pământ. Spargem cercul de aici.</div>
+        <div class="tool-hint">Vezi pașii</div>
+        <div class="tool-steps">
+          <div class="tool-step"><span class="tool-step-num">1</span><span>Același ora de culcare, 7 zile pe 7. Creierul are nevoie de ritm, nu de durate perfecte.</span></div>
+          <div class="tool-step"><span class="tool-step-num">2</span><span>Telefonul în altă cameră cu o oră înainte. Ecranul nu e doar lumină albastră — e stimulare emoțională (știri, mesaje, feed).</span></div>
+          <div class="tool-step"><span class="tool-step-num">3</span><span>Dacă nu adormi în 20 de minute, ridică-te. Fă ceva plictisitor (citește ceva neutru). Patul trebuie asociat cu somnul, nu cu anxietatea de a nu dormi.</span></div>
+          <div class="tool-step"><span class="tool-step-num">4</span><span>Dimineața: lumină naturală în primele 30 de minute. Asta resetează ceasul intern mai puternic decât orice supliment.</span></div>
+        </div>
+      </div>
+
+      <div class="tool" onclick="this.classList.toggle('open')">
+        <div class="tool-head">
+          <div class="tool-icon" style="background:rgba(212,83,126,.14)">🤝</div>
+          <div class="tool-title">Micro-conexiunea socială</div>
+          <span class="tool-tag" style="background:rgba(212,83,126,.14);color:var(--warm)">Relații</span>
+        </div>
+        <div class="tool-desc">Izolarea e atât simptom cât și combustibil al blocajului. Dar "fii mai sociabil" e un sfat inutil. Micro-conexiunea e realistă: un mesaj scurt, o întrebare simplă, un "salut" fără așteptări.</div>
+        <div class="tool-hint">Vezi pașii</div>
+        <div class="tool-steps">
+          <div class="tool-step"><span class="tool-step-num">1</span><span>Alege o persoană. Nu cea mai apropiată — una cu care e ușor. Un coleg, un vecin, un fost prieten.</span></div>
+          <div class="tool-step"><span class="tool-step-num">2</span><span>Trimite un mesaj scurt: "Salut, m-am gândit la tine." Punct. Nu trebuie conversație, nu trebuie explicații.</span></div>
+          <div class="tool-step"><span class="tool-step-num">3</span><span>Dacă răspunde — bine. Dacă nu — tot ai făcut actul de conexiune. Valoarea e în trimitere, nu în răspuns.</span></div>
+          <div class="tool-step"><span class="tool-step-num">4</span><span>Repetă cu altcineva peste 2-3 zile. Construiești un tipar de conexiune, nu o relație — și tiparul contează.</span></div>
+        </div>
+      </div>
+
+      <div class="tool" onclick="this.classList.toggle('open')">
+        <div class="tool-head">
+          <div class="tool-icon" style="background:rgba(175,169,236,.14)">✍️</div>
+          <div class="tool-title">Ancorarea în prezent</div>
+          <span class="tool-tag" style="background:rgba(175,169,236,.14);color:var(--soft)">Mindfulness</span>
+        </div>
+        <div class="tool-desc">Blocajul emoțional te ține captiv în trecut (regrete) sau viitor (anxietate). Ancorarea în prezent nu e meditație complicată — e un exercițiu de 60 de secunde care oprește spirala.</div>
+        <div class="tool-hint">Vezi pașii</div>
+        <div class="tool-steps">
+          <div class="tool-step"><span class="tool-step-num">1</span><span>Oprește-te. Oriunde ești, orice faci. Pune mâna pe un obiect solid — masă, perete, genunchi.</span></div>
+          <div class="tool-step"><span class="tool-step-num">2</span><span>Numește în gând: 5 lucruri pe care le vezi, 4 pe care le auzi, 3 pe care le atingi, 2 pe care le miroși, 1 pe care îl guști. E tehnica 5-4-3-2-1.</span></div>
+          <div class="tool-step"><span class="tool-step-num">3</span><span>Observă: spirala s-a oprit. Nu ai rezolvat nimic — dar ai ieșit din buclă. Mintea e în prezent, nu în poveste.</span></div>
+          <div class="tool-step"><span class="tool-step-num">4</span><span>Folosește oricând simți că te pierzi în gânduri repetitive. E un instrument de urgență, nu un ritual zilnic.</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TRIAJ — Când merită să vorbești cu un specialist -->
+  <div class="section">
+    <div class="section-label">Când merită ajutor profesional</div>
+    <div class="triaj">
+      <div class="triaj-title serif">Instrumentele de mai sus sunt un prim pas — nu un tratament.</div>
+      <div class="triaj-sub">Dacă recunoști mai mult de două dintre semnele de mai jos și persistă de peste două săptămâni, merită să vorbești cu un specialist. Nu e un semn de slăbiciune — e cel mai inteligent lucru pe care poți să-l faci.</div>
+      <div class="triaj-signs">
+        <div class="triaj-sign"><span>⚠</span><span>Lipsa de energie persistentă — nu o zi proastă, ci săptămâni întregi.</span></div>
+        <div class="triaj-sign"><span>⚠</span><span>Pierderea interesului pentru lucruri care înainte îți plăceau.</span></div>
+        <div class="triaj-sign"><span>⚠</span><span>Schimbări de somn sau apetit — prea mult sau prea puțin, fără motiv clar.</span></div>
+        <div class="triaj-sign"><span>⚠</span><span>Retragere socială — anulezi planuri, nu mai răspunzi la mesaje.</span></div>
+        <div class="triaj-sign"><span>⚠</span><span>Gânduri repetitive de vinovăție, inutilitate, sau lipsă de speranță.</span></div>
+        <div class="triaj-sign"><span>⚠</span><span>Dificultăți de concentrare care afectează munca sau viața de zi cu zi.</span></div>
+      </div>
+      <div class="triaj-cta">
+        <a href="voxen-therapy.html" class="triaj-btn primary">Găsește un terapeut prin Voxen</a>
+        <a href="tel:0800801200" class="triaj-btn secondary">TelVerde Sănătate Mintală</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <span class="disclaimer-icon">⚕️</span>
+    <span>Voxen este un instrument de sprijin emoțional, nu un serviciu medical. Conținutul de pe această pagină este informativ și educațional — nu înlocuiește evaluarea, diagnosticul sau tratamentul unui psiholog sau psihiatru. Dacă te afli într-o situație de urgență, sună la <strong>112</strong>.</span>
+  </div>
+
+  <div style="height:80px" aria-hidden="true"></div>
+</div>
+
+<div class="safebar">
+  <span class="safebar-text">Treci printr-un moment greu?</span>
+  <a href="tel:112" class="safebar-btn">Ajutor acum</a>
+</div>
+
+<script>
+document.addEventListener('visibilitychange', function(){
+  if(document.hidden) document.documentElement.classList.add('vx-paused');
+  else document.documentElement.classList.remove('vx-paused');
+});
+</script>
+</body>
+</html>

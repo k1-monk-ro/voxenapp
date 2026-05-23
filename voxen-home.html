@@ -28,7 +28,7 @@
     background:var(--void);color:var(--white);
     font-family:'Syne',-apple-system,BlinkMacSystemFont,sans-serif;
     -webkit-font-smoothing:antialiased;
-    min-height:100vh;padding-bottom:88px;
+    min-height:100vh;padding-bottom:160px;
   }
   .serif{font-family:'Instrument Serif',Georgia,serif}
 
@@ -43,7 +43,7 @@
   .settings{font-size:20px;text-decoration:none;opacity:.6;transition:opacity .2s}
   .settings:hover{opacity:1}
 
-  .wrap{max-width:600px;margin:0 auto;padding:28px 22px}
+  .wrap{max-width:600px;margin:0 auto;padding:28px 22px 40px}
 
   /* ── Salut ── */
   .greet{margin-bottom:26px}
@@ -235,11 +235,50 @@
   </div>
 
   <!-- Cele 3 căi -->
+  <!-- Card autoexcludere — vizibil doar pentru gambling -->
+  <div id="autoexclCard" style="display:none;background:var(--card);border:.5px solid var(--amber);border-radius:18px;padding:20px;margin-bottom:20px">
+    <div style="display:flex;gap:12px;align-items:flex-start">
+      <span style="font-size:24px">🛑</span>
+      <div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:6px;color:var(--amber)">Autoexcludere disponibilă</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px">Cel mai puternic instrument legal pe care îl ai. Voxen te ghidează pas cu pas — prin ONJN sau direct la operatori.</div>
+        <a href="voxen-autoexcludere.html" style="display:inline-flex;align-items:center;gap:6px;background:var(--amber);color:var(--void);padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;font-family:Syne,sans-serif">Ghid autoexcludere →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card alcool — vizibil doar pentru alcohol -->
+  <div id="alcoholCard" style="display:none;background:var(--card);border:.5px solid var(--warm);border-radius:18px;padding:20px;margin-bottom:20px">
+    <div style="display:flex;gap:12px;align-items:flex-start">
+      <span style="font-size:24px">🩺</span>
+      <div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:6px;color:var(--warm)">Primul pas: vorbește cu un medic</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px">Oprirea bruscă a alcoolului poate fi periculoasă. Ghidul Voxen te duce pas cu pas prin procesul corect — medical, nu improvizat.</div>
+        <a href="voxen-alcool.html" style="display:inline-flex;align-items:center;gap:6px;background:var(--warm);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;font-family:Syne,sans-serif">Ghid recuperare alcool →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card substanțe — vizibil doar pentru substances -->
+  <div id="substancesCard" style="display:none;background:var(--card);border:.5px solid var(--mid);border-radius:18px;padding:20px;margin-bottom:20px">
+    <div style="display:flex;gap:12px;align-items:flex-start">
+      <span style="font-size:24px">🛡️</span>
+      <div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:6px;color:var(--mid)">Instrumente de recuperare</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px">De la reducerea riscurilor la centre de tratament — pași concreți, fără judecată. Voxen te ghidează.</div>
+        <a href="voxen-substante.html" style="display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:var(--mist);padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;font-family:Syne,sans-serif">Ghid recuperare substanțe →</a>
+      </div>
+    </div>
+  </div>
   <div class="section-eyebrow">Sprijinul tău</div>
-  <div class="ways">
+  <div class="ways" style="grid-template-columns:1fr 1fr">
     <a class="way" href="voxen-companion.html">
       <div class="way-icon" style="background:rgba(83,74,183,.18)">🎙</div>
       <div class="way-name">Companion AI</div>
+    </a>
+    <a class="way" href="voxen-emotional.html">
+      <div class="way-icon" style="background:rgba(175,169,236,.15)">🌫️</div>
+      <div class="way-name">Blocaj emoțional</div>
     </a>
     <a class="way" href="voxen-therapy.html">
       <div class="way-icon" style="background:var(--teal-soft)">🧑‍⚕️</div>
@@ -250,6 +289,8 @@
       <div class="way-name">Grupuri</div>
     </a>
   </div>
+
+  <div style="height:80px" aria-hidden="true"></div>
 
 </div>
 
@@ -307,7 +348,9 @@ const TRIGGER_PLAN = {
   loneliness:'Singurătatea — ai pregătit 2 persoane cărora le poți scrie un simplu „salut". Conexiunea scurtă întrerupe spirala.',
   social:'Ieșirile sociale — decide înainte de a pleca ce vei bea/face. Un plan dinainte e mai puternic decât voința din moment.',
   conflict:'Certurile — după un conflict: nimic în următoarea oră. Deschide Voxen, lasă valul să treacă.',
-  boredom:'Plictiseala — ține o listă de 3 lucruri mici de făcut când apare golul. Tratează plictiseala ca pe un declanșator real.'
+  boredom:'Plictiseala — ține o listă de 3 lucruri mici de făcut când apare golul. Tratează plictiseala ca pe un declanșator real.',
+  insomnia:'Insomnia — telefonul în altă cameră cu o oră înainte de somn. Dacă nu adormi în 20 de minute, ridică-te și fă ceva plictisitor.',
+  isolation:'Izolarea — trimite un mesaj scurt, oricui, orice. Conexiunea scurtă întrerupe spirala izolării.'
 };
 
 const WEEK_STEPS = [
@@ -411,6 +454,19 @@ document.addEventListener('visibilitychange', function(){
 
 // ── Init ──
 setGreeting();
+// Arată cardurile condiționate pe baza profilului
+try {
+  const prof = JSON.parse(localStorage.getItem('voxen_profile') || '{}');
+  if (prof.struggle === 'gambling') {
+    document.getElementById('autoexclCard').style.display = 'block';
+  }
+  if (prof.struggle === 'alcohol') {
+    document.getElementById('alcoholCard').style.display = 'block';
+  }
+  if (prof.struggle === 'substances') {
+    document.getElementById('substancesCard').style.display = 'block';
+  }
+} catch(e) {}
 buildTriggers();
 buildDaily();
 buildWeek();
