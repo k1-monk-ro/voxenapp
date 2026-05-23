@@ -1,0 +1,4 @@
+# Netlify redirects — voxen
+/companion    /voxen-companion.html    200
+/therapy      /voxen-therapy.html      200
+/groups       /voxen-groups.html       200

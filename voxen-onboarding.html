@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxen — Configurează-ți drumul</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0D0B1A;
+    --surface:#1A1630;
+    --card:#201C38;
+    --border:#2E2850;
+    --purple:#534AB7;
+    --mid:#7F77DD;
+    --soft:#AFA9EC;
+    --mist:#EEEDFE;
+    --teal:#1D9E75;
+    --teal-soft:rgba(29,158,117,.14);
+    --amber:#EF9F27;
+    --warm:#D4537E;
+    --white:#F0EFF8;
+    --text2:#8B88C3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:var(--void);
+    color:var(--white);
+    font-family:'Syne',-apple-system,BlinkMacSystemFont,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;
+    min-height:100vh;
+  }
+  .serif{font-family:'Instrument Serif',Georgia,serif}
+
+  /* ── Top bar ── */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 24px;border-bottom:.5px solid var(--border);
+    background:var(--void);
+    position:sticky;top:0;z-index:10;
+  }
+  .brand{font-weight:700;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+  .brand-mark{width:24px;height:24px;border-radius:7px;background:var(--purple);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px}
+  .skip{font-size:13px;color:var(--text2);text-decoration:none;transition:color .2s}
+  .skip:hover{color:var(--soft)}
+
+  /* ── Progress ── */
+  .progress-wrap{padding:0 24px;background:var(--void)}
+  .progress{max-width:560px;margin:16px auto 0;display:flex;gap:5px}
+  .pdot{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .4s ease}
+  .pdot.done{background:var(--teal)}
+  .pdot.active{background:var(--purple)}
+
+  /* ── Stage ── */
+  .stage{
+    flex:1;display:flex;align-items:flex-start;justify-content:center;
+    padding:44px 24px 80px;
+  }
+  .step{
+    max-width:560px;width:100%;
+    display:none;
+    animation:rise .5s cubic-bezier(.16,1,.3,1);
+  }
+  .step.active{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  @media(prefers-reduced-motion:reduce){
+    .step{animation:none}
+  }
+
+  .eyebrow{
+    font-size:12px;font-weight:700;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--mid);
+    margin-bottom:14px;
+  }
+  .step h2{
+    font-family:'Instrument Serif',Georgia,serif;font-size:38px;font-weight:400;
+    line-height:1.1;letter-spacing:0;margin-bottom:14px;color:var(--white);
+  }
+  .step .lead{
+    font-size:15px;color:var(--text2);line-height:1.6;margin-bottom:28px;
+    font-weight:400;
+  }
+
+  /* ── Option cards ── */
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opts.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .opt{
+    display:flex;align-items:center;gap:14px;
+    padding:16px 18px;border:.5px solid var(--border);border-radius:14px;
+    background:var(--card);cursor:pointer;transition:border-color .18s,background .18s;
+    text-align:left;width:100%;color:var(--white);font-family:inherit;
+  }
+  .opt:hover{border-color:var(--purple)}
+  .opt.selected{border-color:var(--purple);background:rgba(83,74,183,.16)}
+  .opt-emoji{font-size:22px;flex-shrink:0}
+  .opt-body{flex:1;display:flex;flex-direction:column;gap:2px}
+  .opt-title{display:block;font-size:15px;font-weight:600;color:var(--white)}
+  .opt-desc{display:block;font-size:13px;color:var(--text2);line-height:1.45}
+  .opt-check{
+    width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);
+    flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    transition:background .18s,border-color .18s;
+  }
+  .opt.selected .opt-check{background:var(--purple);border-color:var(--purple)}
+  .opt.selected .opt-check::after{content:'✓';color:#fff;font-size:12px;font-weight:700}
+
+  /* ── Nav buttons ── */
+  .nav{display:flex;align-items:center;justify-content:space-between;margin-top:30px}
+  .btn{
+    font-family:'Syne',sans-serif;font-size:15px;font-weight:600;
+    padding:13px 26px;border-radius:12px;cursor:pointer;border:none;
+    transition:background .18s,color .18s;
+  }
+  .btn-primary{background:var(--purple);color:var(--mist)}
+  .btn-primary:hover{background:var(--mid)}
+  .btn-primary:disabled{background:var(--card);color:var(--text2);cursor:not-allowed}
+  .btn-ghost{background:transparent;color:var(--text2);padding:13px 14px}
+  .btn-ghost:hover{color:var(--white)}
+  .btn-ghost.hidden{visibility:hidden}
+
+  /* ── Plan (final) ── */
+  .plan-head{text-align:center;margin-bottom:32px}
+  .plan-head .eyebrow{display:block}
+  .plan-section{
+    background:var(--card);border:.5px solid var(--border);border-radius:18px;
+    padding:24px;margin-bottom:14px;
+  }
+  .ps-tag{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:11px;font-weight:700;
+    letter-spacing:.1em;text-transform:uppercase;
+    padding:5px 11px;border-radius:100px;margin-bottom:14px;
+  }
+  .ps-tag.now{background:rgba(212,83,126,.16);color:var(--warm)}
+  .ps-tag.daily{background:var(--teal-soft);color:var(--teal)}
+  .ps-tag.week{background:rgba(239,159,39,.16);color:var(--amber)}
+  .ps-title{font-family:'Instrument Serif',Georgia,serif;font-size:25px;font-weight:400;margin-bottom:12px;color:var(--white)}
+  .ps-item{
+    display:flex;gap:12px;padding:11px 0;border-top:.5px solid var(--border);
+    font-size:14px;line-height:1.55;color:var(--soft);
+  }
+  .ps-item:first-of-type{border-top:none}
+  .ps-bullet{color:var(--mid);flex-shrink:0;font-weight:700}
+  .ps-item .lbl{color:var(--text2);font-size:13px}
+
+  .plan-cta{
+    text-align:center;margin-top:24px;padding:28px;
+    background:linear-gradient(150deg,var(--purple),#3D3590);border-radius:18px;
+  }
+  .plan-cta h3{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:26px;color:var(--mist);margin-bottom:6px}
+  .plan-cta p{font-size:14px;color:var(--soft);margin-bottom:18px}
+  .plan-cta .btn-primary{background:var(--mist);color:var(--void)}
+  .plan-cta .btn-primary:hover{background:#fff}
+
+  .disclaimer{
+    font-size:12px;color:var(--text2);
+    line-height:1.6;text-align:center;margin-top:22px;padding:0 10px;
+  }
+
+  /* ── Cele 3 căi ── */
+  .ways{display:flex;flex-direction:column;gap:12px}
+  .way{
+    display:flex;gap:16px;padding:20px;border:.5px solid var(--border);
+    border-radius:16px;background:var(--card);text-decoration:none;
+    transition:border-color .2s;
+  }
+  .way:hover{border-color:var(--purple)}
+  .way-icon{
+    width:46px;height:46px;border-radius:13px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:22px;
+  }
+  .way-body{flex:1}
+  .way-title{font-size:16px;font-weight:700;color:var(--white);margin-bottom:5px}
+  .way-desc{font-size:13.5px;color:var(--text2);line-height:1.55;margin-bottom:9px}
+  .way-link{font-size:13px;font-weight:600;color:var(--mid)}
+
+  /* ── Preț ── */
+  .price-promise{
+    display:flex;gap:12px;align-items:flex-start;
+    background:var(--teal-soft);border:.5px solid rgba(29,158,117,.3);
+    border-radius:14px;padding:16px 18px;
+    margin-bottom:22px;font-size:13.5px;line-height:1.55;color:var(--white);
+  }
+  .price-promise strong{color:var(--teal)}
+  .pp-icon{font-size:20px;flex-shrink:0}
+  .plans{display:flex;flex-direction:column;gap:14px}
+  .plan-card{
+    border:.5px solid var(--border);border-radius:18px;padding:24px;
+    background:var(--card);position:relative;
+  }
+  .plan-card.featured{border-color:var(--purple);padding-top:32px}
+  .pc-badge{
+    position:absolute;top:-11px;left:24px;
+    background:var(--purple);color:var(--mist);
+    font-size:11px;font-weight:700;letter-spacing:.04em;
+    padding:4px 12px;border-radius:100px;
+  }
+  .pc-name{font-size:14px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.02em}
+  .pc-price{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
+  .pc-amt{font-family:'Instrument Serif',Georgia,serif;font-size:48px;font-weight:400;color:var(--white)}
+  .pc-per{font-size:13px;color:var(--text2)}
+  .pc-desc{font-size:13.5px;color:var(--text2);line-height:1.5;margin-bottom:16px}
+  .pc-feats{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+  .pc-feat{
+    display:flex;gap:10px;align-items:flex-start;
+    font-size:13.5px;color:var(--soft);line-height:1.5;
+  }
+  .pc-chk{color:var(--teal);font-weight:700;flex-shrink:0}
+  .pc-btn{width:100%}
+  .plan-card:not(.featured) .pc-btn{background:transparent;color:var(--white);border:.5px solid var(--border)}
+  .plan-card:not(.featured) .pc-btn:hover{border-color:var(--purple);color:var(--mid)}
+  .price-foot{
+    font-size:13px;color:var(--text2);
+    text-align:center;margin-top:18px;
+  }
+
+  @media(max-width:560px){
+    .step h2{font-size:31px}
+    .opts.grid{grid-template-columns:1fr}
+    .stage{padding:32px 18px 60px}
+  }
+
+/* Când pagina nu e vizibilă — oprește toate animațiile (economie baterie) */
+html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
+  animation-play-state:paused!important;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="brand-mark">◢</span> voxen</div>
+  <a href="#" class="skip" id="skipLink">Sari peste</a>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress" id="progress"></div>
+</div>
+
+<div class="stage">
+
+  <!-- STEP 1 — Welcome -->
+  <div class="step active" data-step="0">
+    <div class="eyebrow">Bun venit</div>
+    <h2 class="serif">Hai să-ți configurăm<br>drumul tău.</h2>
+    <p class="lead">Cinci întrebări scurte. Nu există răspunsuri greșite — totul rămâne privat și te poți răzgândi oricând. La final primești un plan făcut pentru tine.</p>
+    <div class="nav">
+      <button class="btn btn-ghost hidden">Înapoi</button>
+      <button class="btn btn-primary" onclick="next()">Începem →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 — Cu ce te lupți -->
+  <div class="step" data-step="1">
+    <div class="eyebrow">Pasul 1 din 5</div>
+    <h2 class="serif">Cu ce anume<br>te lupți acum?</h2>
+    <p class="lead">Voxen te însoțește indiferent de răspuns. Asta ne ajută doar să-ți potrivim instrumentele.</p>
+    <div class="opts" data-q="struggle" data-mode="single">
+      <button class="opt" data-val="alcohol"><span class="opt-emoji">🍷</span><span class="opt-body"><span class="opt-title">Alcool</span><span class="opt-desc">Vreau să reduc sau să mă opresc</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="substances"><span class="opt-emoji">💊</span><span class="opt-body"><span class="opt-title">Substanțe</span><span class="opt-desc">Recuperare din consum de substanțe</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="gambling"><span class="opt-emoji">🎰</span><span class="opt-body"><span class="opt-title">Jocuri de noroc</span><span class="opt-desc">Pariuri, cazinou, jocuri online</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="other"><span class="opt-emoji">🌱</span><span class="opt-body"><span class="opt-title">Altceva</span><span class="opt-desc">Un alt obicei pe care vreau să-l schimb</span></span><span class="opt-check"></span></button>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="prev()">Înapoi</button>
+      <button class="btn btn-primary" id="b1" disabled onclick="next()">Continuă →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 — De cat timp -->
+  <div class="step" data-step="2">
+    <div class="eyebrow">Pasul 2 din 5</div>
+    <h2 class="serif">Unde te afli<br>pe drum?</h2>
+    <p class="lead">Recuperarea arată diferit în prima săptămână față de luna a șasea. Voxen se adaptează.</p>
+    <div class="opts" data-q="stage" data-mode="single">
+      <button class="opt" data-val="thinking"><span class="opt-emoji">🤔</span><span class="opt-body"><span class="opt-title">Încă mă gândesc</span><span class="opt-desc">Nu am început, dar vreau să schimb ceva</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="early"><span class="opt-emoji">🌅</span><span class="opt-body"><span class="opt-title">La început</span><span class="opt-desc">Primele zile sau săptămâni</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="months"><span class="opt-emoji">🌿</span><span class="opt-body"><span class="opt-title">De câteva luni</span><span class="opt-desc">Am un drum în spate, vreau să-l mențin</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="relapse"><span class="opt-emoji">🔄</span><span class="opt-body"><span class="opt-title">După o recădere</span><span class="opt-desc">Reîncep, și e în regulă</span></span><span class="opt-check"></span></button>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="prev()">Înapoi</button>
+      <button class="btn btn-primary" id="b2" disabled onclick="next()">Continuă →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 — Declansatori -->
+  <div class="step" data-step="3">
+    <div class="eyebrow">Pasul 3 din 5</div>
+    <h2 class="serif">Ce momente îți sunt<br>cele mai grele?</h2>
+    <p class="lead">Alege oricâte. Voxen va fi mai atent exact în aceste momente.</p>
+    <div class="opts grid" data-q="triggers" data-mode="multi">
+      <button class="opt" data-val="evening"><span class="opt-emoji">🌙</span><span class="opt-body"><span class="opt-title">Serile târzii</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="stress"><span class="opt-emoji">⚡</span><span class="opt-body"><span class="opt-title">Stresul</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="loneliness"><span class="opt-emoji">🪟</span><span class="opt-body"><span class="opt-title">Singurătatea</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="social"><span class="opt-emoji">🥂</span><span class="opt-body"><span class="opt-title">Ieșirile sociale</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="conflict"><span class="opt-emoji">💢</span><span class="opt-body"><span class="opt-title">Certurile</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="boredom"><span class="opt-emoji">🕳️</span><span class="opt-body"><span class="opt-title">Plictiseala</span></span><span class="opt-check"></span></button>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="prev()">Înapoi</button>
+      <button class="btn btn-primary" id="b3" disabled onclick="next()">Continuă →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 — Sprijin -->
+  <div class="step" data-step="4">
+    <div class="eyebrow">Pasul 4 din 5</div>
+    <h2 class="serif">Cine e alături<br>de tine?</h2>
+    <p class="lead">O persoană de încredere face o diferență reală. Dacă nu ai pe nimeni acum, e perfect ok — Voxen te ajută să găsești.</p>
+    <div class="opts" data-q="support" data-mode="single">
+      <button class="opt" data-val="person"><span class="opt-emoji">🫂</span><span class="opt-body"><span class="opt-title">Am pe cineva</span><span class="opt-desc">Familie, prieten sau partener</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="therapist"><span class="opt-emoji">🧑‍⚕️</span><span class="opt-body"><span class="opt-title">Am un terapeut</span><span class="opt-desc">Lucrez cu un specialist</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="group"><span class="opt-emoji">👥</span><span class="opt-body"><span class="opt-title">Sunt într-un grup</span><span class="opt-desc">Grup de sprijin sau comunitate</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="alone"><span class="opt-emoji">🌱</span><span class="opt-body"><span class="opt-title">Deocamdată, singur</span><span class="opt-desc">Și caut un punct de sprijin</span></span><span class="opt-check"></span></button>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="prev()">Înapoi</button>
+      <button class="btn btn-primary" id="b4" disabled onclick="next()">Continuă →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6 — Momentul jurnalului -->
+  <div class="step" data-step="5">
+    <div class="eyebrow">Pasul 5 din 5</div>
+    <h2 class="serif">Când vrei un<br>reminder blând?</h2>
+    <p class="lead">Voxen e cu tine non-stop — oricând ai nevoie, ziua sau noaptea. Asta alegem aici e doar momentul în care îți trimite o notificare prietenoasă să-ți faci jurnalul.</p>
+    <div class="opts" data-q="time" data-mode="single">
+      <button class="opt" data-val="morning"><span class="opt-emoji">☀️</span><span class="opt-body"><span class="opt-title">Dimineața</span><span class="opt-desc">Un reminder ca să-mi încep ziua conștient</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="evening"><span class="opt-emoji">🌆</span><span class="opt-body"><span class="opt-title">Seara</span><span class="opt-desc">Un reminder ca să las ziua în urmă</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="night"><span class="opt-emoji">🌙</span><span class="opt-body"><span class="opt-title">Noaptea târziu</span><span class="opt-desc">Un reminder când e cel mai greu</span></span><span class="opt-check"></span></button>
+      <button class="opt" data-val="anytime"><span class="opt-emoji">🤍</span><span class="opt-body"><span class="opt-title">Oricând — decid eu pe moment</span><span class="opt-desc">Fără reminder fix. Deschid Voxen când simt nevoia</span></span><span class="opt-check"></span></button>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="prev()">Înapoi</button>
+      <button class="btn btn-primary" id="b5" disabled onclick="buildPlan()">Vezi planul meu →</button>
+    </div>
+  </div>
+
+  <!-- STEP 7 — PLANUL -->
+  <div class="step" data-step="6">
+    <div class="plan-head">
+      <div class="eyebrow">Planul tău Voxen</div>
+      <h2 class="serif" id="planTitle">Drumul tău, în trei pași.</h2>
+      <p class="lead" id="planIntro" style="margin-bottom:0"></p>
+    </div>
+
+    <div class="plan-section">
+      <span class="ps-tag now">⚠ Acum · când vine pofta</span>
+      <div class="ps-title serif">Harta ta de declanșatori</div>
+      <div id="planTriggers"></div>
+    </div>
+
+    <div class="plan-section">
+      <span class="ps-tag daily">↻ În fiecare zi</span>
+      <div class="ps-title serif">Rutina ta zilnică</div>
+      <div id="planDaily"></div>
+    </div>
+
+    <div class="plan-section">
+      <span class="ps-tag week">→ Săptămâna asta</span>
+      <div class="ps-title serif">Primii 7 pași</div>
+      <div id="planWeek"></div>
+    </div>
+
+    <div class="plan-cta">
+      <h3 class="serif">Planul tău e gata.</h3>
+      <p>Voxen îl va adapta pe măsură ce te cunoaște mai bine.</p>
+      <button class="btn btn-primary" onclick="next()">Vezi cum te însoțește Voxen →</button>
+    </div>
+
+    <p class="disclaimer">Voxen este un instrument de sprijin emoțional. Nu înlocuiește un psiholog, un medic sau serviciile de urgență. În situații de criză, sună la <strong>112</strong>.</p>
+  </div>
+
+  <!-- STEP 8 — CELE 3 CĂI -->
+  <div class="step" data-step="7">
+    <div class="eyebrow">Cum te însoțește Voxen</div>
+    <h2 class="serif">Trei căi.<br>Același drum.</h2>
+    <p class="lead">Voxen nu e o singură funcție — sunt trei moduri de sprijin care lucrează împreună. Le poți folosi pe toate sau doar pe cele de care ai nevoie.</p>
+
+    <div class="ways">
+      <a class="way" href="voxen-companion.html">
+        <div class="way-icon" style="background:rgba(83,74,183,.18);color:var(--mid)">🎙</div>
+        <div class="way-body">
+          <div class="way-title">Companion AI</div>
+          <div class="way-desc">Vorbești un minut, oricând. Voxen ascultă cum ești de fapt — și e acolo, mai ales în serile grele.</div>
+          <span class="way-link">Descoperă Companion →</span>
+        </div>
+      </a>
+      <a class="way" href="voxen-therapy.html">
+        <div class="way-icon" style="background:var(--teal-soft);color:var(--teal)">🧑‍⚕️</div>
+        <div class="way-body">
+          <div class="way-title">Terapie</div>
+          <div class="way-desc">Voxen nu înlocuiește terapeutul — îl pregătește. Ajungi la ședință cu un context real, nu de la zero.</div>
+          <span class="way-link">Descoperă Terapia →</span>
+        </div>
+      </a>
+      <a class="way" href="voxen-groups.html">
+        <div class="way-icon" style="background:rgba(212,83,126,.16);color:var(--warm)">👥</div>
+        <div class="way-body">
+          <div class="way-title">Grupuri de sprijin</div>
+          <div class="way-desc">Cercuri mici, anonime, conduse de un specialist. Pentru că recuperarea e mai ușoară când nu ești singur.</div>
+          <span class="way-link">Descoperă Grupurile →</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="prev()">Înapoi</button>
+      <button class="btn btn-primary" onclick="next()">Continuă →</button>
+    </div>
+  </div>
+
+  <!-- STEP 9 — PREȚ SIMPLU -->
+  <div class="step" data-step="8">
+    <div class="eyebrow">Preț simplu, pentru oricine</div>
+    <h2 class="serif">Recuperarea<br>nu costă.</h2>
+    <p class="lead">Tot ce ține de siguranța ta e gratuit — pentru totdeauna. Plătești doar dacă vrei mai multă profunzime, niciodată pentru ajutorul de bază.</p>
+
+    <div class="price-promise">
+      <span class="pp-icon">🛟</span>
+      <span>Protocolul de criză, liniile de urgență și jurnalul vocal rămân <strong>gratuite permanent</strong>. Siguranța nu se cumpără.</span>
+    </div>
+
+    <div class="plans">
+      <div class="plan-card">
+        <div class="pc-name">Voxen Gratuit</div>
+        <div class="pc-price"><span class="pc-amt">0</span> <span class="pc-per">lei / pentru totdeauna</span></div>
+        <div class="pc-desc">Tot ce ai nevoie ca să începi și să rămâi pe drum.</div>
+        <div class="pc-feats">
+          <div class="pc-feat"><span class="pc-chk">✓</span>Jurnal vocal zilnic nelimitat</div>
+          <div class="pc-feat"><span class="pc-chk">✓</span>Companion AI empatic</div>
+          <div class="pc-feat"><span class="pc-chk">✓</span>Protocol de criză &amp; resurse de urgență</div>
+          <div class="pc-feat"><span class="pc-chk">✓</span>Acces la grupurile de sprijin</div>
+          <div class="pc-feat"><span class="pc-chk">✓</span>Planul tău de recuperare</div>
+        </div>
+        <button class="btn btn-primary pc-btn" onclick="finish()">Începe gratuit</button>
+      </div>
+
+      <div class="plan-card featured">
+        <div class="pc-badge">Pentru mai mult sprijin</div>
+        <div class="pc-name">Voxen Plus</div>
+        <div class="pc-price"><span class="pc-amt">39</span> <span class="pc-per">lei / lună</span></div>
+        <div class="pc-desc">Pentru cine vrea însoțire mai profundă. Anulezi oricând.</div>
+        <div class="pc-feats">
+          <div class="pc-feat"><span class="pc-chk">✓</span>Tot ce e în planul Gratuit</div>
+          <div class="pc-feat"><span class="pc-chk">✓</span>Terapie zonală cu specialiști verificați</div>
+          <div class="pc-feat"><span class="pc-chk">✓</span>Rapoarte emoționale lunare detaliate</div>
+          <div class="pc-feat"><span class="pc-chk">✓</span>Integrare cu brățara / wearable</div>
+          <div class="pc-feat"><span class="pc-chk">✓</span>Memorie emoțională pe termen lung</div>
+        </div>
+        <button class="btn btn-primary pc-btn" onclick="finish()">Începe cu Plus</button>
+      </div>
+    </div>
+
+    <p class="price-foot">Începe gratuit, treci la Plus când ești pregătit. Fără costuri ascunse, fără card cerut la început.</p>
+
+    <p class="disclaimer">Voxen este un instrument de sprijin emoțional. Nu înlocuiește un psiholog, un medic sau serviciile de urgență. În situații de criză, sună la <strong>112</strong>.</p>
+  </div>
+
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// VOXEN ONBOARDING — flow ghidat + generator de plan
+// ═══════════════════════════════════════════════════════════
+
+const TOTAL_STEPS = 9;          // 0..8 (welcome + 5 întrebări + plan + căi + preț)
+const QUESTION_STEPS = 6;       // pașii care apar în bara de progres
+let current = 0;
+
+const answers = {
+  struggle: null, stage: null, triggers: [], support: null, time: null
+};
+
+// ── Progress bar ──
+const progressEl = document.getElementById('progress');
+for(let i=0;i<QUESTION_STEPS;i++){
+  const d = document.createElement('div');
+  d.className = 'pdot';
+  progressEl.appendChild(d);
+}
+function paintProgress(){
+  const dots = progressEl.querySelectorAll('.pdot');
+  dots.forEach((d,i)=>{
+    d.className = 'pdot';
+    if(i < current) d.classList.add('done');
+    else if(i === current) d.classList.add('active');
+  });
+}
+
+// ── Navigare ──
+function showStep(n){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  const el = document.querySelector(`.step[data-step="${n}"]`);
+  if(el) el.classList.add('active');
+  current = n;
+  paintProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function next(){ if(current < TOTAL_STEPS-1) showStep(current+1); }
+function prev(){ if(current > 0) showStep(current-1); }
+
+// ── Selectarea opțiunilor ──
+document.querySelectorAll('.opts').forEach(group=>{
+  const q = group.dataset.q;
+  const mode = group.dataset.mode;
+  group.querySelectorAll('.opt').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      const val = opt.dataset.val;
+      if(mode === 'single'){
+        group.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+        opt.classList.add('selected');
+        answers[q] = val;
+      } else {
+        opt.classList.toggle('selected');
+        if(opt.classList.contains('selected')) answers[q].push(val);
+        else answers[q] = answers[q].filter(v=>v!==val);
+      }
+      validateStep();
+    });
+  });
+});
+
+// ── Validare: activează butonul Continuă ──
+function validateStep(){
+  const checks = {
+    1:['struggle','b1'], 2:['stage','b2'], 3:['triggers','b3'],
+    4:['support','b4'], 5:['time','b5']
+  };
+  const c = checks[current];
+  if(!c) return;
+  const [key, btnId] = c;
+  const val = answers[key];
+  const ok = Array.isArray(val) ? val.length>0 : !!val;
+  const btn = document.getElementById(btnId);
+  if(btn) btn.disabled = !ok;
+}
+
+// ═══════════════════════════════════════════════════════════
+// GENERATORUL DE PLAN — combină răspunsurile în 3 secțiuni
+// ═══════════════════════════════════════════════════════════
+
+// Texte pentru declanșatori
+const TRIGGER_PLAN = {
+  evening: 'Serile târzii — pregătește o activitate de seară din timp: o plimbare scurtă, un duș, un episod dintr-un serial. Pofta scade dacă mâinile și mintea au ceva de făcut.',
+  stress: 'Stresul — la primul semn de tensiune, deschide Voxen și vorbește 60 de secunde. A pune în cuvinte ce simți reduce presiunea înainte să devină poftă.',
+  loneliness: 'Singurătatea — ai pregătit dinainte 2 persoane cărora le poți scrie un simplu „salut". Conexiunea, chiar și scurtă, întrerupe spirala.',
+  social: 'Ieșirile sociale — decide înainte de a pleca ce vei bea/face și cu ce mergi acasă. Un plan dinainte e mai puternic decât voința din moment.',
+  conflict: 'Certurile — după un conflict, regula e: nimic în următoarea oră. Deschide Voxen, lasă valul să treacă. Decizia se ia după ce emoția scade.',
+  boredom: 'Plictiseala — ține o listă scurtă de 3 lucruri mici de făcut când apare golul. Plictiseala e un declanșator real, tratează-l ca atare.'
+};
+
+// Rutina zilnică în funcție de momentul ales
+const TIME_LABEL = {
+  morning:'dimineața', evening:'seara', night:'noaptea târziu', anytime:'oricând'
+};
+
+function buildPlan(){
+  // — Intro personalizat —
+  const struggleWord = {
+    alcohol:'cu alcoolul', substances:'cu substanțele',
+    gambling:'cu jocurile de noroc', other:'cu obiceiul pe care vrei să-l schimbi'
+  }[answers.struggle] || '';
+  const stageIntro = {
+    thinking:'Faptul că te gândiști la asta e deja primul pas — și e un pas real.',
+    early:'Ești la început, partea cea mai grea. Voxen e construit exact pentru zilele astea.',
+    months:'Ai un drum în spate. Acum contează să-l menții — și Voxen te ajută să nu-l pierzi.',
+    relapse:'Reîncepi, și asta cere curaj. O recădere nu șterge nimic din ce ai construit.'
+  }[answers.stage] || '';
+  document.getElementById('planIntro').textContent = stageIntro;
+
+  // — Secțiunea 1: Declanșatori —
+  const tWrap = document.getElementById('planTriggers');
+  tWrap.innerHTML = '';
+  if(answers.triggers.length === 0){
+    tWrap.innerHTML = '<div class="ps-item"><span class="ps-bullet">·</span><span>Pe măsură ce folosești Voxen, vei descoperi care momente îți sunt grele. Le vom cartografia împreună.</span></div>';
+  } else {
+    answers.triggers.forEach(t=>{
+      const d = document.createElement('div');
+      d.className = 'ps-item';
+      d.innerHTML = '<span class="ps-bullet">→</span><span>'+TRIGGER_PLAN[t]+'</span>';
+      tWrap.appendChild(d);
+    });
+  }
+
+  // — Secțiunea 2: Rutina zilnică —
+  const dWrap = document.getElementById('planDaily');
+  const timeLabel = TIME_LABEL[answers.time] || 'seara';
+  const journalLine = (answers.time === 'anytime')
+    ? 'Un minut de jurnal vocal, când simți nevoia — fără reminder fix. Voxen e disponibil non-stop, deschizi aplicația în momentul tău.'
+    : 'Un minut de jurnal vocal ' + timeLabel + '. Voxen îți va trimite o notificare blândă — spui cum ești, fără format, fără judecată.';
+  const daily = [
+    journalLine,
+    'Voxen e cu tine oricând ai nevoie, ziua sau noaptea. Ascultă nu doar ce spui, ci cum o spui — dacă te aude alunecând, va fi acolo cu un instrument potrivit.',
+  ];
+  if(answers.support === 'therapist'){
+    daily.push('Rezumatul tău emoțional se pregătește automat pentru terapeut — ajungi la ședință fără să repeți totul de la zero.');
+  } else if(answers.support === 'group'){
+    daily.push('Înainte de întâlnirea grupului, Voxen îți arată tiparele săptămânii — mergi pregătit.');
+  } else if(answers.support === 'alone'){
+    daily.push('Voxen îți va sugera, fără presiune, un grup de sprijin potrivit. Un punct de sprijin se construiește pas cu pas.');
+  } else {
+    daily.push('Ține persoana ta de încredere aproape de acest drum — Voxen îți va arăta cum, când vei fi pregătit.');
+  }
+  dWrap.innerHTML = '';
+  daily.forEach(item=>{
+    const d = document.createElement('div');
+    d.className = 'ps-item';
+    d.innerHTML = '<span class="ps-bullet">↻</span><span>'+item+'</span>';
+    dWrap.appendChild(d);
+  });
+
+  // — Secțiunea 3: Primii 7 pași —
+  const wWrap = document.getElementById('planWeek');
+  const week = [
+    'Zilele 1–2 — Înregistrează primul tău jurnal vocal. Scopul nu e să sune bine, e doar să începi.',
+    'Ziua 3 — Explorează modulul de recuperare și alege un instrument care ți se pare util.',
+  ];
+  if(answers.stage === 'thinking'){
+    week.push('Ziua 4 — Citește experiențele altora din secțiunea de grupuri. Vezi că nu ești singur.');
+  } else {
+    week.push('Ziua 4 — Marchează prima ta mică victorie în aplicație. Progresul mic, văzut, contează.');
+  }
+  week.push('Ziua 5 — Identifică în Voxen momentul tău cel mai greu și pregătește un plan pentru el.');
+  if(answers.support === 'alone' || answers.support === 'group'){
+    week.push('Ziua 6 — Aruncă o privire la un cerc de sprijin Voxen. Doar privești — fără presiune.');
+  } else {
+    week.push('Ziua 6 — Spune-i persoanei tale de sprijin că ai început. Cu voce tare, devine real.');
+  }
+  week.push('Ziua 7 — Ascultă-ți primul jurnal de acum o săptămână. Vei auzi deja o diferență.');
+  wWrap.innerHTML = '';
+  week.forEach(item=>{
+    const parts = item.split(' — ');
+    const d = document.createElement('div');
+    d.className = 'ps-item';
+    d.innerHTML = '<span class="ps-bullet">'+ (week.indexOf(item)+1) +'</span><span><span class="lbl">'+parts[0]+'</span><br>'+parts[1]+'</span>';
+    wWrap.appendChild(d);
+  });
+
+  showStep(6);
+}
+
+function finish(){
+  // Salvează profilul utilizatorului ca să fie citit de ecranul Acasă
+  try {
+    localStorage.setItem('voxen_profile', JSON.stringify(answers));
+  } catch(e) {
+    // localStorage indisponibil — Acasă va folosi planul-exemplu
+  }
+  window.location.href = 'voxen-home.html';
+}
+
+// Skip link
+document.getElementById('skipLink').addEventListener('click', e=>{
+  e.preventDefault();
+  if(confirm('Sigur sari peste configurare? O poți relua oricând din setări.')){
+    window.location.href = 'voxen-home.html';
+  }
+});
+
+// Init
+paintProgress();
+</script>
+<script>
+// ── Optimizare baterie: oprește animațiile când pagina nu e vizibilă ──
+(function(){
+  document.addEventListener('visibilitychange', function(){
+    document.body.style.animationPlayState = document.hidden ? 'paused' : 'running';
+    // Oprește toate animațiile CSS prin clasă pe body
+    if(document.hidden) document.documentElement.classList.add('vx-paused');
+    else document.documentElement.classList.remove('vx-paused');
+  });
+})();
+</script>
+</body>
+</html>

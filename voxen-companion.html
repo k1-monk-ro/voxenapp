@@ -1,0 +1,2079 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>voxen · Companion AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --void:#0D0B1A;--surface:#1A1630;--card:#201C38;--border:#2E2850;
+  --purple:#534AB7;--mid:#7F77DD;--soft:#AFA9EC;--mist:#EEEDFE;
+  --teal:#1D9E75;--amber:#EF9F27;--white:#F0EFF8;--text2:#8B88C3;
+}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;min-height:100vh}
+
+/* ── BACK NAV ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(13,11,26,.85);backdrop-filter:blur(16px);border-bottom:.5px solid var(--border)}
+.back-link{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text2);font-size:13px;font-weight:500;transition:color .2s}
+.back-link:hover{color:var(--white)}
+.brand{font-size:18px;font-weight:700;color:var(--white);letter-spacing:-.03em}
+.nav-links{display:flex;gap:6px}
+.nav-link{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;color:var(--text2);text-decoration:none;transition:all .2s;border:.5px solid transparent}
+.nav-link:hover{color:var(--white);background:var(--surface)}
+.nav-link.active{color:var(--mist);background:var(--purple);border-color:var(--mid)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 60px;text-align:center;position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(83,74,183,.18) 0%,transparent 70%);pointer-events:none;animation:glowPulse 4s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.1);opacity:1}}
+.hero-chip{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:.5px solid var(--border);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--soft);margin-bottom:32px}
+.chip-dot{width:7px;height:7px;border-radius:50%;background:var(--purple);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero-title{font-size:clamp(40px,7vw,88px);font-weight:800;line-height:1.02;letter-spacing:-.04em;margin-bottom:20px}
+.hero-title em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--mid)}
+.hero-sub{font-size:17px;color:var(--text2);max-width:540px;line-height:1.75;margin-bottom:48px}
+
+/* ── LIVE DEMO ── */
+.demo-container{width:100%;max-width:900px;display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:0 auto;position:relative;z-index:1}
+@media(max-width:700px){.demo-container{grid-template-columns:1fr}}
+
+/* Voice input side */
+.voice-panel{background:var(--card);border:.5px solid var(--border);border-radius:24px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:20px}
+.voice-title{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:.08em;text-transform:uppercase}
+.orb-wrap{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.orb-ring{position:absolute;border-radius:50%;border:1.5px solid var(--purple);animation:ringPulse 2s ease-in-out infinite;opacity:0}
+.orb-ring:nth-child(1){width:100%;height:100%;animation-delay:0s}
+.orb-ring:nth-child(2){width:130%;height:130%;animation-delay:.4s}
+.orb-ring:nth-child(3){width:160%;height:160%;animation-delay:.8s}
+@keyframes ringPulse{0%{transform:scale(.8);opacity:.8}100%{transform:scale(1.2);opacity:0}}
+.orb-core{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--mid));display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;z-index:1;transition:transform .2s,box-shadow .3s;box-shadow:0 0 30px rgba(83,74,183,.4)}
+.orb-core:hover{transform:scale(1.05);box-shadow:0 0 50px rgba(83,74,183,.6)}
+.orb-core.listening{background:linear-gradient(135deg,#A32D2D,#D4537E);box-shadow:0 0 40px rgba(163,45,45,.5);animation:orbListen .6s ease-in-out infinite alternate}
+@keyframes orbListen{from{transform:scale(1)}to{transform:scale(1.08)}}
+.wave-bars{display:flex;align-items:center;gap:3px;height:32px}
+.wb{width:3px;border-radius:2px;background:var(--purple);animation:wbAnim 1s ease-in-out infinite}
+.wb:nth-child(1){height:6px;animation-delay:0s}
+.wb:nth-child(2){height:12px;animation-delay:.1s}
+.wb:nth-child(3){height:20px;animation-delay:.2s}
+.wb:nth-child(4){height:28px;animation-delay:.15s}
+.wb:nth-child(5){height:32px;animation-delay:.1s;background:var(--mid)}
+.wb:nth-child(6){height:28px;animation-delay:.15s;background:var(--mid)}
+.wb:nth-child(7){height:22px;animation-delay:.2s}
+.wb:nth-child(8){height:16px;animation-delay:.1s}
+.wb:nth-child(9){height:8px;animation-delay:0s}
+@keyframes wbAnim{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.6)}}
+.voice-state{font-size:14px;font-weight:500;color:var(--soft);min-height:22px;transition:all .3s}
+.emotion-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.emo-chip{padding:6px 12px;border-radius:100px;border:.5px solid var(--border);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .2s;background:var(--surface)}
+.emo-chip:hover,.emo-chip.active{background:var(--purple);border-color:var(--mid);color:var(--mist)}
+.trigger-btn{width:100%;background:var(--purple);border:none;border-radius:12px;padding:13px;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:var(--mist);cursor:pointer;transition:all .2s}
+.trigger-btn:hover{background:var(--mid);transform:scale(1.02)}
+
+/* Response side */
+.response-panel{background:var(--card);border:.5px solid var(--border);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:16px}
+.resp-title{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:.08em;text-transform:uppercase}
+.resp-orb-row{display:flex;align-items:center;gap:12px}
+.resp-orb{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:1.5px solid var(--border);background:var(--surface);transition:all .5s}
+.resp-emo{font-size:15px;font-weight:600;color:var(--white)}
+.resp-intensity{font-size:11px;color:var(--text2);margin-top:2px}
+.resp-bubble{background:#14102E;border:.5px solid var(--purple);border-radius:14px;border-bottom-left-radius:3px;padding:16px;flex:1}
+.resp-tag{font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--text2);margin-bottom:8px;text-transform:uppercase}
+.resp-text{font-family:'Instrument Serif',serif;font-size:16px;font-style:italic;color:var(--white);line-height:1.75;min-height:56px}
+.cursor{display:inline-block;width:2px;height:15px;background:var(--mid);vertical-align:-2px;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.signal-bars{display:flex;gap:6px;align-items:flex-end;height:28px}
+.sb{width:6px;border-radius:3px 3px 0 0;background:var(--border);transition:height .4s ease,background .4s}
+.metrics-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.metric{background:var(--surface);border-radius:10px;padding:10px;border:.5px solid var(--border);text-align:center}
+.metric-val{font-size:18px;font-weight:700;color:var(--white);margin-bottom:2px}
+.metric-label{font-size:10px;color:var(--text2)}
+.history-row{display:flex;flex-direction:column;gap:6px}
+.hist-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);padding:6px 10px;background:var(--surface);border-radius:8px}
+.hist-emo{font-size:14px}
+
+/* ── HOW IT WORKS ── */
+.section{padding:80px 24px;max-width:1000px;margin:0 auto}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:14px}
+.section-title{font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.1;letter-spacing:-.03em;margin-bottom:14px}
+.section-title em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--mid)}
+.section-sub{font-size:15px;color:var(--text2);max-width:500px;line-height:1.7;margin-bottom:48px}
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:grid;grid-template-columns:60px 1fr;gap:24px;position:relative}
+.tl-item:not(:last-child)::after{content:'';position:absolute;left:29px;top:52px;bottom:-16px;width:1px;background:linear-gradient(to bottom,var(--purple),transparent)}
+.tl-num{width:60px;height:60px;border-radius:50%;background:rgba(83,74,183,.15);border:1.5px solid var(--purple);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:var(--mid);flex-shrink:0;position:relative;z-index:1}
+.tl-body{padding:12px 0 40px}
+.tl-title{font-size:18px;font-weight:600;color:var(--white);margin-bottom:8px;letter-spacing:-.01em}
+.tl-desc{font-size:14px;color:var(--text2);line-height:1.7}
+.tl-tag{display:inline-block;margin-top:10px;font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;background:rgba(83,74,183,.2);color:var(--mid);letter-spacing:.05em}
+
+/* ── EMOTION MAP ── */
+.emo-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:40px}
+.emo-card{background:var(--card);border-radius:16px;padding:18px;border:.5px solid var(--border);cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.emo-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s}
+.emo-card:hover{transform:translateY(-3px);border-color:var(--mid)}
+.ec-emoji{font-size:32px;margin-bottom:10px;display:block}
+.ec-name{font-size:15px;font-weight:600;margin-bottom:4px;color:var(--white)}
+.ec-signals{font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.ec-response{font-size:12px;font-family:'Instrument Serif',serif;font-style:italic;color:var(--soft);line-height:1.5;padding-top:8px;border-top:.5px solid var(--border)}
+
+/* ── PROSODY VIZ ── */
+.prosody-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:40px}
+.prosody-card{background:var(--card);border-radius:16px;padding:20px;border:.5px solid var(--border)}
+.pc-icon{font-size:28px;margin-bottom:10px}
+.pc-name{font-size:15px;font-weight:600;margin-bottom:6px}
+.pc-bar-label{font-size:11px;color:var(--text2);margin-bottom:4px}
+.pc-bar-bg{height:6px;background:var(--surface);border-radius:3px;overflow:hidden;margin-bottom:8px}
+.pc-bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.pc-desc{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* ── DIVIDER ── */
+.sep{border-top:.5px solid var(--border)}
+
+/* ── ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── CANVAS ── */
+#cvs{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.3}
+
+footer{border-top:.5px solid var(--border);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.fbrand{font-size:15px;font-weight:700;color:var(--text2)}
+.fcopy{font-size:11px;color:#4A4670}
+
+/* ── Duration selector ──────────────────────────────────── */
+.duration-selector{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%}
+.dur-label{font-size:11px;color:var(--text2);font-weight:500;letter-spacing:.02em}
+.dur-options{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.dur-btn{padding:6px 14px;border-radius:8px;border:.5px solid var(--border);background:var(--surface);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .2s}
+.dur-btn:hover{border-color:var(--mid);color:var(--white)}
+.dur-btn.active{background:rgba(83,74,183,.2);border-color:var(--purple);color:var(--mid)}
+
+/* Live timer during recording */
+.rec-timer{font-size:12px;color:var(--purple);font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:.05em;text-align:center;min-height:18px}
+
+/* ── Optimizare baterie: respectă preferința de mișcare redusă ── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
+
+/* Când pagina nu e vizibilă — oprește toate animațiile (economie baterie) */
+html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
+  animation-play-state:paused!important;
+}
+
+/* ════ CRISIS OVERLAY STYLES ════ */
+.crisis-overlay{position:fixed;inset:0;background:rgba(13,11,26,.92);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;animation:crisisIn .3s ease}
+@keyframes crisisIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.crisis-panel{background:var(--surface);border-radius:24px;padding:32px 28px;max-width:440px;width:100%;border:1px solid rgba(212,83,126,.4);box-shadow:0 0 60px rgba(212,83,126,.15)}
+.crisis-panel.imminent{border-color:rgba(212,83,126,.8);box-shadow:0 0 80px rgba(212,83,126,.3)}
+.crisis-icon{font-size:40px;margin-bottom:16px;animation:crisisPulse 1.5s ease-in-out infinite}
+@keyframes crisisPulse{0%,100%{opacity:1}50%{opacity:.6}}
+.crisis-title{font-family:'Instrument Serif',Georgia,serif;font-size:24px;font-weight:400;color:var(--white);margin-bottom:16px;line-height:1.3}
+.crisis-body{font-size:15px;color:var(--soft);line-height:1.7;margin-bottom:24px}
+.crisis-body p{margin-bottom:10px}
+.crisis-actions{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.crisis-action-btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 20px;border-radius:14px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;text-decoration:none;transition:all .2s;border:none;cursor:pointer;width:100%}
+.crisis-action-btn.primary{background:var(--warm);color:#fff}
+.crisis-action-btn.primary:hover{background:#c03d6a;transform:scale(1.02)}
+.crisis-action-btn.secondary{background:rgba(255,255,255,.06);color:var(--soft);border:.5px solid var(--border)}
+.crisis-action-btn.secondary:hover{background:rgba(255,255,255,.1)}
+.crisis-dismiss{width:100%;background:transparent;border:none;color:var(--text2);font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;padding:8px;border-radius:8px;transition:color .2s}
+.crisis-dismiss:hover{color:var(--soft)}
+/* ═══════════════════════════ */
+</style>
+
+<!-- ═══ VOXEN i18n MODULE ═══ -->
+<style>
+.globe-wrap{position:relative;display:flex;align-items:center}
+.globe-btn{width:34px;height:34px;border-radius:8px;border:.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;position:relative;flex-shrink:0}
+.globe-btn:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.active-flag{position:absolute;bottom:-3px;right:-3px;font-size:10px;line-height:1}
+.lang-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#201C38;border:.5px solid #2E2850;border-radius:12px;padding:6px;min-width:175px;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+.lang-dropdown.open{display:block;animation:dropIn .18s ease}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.lang-option{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;font-size:13px;font-weight:500;color:#8B88C3;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.lang-option:hover{background:#1A1630;color:#F0EFF8}
+.lang-option.active{background:rgba(83,74,183,.2);color:#EEEDFE}
+.lang-option .flag{font-size:17px;line-height:1;flex-shrink:0}
+.lang-option .lname{flex:1}
+.lang-option .lcode{font-size:10px;color:#534AB7;margin-left:auto}
+</style>
+
+<script id="voxen-i18n">
+window.voxenHooks = window.voxenHooks || [];
+(function(){
+  // ── Translations for subpages ──────────────────────────
+  const T = {
+    ro:{
+      comp_emo_tired:'Obosit',
+      comp_emo_sad:'Trist',
+      comp_emo_happy:'Fericit',
+      comp_emo_anxious:'Anxios',
+      comp_emo_angry:'Furios',
+      comp_emo_confused:'Confuz',
+
+      footer_brand:'companion AI',
+      back:'← voxen',
+      nav_companion:'Companion AI', nav_therapy:'Terapie', nav_groups:'Grupuri de sprijin',
+      // Companion
+      comp_chip:'Companion emoțional · Powered by Claude AI',
+      comp_h1:'Te aude.<br><em>Te înțelege.</em><br>E mereu acolo.',
+      comp_sub:'Nu e un chatbot. Nu îți dă sfaturi nesolicitate. E un prieten digital empatic — care citește emoția din vocea ta și răspunde exact cum ai nevoie la 3 dimineața.',
+      comp_voice_title:'🎙 Vocea ta',
+      comp_dur_label:'Durată înregistrare:',
+      comp_state:'Apasă microfonul sau alege o emoție pentru demo',
+      comp_btn_gen:'Generează răspuns empatic →',
+      comp_resp_title:'💜 Voxen răspunde',
+      comp_resp_waiting:'Așteptând...',
+      comp_resp_detecting:'— detectez emoția',
+      comp_resp_tag:'VOXEN SIMTE',
+      comp_resp_default:'Bună seara. Cum a fost azi?',
+      comp_btn_sim:'Simulează stare',
+      comp_btn_mem:'Amintire 1 an',
+      comp_m_tempo:'Tempo vocal', comp_m_energy:'Energie', comp_m_conf:'Confidență AI',
+      comp_hist_label:'Istoric sesiune',
+      comp_how_label:'Cum funcționează',
+      comp_how_title:'Știință aplicată.<br><em>Empatie reală.</em>',
+      comp_how_sub:'Voxen combină analiza prozodică a vocii cu procesarea semantică a textului.',
+      comp_emo_label:'Harta emoțională',
+      comp_emo_title:'8 emoții.<br><em>Infinite nuanțe.</em>',
+      comp_emo_sub:'Voxen detectează emoția primară, emoția secundară și intensitatea.',
+      comp_pros_label:'Semnale prozodice',
+      comp_pros_title:'Ce citim<br><em>din vocea ta.</em>',
+      comp_realai_chip:'ANALIZĂ AI REALĂ',
+      comp_realai_title:'Testează cu vocea ta acum',
+      comp_realai_sub:'Apasă butonul cu microfon din partea de sus și vorbește. Alege durata (30s / 60s / 2 min) și Voxen îți analizează vocea în timp real — pitch, energie, ritm și pauze. Toate calculate matematic din unda audio.',
+      comp_realai_btn:'🎙 Începe înregistrarea',
+      comp_realai_alg1_t:'Autocorrelation',
+      comp_realai_alg1_d:'Detectează pitch real cu algoritm Wiener-Khinchin',
+      comp_realai_alg2_t:'RMS Energy',
+      comp_realai_alg2_d:'Volumul perceput calculat din samples PCM',
+      comp_realai_alg3_t:'Voice Activity Detection',
+      comp_realai_alg3_d:'Identifică pauzele și activitatea vocală',
+      comp_realai_alg4_t:'Emotion Classifier',
+      comp_realai_alg4_d:'Mapează semnalele la 8 emoții prin reguli prozodice',
+      comp_realai_note:'🔒 Audio procesat 100% în browser-ul tău · Niciun byte nu părăsește dispozitivul',
+      comp_tl1_title:'Captarea vocii', comp_tl1_desc:'Expo AV înregistrează audio la calitate înaltă. Nu analizăm cuvintele — analizăm CUM le spui: tonul, ritmul, pauzele, tremuratul, volumul.',
+      comp_tl2_title:'Analiza prozodică', comp_tl2_desc:'Extragem 6 semnale vocale: tempo, pitch mediu, energie RMS, ratio pauze, rata vorbirii, variația volumului.',
+      comp_tl3_title:'Transcriere + semantică', comp_tl3_desc:'Whisper AI transcrie instant în orice limbă. Combinate cu semnalele prozodice (60% voce + 40% text).',
+      comp_tl4_title:'Răspuns empatic Claude', comp_tl4_desc:'Claude Haiku generează răspunsul în <2 secunde. Maxim 3 propoziții, fără exclamații, fără sfaturi nesolicitate.',
+      comp_tl5_title:'Memorie emoțională', comp_tl5_desc:'Fiecare intrare e salvată cu emoția detectată. Peste un an, când auzi din nou — înțelegi cum te-ai schimbat.',
+      // Therapy
+      th_chip:'Psihologi · Psihoterapeuți · Consultanți medicali',
+      th_h1:'Terapeutul potrivit.<br><em>La momentul potrivit.</em>',
+      th_sub:'Voxen nu înlocuiește terapeutul. Îl pregătește. Terapeutul tău primește un rezumat anonim al stării tale emoționale.',
+      th_tab1:'🧑‍⚕️ Psiholog / Psihoterapeut', th_tab2:'💬 Consultație online', th_tab3:'🏥 Evaluare medicală',
+      th_step_sel:'Selectează un specialist din zona ta',
+      th_btn_cont:'Continuă →', th_btn_back:'← Înapoi', th_btn_confirm:'Confirmă programarea →',
+      th_ai_title:'Rezumat Voxen AI pentru terapeut', th_ai_sub:'Trimis anonim · Poți dezactiva oricând',
+      th_ai_hide:'Ascunde rezumatul', th_ai_show:'Afișează rezumatul',
+      th_confirm_title:'Programare confirmată!',
+      th_btn_reset:'Programează altă ședință',
+      th_diff_label:'Diferența Voxen',
+      th_diff_title:'Prima ședință.<br><em>Fără să repeți totul.</em>',
+      th_diff_sub:'Cel mai greu lucru în terapie e să explici de unde vii. Voxen face asta pentru tine.',
+      th_faq_label:'Întrebări frecvente',
+      th_faq_title:'Înainte să<br><em>rezervi.</em>',
+      // Groups
+      gr_chip:'Sesiuni live săptămânale · 100% anonime',
+      gr_h1:'Nu ești singur.<br><em>Niciodată.</em>',
+      gr_sub:'Grupuri săptămânale anonime după modelul AA — actualizat pentru era digitală. Un moderator certificat, maximum 12 participanți, 60 de minute.',
+      gr_anon_note:'🔒 Numele tău real nu este niciodată afișat · Mesajele dispar după sesiune',
+      gr_send:'Trimite',
+      gr_input_ph:'Scrie în cerc... (demo)',
+      gr_circles_label:'Toate cercurile',
+      gr_circles_title:'Alege cercul<br><em>tău.</em>',
+      gr_circles_sub:'Fiecare cerc e facilitat de un specialist certificat. O dată pe săptămână, 60 de minute, maximum 12 persoane.',
+      gr_principles_label:'Principii',
+      gr_principles_title:'Cum funcționează<br><em>un cerc Voxen.</em>',
+      gr_timeline_label:'O sesiune tipică',
+      gr_timeline_title:'60 de minute.<br><em>Ce se întâmplă.</em>',
+      gr_join_btn:'Alătură-te cercului →',
+      gr_weekly:'Săptămânal', gr_max:'Max 12 participanți', gr_anon:'100% anonim',
+      gr_spots:'locuri libere',
+    },
+    en:{
+      comp_emo_tired:'Tired',
+      comp_emo_sad:'Sad',
+      comp_emo_happy:'Happy',
+      comp_emo_anxious:'Anxious',
+      comp_emo_angry:'Angry',
+      comp_emo_confused:'Confused',
+
+      footer_brand:'AI companion',
+      back:'← voxen',
+      nav_companion:'AI Companion', nav_therapy:'Therapy', nav_groups:'Support Groups',
+      comp_chip:'Emotional companion · Powered by Claude AI',
+      comp_h1:'It hears you.<br><em>It understands you.</em><br>Always there.',
+      comp_sub:'It’s not a chatbot. It doesn’t give unsolicited advice. It’s an empathetic digital friend who reads emotion from your voice.',
+      comp_voice_title:'🎙 Your voice',
+      comp_dur_label:'Recording duration:',
+      comp_state:'Tap the microphone or choose an emotion for demo',
+      comp_btn_gen:'Generate empathetic response →',
+      comp_resp_title:'💜 Voxen responds',
+      comp_resp_waiting:'Waiting...',
+      comp_resp_detecting:'— detecting emotion',
+      comp_resp_tag:'VOXEN FEELS',
+      comp_resp_default:'Good evening. How was today?',
+      comp_btn_sim:'Simulate emotion',
+      comp_btn_mem:'1-year memory',
+      comp_m_tempo:'Vocal tempo', comp_m_energy:'Energy', comp_m_conf:'AI Confidence',
+      comp_hist_label:'Session history',
+      comp_how_label:'How it works',
+      comp_how_title:'Applied science.<br><em>Real empathy.</em>',
+      comp_how_sub:'Voxen combines voice prosody analysis with semantic text processing.',
+      comp_emo_label:'Emotion map',
+      comp_emo_title:'8 emotions.<br><em>Infinite nuances.</em>',
+      comp_emo_sub:'Voxen detects primary emotion, secondary emotion and intensity.',
+      comp_pros_label:'Prosody signals',
+      comp_pros_title:'What we read<br><em>from your voice.</em>',
+      comp_realai_chip:'REAL AI ANALYSIS',
+      comp_realai_title:'Test with your real voice now',
+      comp_realai_sub:'Tap the microphone button above and speak. Choose duration (30s / 60s / 2 min) and Voxen analyzes your voice in real time — pitch, energy, rhythm and pauses. All computed mathematically from the audio wave.',
+      comp_realai_btn:'🎙 Start recording',
+      comp_realai_alg1_t:'Autocorrelation',
+      comp_realai_alg1_d:'Detects real pitch using Wiener-Khinchin algorithm',
+      comp_realai_alg2_t:'RMS Energy',
+      comp_realai_alg2_d:'Perceived volume computed from PCM samples',
+      comp_realai_alg3_t:'Voice Activity Detection',
+      comp_realai_alg3_d:'Identifies pauses and vocal activity',
+      comp_realai_alg4_t:'Emotion Classifier',
+      comp_realai_alg4_d:'Maps signals to 8 emotions through prosodic rules',
+      comp_realai_note:'🔒 Audio processed 100% in your browser · No byte leaves your device',
+      comp_tl1_title:'Voice capture', comp_tl1_desc:'Expo AV records high quality audio. We analyze HOW you say it: tone, rhythm, pauses, tremor, volume.',
+      comp_tl2_title:'Prosody analysis', comp_tl2_desc:'We extract 6 vocal signals: tempo, mean pitch, RMS energy, pause ratio, speech rate, volume variance.',
+      comp_tl3_title:'Transcription + semantics', comp_tl3_desc:'Whisper AI transcribes instantly in any language. Combined with prosody signals (60% voice + 40% text).',
+      comp_tl4_title:'Empathetic Claude response', comp_tl4_desc:'Claude Haiku generates response in <2 seconds. Max 3 sentences, no exclamations, no unsolicited advice.',
+      comp_tl5_title:'Emotional memory', comp_tl5_desc:'Each entry saved with detected emotion. One year later, hearing it again — you understand how you changed.',
+      th_chip:'Psychologists · Psychotherapists · Medical consultants',
+      th_h1:'The right therapist.<br><em>At the right time.</em>',
+      th_sub:'Voxen doesn’t replace the therapist. It prepares them. Your therapist receives an anonymous summary of your emotional state.',
+      th_tab1:'🧑‍⚕️ Psychologist / Psychotherapist', th_tab2:'💬 Online consultation', th_tab3:'🏥 Medical evaluation',
+      th_step_sel:'Select a specialist near you',
+      th_btn_cont:'Continue →', th_btn_back:'← Back', th_btn_confirm:'Confirm booking →',
+      th_ai_title:'Voxen AI summary for therapist', th_ai_sub:'Sent anonymously · You can disable anytime',
+      th_ai_hide:'Hide summary', th_ai_show:'Show summary',
+      th_confirm_title:'Booking confirmed!',
+      th_btn_reset:'Book another session',
+      th_diff_label:'The Voxen difference',
+      th_diff_title:'First session.<br><em>Without repeating everything.</em>',
+      th_diff_sub:'The hardest thing in therapy is explaining where you come from. Voxen does that for you.',
+      th_faq_label:'Frequently asked questions',
+      th_faq_title:'Before you<br><em>book.</em>',
+      gr_chip:'Live weekly sessions · 100% anonymous',
+      gr_h1:'You are not alone.<br><em>Never.</em>',
+      gr_sub:'Anonymous weekly groups following the AA model — updated for the digital era. A certified moderator, maximum 12 participants, 60 minutes.',
+      gr_anon_note:'🔒 Your real name is never shown · Messages disappear after session',
+      gr_send:'Send',
+      gr_input_ph:'Write in circle... (demo)',
+      gr_circles_label:'All circles',
+      gr_circles_title:'Choose your<br><em>circle.</em>',
+      gr_circles_sub:'Each circle is facilitated by a certified specialist. Once a week, 60 minutes, maximum 12 people.',
+      gr_principles_label:'Principles',
+      gr_principles_title:'How a Voxen<br><em>circle works.</em>',
+      gr_timeline_label:'A typical session',
+      gr_timeline_title:'60 minutes.<br><em>What happens.</em>',
+      gr_join_btn:'Join the circle →',
+      gr_weekly:'Weekly', gr_max:'Max 12 participants', gr_anon:'100% anonymous',
+      gr_spots:'spots left',
+    },
+    fr:{
+      comp_emo_tired:'Fatigué',
+      comp_emo_sad:'Triste',
+      comp_emo_happy:'Heureux',
+      comp_emo_anxious:'Anxieux',
+      comp_emo_angry:'En colère',
+      comp_emo_confused:'Confus',
+
+      footer_brand:'compagnon IA',
+      back:'← voxen',
+      nav_companion:'Compagnon IA', nav_therapy:'Thérapie', nav_groups:'Groupes de soutien',
+      comp_chip:'Compagnon émotionnel · Propulsé par Claude AI',
+      comp_h1:'Il vous entend.<br><em>Il vous comprend.</em><br>Toujours là.',
+      comp_sub:"Ce n’est pas un chatbot. Il ne donne pas de conseils non sollicités. C’est un ami numérique empathique.",
+      comp_voice_title:'🎙 Votre voix',
+      comp_dur_label:'Durée d’enregistrement:',
+      comp_state:'Appuyez sur le microphone ou choisissez une émotion',
+      comp_btn_gen:'Générer une réponse empathique →',
+      comp_resp_title:'💜 Voxen répond',
+      comp_resp_waiting:'En attente...',
+      comp_resp_detecting:'— détection de l’émotion',
+      comp_resp_tag:'VOXEN RESSENT',
+      comp_resp_default:'Bonsoir. Comment s’est passée votre journée?',
+      comp_btn_sim:'Simuler une émotion',
+      comp_btn_mem:'Souvenir 1 an',
+      comp_m_tempo:'Tempo vocal', comp_m_energy:'Énergie', comp_m_conf:'Confiance IA',
+      comp_hist_label:'Historique de session',
+      comp_how_label:'Comment ça marche',
+      comp_how_title:'Science appliquée.<br><em>Empathie réelle.</em>',
+      comp_how_sub:'Voxen combine l’analyse prosodique de la voix avec le traitement sémantique du texte.',
+      comp_emo_label:'Carte des émotions',
+      comp_emo_title:'8 émotions.<br><em>Nuances infinies.</em>',
+      comp_emo_sub:'Voxen détecte l’émotion primaire, secondaire et l’intensité.',
+      comp_pros_label:'Signaux prosodiques',
+      comp_pros_title:'Ce que nous lisons<br><em>dans votre voix.</em>',
+      comp_realai_chip:'ANALYSE IA RÉELLE',
+      comp_realai_title:'Testez avec votre vraie voix maintenant',
+      comp_realai_sub:'Appuyez sur le bouton microphone en haut et parlez. Choisissez la durée (30s / 60s / 2 min) et Voxen analyse votre voix en temps réel.',
+      comp_realai_btn:'🎙 Démarrer l’enregistrement',
+      comp_realai_alg1_t:'Autocorrélation',
+      comp_realai_alg1_d:'Détecte la hauteur réelle avec algorithme Wiener-Khinchin',
+      comp_realai_alg2_t:'Énergie RMS',
+      comp_realai_alg2_d:'Volume perçu calculé à partir d’échantillons PCM',
+      comp_realai_alg3_t:'Détection d’activité vocale',
+      comp_realai_alg3_d:'Identifie les pauses et l’activité vocale',
+      comp_realai_alg4_t:'Classificateur d’émotions',
+      comp_realai_alg4_d:'Mappe les signaux vers 8 émotions par règles prosodiques',
+      comp_realai_note:'🔒 Audio traité 100% dans votre navigateur · Aucun octet ne quitte votre appareil',
+      comp_tl1_title:'Capture vocale', comp_tl1_desc:'Expo AV enregistre en haute qualité. Nous analysons COMMENT vous le dites.',
+      comp_tl2_title:'Analyse prosodique', comp_tl2_desc:'6 signaux vocaux: tempo, hauteur, énergie, pauses, débit, variance du volume.',
+      comp_tl3_title:'Transcription + sémantique', comp_tl3_desc:'Whisper AI transcrit instantanément. Combiné avec les signaux prosodiques (60% voix + 40% texte).',
+      comp_tl4_title:'Réponse empathique Claude', comp_tl4_desc:'Claude Haiku génère la réponse en <2 secondes. Max 3 phrases, sans conseils non sollicités.',
+      comp_tl5_title:'Mémoire émotionnelle', comp_tl5_desc:'Chaque entrée sauvegardée avec l’émotion détectée. Un an après, vous comprenez comment vous avez changé.',
+      th_chip:'Psychologues · Psychothérapeutes · Consultants médicaux',
+      th_h1:'Le bon thérapeute.<br><em>Au bon moment.</em>',
+      th_sub:'Voxen ne remplace pas le thérapeute. Il le prépare. Votre thérapeute reçoit un résumé anonyme.',
+      th_tab1:'🧑‍⚕️ Psychologue / Psychothérapeute', th_tab2:'💬 Consultation en ligne', th_tab3:'🏥 Évaluation médicale',
+      th_step_sel:'Sélectionnez un spécialiste près de chez vous',
+      th_btn_cont:'Continuer →', th_btn_back:'← Retour', th_btn_confirm:'Confirmer le rendez-vous →',
+      th_ai_title:'Résumé Voxen IA pour le thérapeute', th_ai_sub:'Envoyé anonymement · Désactivable à tout moment',
+      th_ai_hide:'Masquer le résumé', th_ai_show:'Afficher le résumé',
+      th_confirm_title:'Rendez-vous confirmé!',
+      th_btn_reset:'Réserver une autre séance',
+      th_diff_label:'La différence Voxen',
+      th_diff_title:'Première séance.<br><em>Sans tout répéter.</em>',
+      th_diff_sub:'La chose la plus difficile en thérapie est d’expliquer d’où vous venez. Voxen le fait pour vous.',
+      th_faq_label:'Questions fréquentes',
+      th_faq_title:'Avant de<br><em>réserver.</em>',
+      gr_chip:'Sessions hebdomadaires en direct · 100% anonymes',
+      gr_h1:'Vous n’êtes pas seul.<br><em>Jamais.</em>',
+      gr_sub:'Groupes anonymes hebdomadaires selon le modèle AA — mis à jour pour l’ère numérique.',
+      gr_anon_note:'🔒 Votre vrai nom n’est jamais affiché · Messages supprimés après la session',
+      gr_send:'Envoyer',
+      gr_input_ph:'Écrire dans le cercle... (démo)',
+      gr_circles_label:'Tous les cercles',
+      gr_circles_title:'Choisissez votre<br><em>cercle.</em>',
+      gr_circles_sub:'Chaque cercle est animé par un spécialiste certifié. Une fois par semaine, 60 minutes.',
+      gr_principles_label:'Principes',
+      gr_principles_title:'Comment fonctionne<br><em>un cercle Voxen.</em>',
+      gr_timeline_label:'Une session typique',
+      gr_timeline_title:'60 minutes.<br><em>Ce qui se passe.</em>',
+      gr_join_btn:'Rejoindre le cercle →',
+      gr_weekly:'Hebdomadaire', gr_max:'Max 12 participants', gr_anon:'100% anonyme',
+      gr_spots:'places disponibles',
+    },
+    de:{
+      comp_emo_tired:'Müde',
+      comp_emo_sad:'Traurig',
+      comp_emo_happy:'Glücklich',
+      comp_emo_anxious:'Ängstlich',
+      comp_emo_angry:'Wütend',
+      comp_emo_confused:'Verwirrt',
+
+      footer_brand:'KI-Begleiter',
+      back:'← voxen',
+      nav_companion:'KI-Begleiter', nav_therapy:'Therapie', nav_groups:'Selbsthilfegruppen',
+      comp_chip:'Emotionaler Begleiter · Powered by Claude AI',
+      comp_h1:'Er hört dich.<br><em>Er versteht dich.</em><br>Immer da.',
+      comp_sub:'Kein Chatbot. Keine ungebetenen Ratschläge. Ein einfühlsamer digitaler Freund.',
+      comp_voice_title:'🎙 Deine Stimme',
+      comp_dur_label:'Aufnahmedauer:',
+      comp_state:'Mikrofon drücken oder eine Emotion wählen',
+      comp_btn_gen:'Einfühlsame Antwort generieren →',
+      comp_resp_title:'💜 Voxen antwortet',
+      comp_resp_waiting:'Warten...',
+      comp_resp_detecting:'— erkenne Emotion',
+      comp_resp_tag:'VOXEN SPÜRT',
+      comp_resp_default:'Guten Abend. Wie war dein Tag?',
+      comp_btn_sim:'Emotion simulieren',
+      comp_btn_mem:'Erinnerung 1 Jahr',
+      comp_m_tempo:'Sprachtempo', comp_m_energy:'Energie', comp_m_conf:'KI-Konfidenz',
+      comp_hist_label:'Sitzungsverlauf',
+      comp_how_label:'Wie es funktioniert',
+      comp_how_title:'Angewandte Wissenschaft.<br><em>Echte Empathie.</em>',
+      comp_how_sub:'Voxen kombiniert Sprachprosodie-Analyse mit semantischer Textverarbeitung.',
+      comp_emo_label:'Emotionskarte',
+      comp_emo_title:'8 Emotionen.<br><em>Unendliche Nuancen.</em>',
+      comp_emo_sub:'Voxen erkennt primäre, sekundäre Emotion und Intensität.',
+      comp_pros_label:'Prosodie-Signale',
+      comp_pros_title:'Was wir lesen<br><em>aus deiner Stimme.</em>',
+      comp_realai_chip:'ECHTE KI-ANALYSE',
+      comp_realai_title:'Teste mit deiner echten Stimme',
+      comp_realai_sub:'Drücke den Mikrofon-Button oben und sprich. Wähle die Dauer (30s / 60s / 2 Min) und Voxen analysiert deine Stimme in Echtzeit.',
+      comp_realai_btn:'🎙 Aufnahme starten',
+      comp_realai_alg1_t:'Autokorrelation',
+      comp_realai_alg1_d:'Erkennt echte Tonhöhe mit Wiener-Khinchin-Algorithmus',
+      comp_realai_alg2_t:'RMS-Energie',
+      comp_realai_alg2_d:'Wahrgenommene Lautstärke aus PCM-Samples',
+      comp_realai_alg3_t:'Voice Activity Detection',
+      comp_realai_alg3_d:'Identifiziert Pausen und Sprachaktivität',
+      comp_realai_alg4_t:'Emotionsklassifizierer',
+      comp_realai_alg4_d:'Bildet Signale auf 8 Emotionen mit prosodischen Regeln ab',
+      comp_realai_note:'🔒 Audio 100% im Browser verarbeitet · Kein Byte verlässt dein Gerät',
+      comp_tl1_title:'Stimmaufnahme', comp_tl1_desc:'Expo AV nimmt in hoher Qualität auf. Wir analysieren WIE du es sagst.',
+      comp_tl2_title:'Prosodie-Analyse', comp_tl2_desc:'6 Stimmsignale: Tempo, Tonhöhe, Energie, Pausen, Sprechrate, Lautstärkevariation.',
+      comp_tl3_title:'Transkription + Semantik', comp_tl3_desc:'Whisper KI transkribiert sofort. Kombiniert mit Prosodie-Signalen (60% Stimme + 40% Text).',
+      comp_tl4_title:'Einfühlsame Claude-Antwort', comp_tl4_desc:'Claude Haiku generiert Antwort in <2 Sekunden. Max 3 Sätze, keine ungebetenen Ratschläge.',
+      comp_tl5_title:'Emotionsgedächtnis', comp_tl5_desc:'Jeder Eintrag mit erkannter Emotion gespeichert. Ein Jahr später verstehst du, wie du dich verändert hast.',
+      th_chip:'Psychologen · Psychotherapeuten · Medizinische Berater',
+      th_h1:'Der richtige Therapeut.<br><em>Zum richtigen Zeitpunkt.</em>',
+      th_sub:'Voxen ersetzt den Therapeuten nicht. Es bereitet ihn vor.',
+      th_tab1:'🧑‍⚕️ Psychologe / Psychotherapeut', th_tab2:'💬 Online-Beratung', th_tab3:'🏥 Medizinische Bewertung',
+      th_step_sel:'Wähle einen Spezialisten in deiner Nähe',
+      th_btn_cont:'Weiter →', th_btn_back:'← Zurück', th_btn_confirm:'Buchung bestätigen →',
+      th_ai_title:'Voxen KI-Zusammenfassung für Therapeut', th_ai_sub:'Anonym gesendet · Jederzeit deaktivierbar',
+      th_ai_hide:'Zusammenfassung ausblenden', th_ai_show:'Zusammenfassung anzeigen',
+      th_confirm_title:'Buchung bestätigt!',
+      th_btn_reset:'Weitere Sitzung buchen',
+      th_diff_label:'Der Voxen-Unterschied',
+      th_diff_title:'Erste Sitzung.<br><em>Ohne alles zu wiederholen.</em>',
+      th_diff_sub:'Das Schwerste in der Therapie ist zu erklären, woher du kommst. Voxen tut das für dich.',
+      th_faq_label:'Häufige Fragen',
+      th_faq_title:'Bevor du<br><em>buchst.</em>',
+      gr_chip:'Live wöchentliche Sitzungen · 100% anonym',
+      gr_h1:'Du bist nicht allein.<br><em>Niemals.</em>',
+      gr_sub:'Anonyme wöchentliche Gruppen nach dem AA-Modell — aktualisiert für das digitale Zeitalter.',
+      gr_anon_note:'🔒 Dein echter Name wird nie angezeigt · Nachrichten werden nach der Sitzung gelöscht',
+      gr_send:'Senden',
+      gr_input_ph:'Im Kreis schreiben... (Demo)',
+      gr_circles_label:'Alle Kreise',
+      gr_circles_title:'Wähle deinen<br><em>Kreis.</em>',
+      gr_circles_sub:'Jeder Kreis wird von einem zertifizierten Spezialisten moderiert.',
+      gr_principles_label:'Prinzipien',
+      gr_principles_title:'Wie ein Voxen-<br><em>Kreis funktioniert.</em>',
+      gr_timeline_label:'Eine typische Sitzung',
+      gr_timeline_title:'60 Minuten.<br><em>Was passiert.</em>',
+      gr_join_btn:'Kreis beitreten →',
+      gr_weekly:'Wöchentlich', gr_max:'Max. 12 Teilnehmer', gr_anon:'100% anonym',
+      gr_spots:'Plätze frei',
+    },
+    zh:{
+      comp_emo_tired:'疲倦',
+      comp_emo_sad:'悲伤',
+      comp_emo_happy:'快乐',
+      comp_emo_anxious:'焦虑',
+      comp_emo_angry:'愤怒',
+      comp_emo_confused:'困惑',
+
+      footer_brand:'AI伴侣',
+      back:'← voxen',
+      nav_companion:'AI伴侣', nav_therapy:'治疗', nav_groups:'支持小组',
+      comp_chip:'情感伴侣 · 由 Claude AI 驱动',
+      comp_h1:'它倾听您。<br><em>它理解您。</em><br>始终在您身边。',
+      comp_sub:'这不是聊天机器人。它不给出未经请求的建议。它是一个能读懂您声音中情绪的数字朋友。',
+      comp_voice_title:'🎙 您的声音',
+      comp_dur_label:'录音时长:',
+      comp_state:'点击麦克风或选择一个情绪',
+      comp_btn_gen:'生成移情回应 →',
+      comp_resp_title:'💜 Voxen 回应',
+      comp_resp_waiting:'等待中...',
+      comp_resp_detecting:'— 检测情绪',
+      comp_resp_tag:'VOXEN感受到',
+      comp_resp_default:'晚上好。今天怎么样？',
+      comp_btn_sim:'模拟情绪',
+      comp_btn_mem:'一年前的记忆',
+      comp_m_tempo:'声音节奏', comp_m_energy:'能量', comp_m_conf:'AI置信度',
+      comp_hist_label:'会话历史',
+      comp_how_label:'工作原理',
+      comp_how_title:'应用科学。<br><em>真实共情。</em>',
+      comp_how_sub:'Voxen将声音韵律分析与语义文本处理相结合。',
+      comp_emo_label:'情绪图谱',
+      comp_emo_title:'8种情绪。<br><em>无限细微差别。</em>',
+      comp_emo_sub:'Voxen检测主要情绪、次要情绪和强度。',
+      comp_pros_label:'韵律信号',
+      comp_pros_title:'我们从<br><em>您的声音中读取什么。</em>',
+      comp_realai_chip:'真实AI分析',
+      comp_realai_title:'现在用你的真实声音测试',
+      comp_realai_sub:'点击顶部的麦克风按钮开始说话。选择时长（30秒/60秒/2分钟），Voxen实时分析您的声音——音调、能量、节奏、停顿。',
+      comp_realai_btn:'🎙 开始录音',
+      comp_realai_alg1_t:'自相关算法',
+      comp_realai_alg1_d:'使用Wiener-Khinchin算法检测真实音调',
+      comp_realai_alg2_t:'RMS能量',
+      comp_realai_alg2_d:'从PCM样本计算的感知音量',
+      comp_realai_alg3_t:'语音活动检测',
+      comp_realai_alg3_d:'识别停顿和语音活动',
+      comp_realai_alg4_t:'情绪分类器',
+      comp_realai_alg4_d:'通过韵律规则将信号映射到8种情绪',
+      comp_realai_note:'🔒 音频100%在您的浏览器中处理 · 没有字节离开您的设备',
+      comp_tl1_title:'声音采集', comp_tl1_desc:'Expo AV录制高质量音频。我们分析您怎么说：语调、节奏、停顿、颤抖、音量。',
+      comp_tl2_title:'韵律分析', comp_tl2_desc:'提取6个声音信号：节奏、平均音调、RMS能量、停顿比、语速、音量变化。',
+      comp_tl3_title:'转录+语义', comp_tl3_desc:'Whisper AI即时转录任何语言。与韵律信号结合（60%声音+40%文本）。',
+      comp_tl4_title:'Claude移情回应', comp_tl4_desc:'Claude Haiku在<2秒内生成回应。最多3句话，无感叹号，无未经请求的建议。',
+      comp_tl5_title:'情绪记忆', comp_tl5_desc:'每条记录都保存检测到的情绪。一年后再听——了解自己如何改变。',
+      th_chip:'心理学家 · 心理治疗师 · 医疗顾问',
+      th_h1:'合适的治疗师。<br><em>在合适的时机。</em>',
+      th_sub:'Voxen不替代治疗师。它为治疗师做准备。您的治疗师收到匿名情绪摘要。',
+      th_tab1:'🧑‍⚕️ 心理学家/心理治疗师', th_tab2:'💬 在线咨询', th_tab3:'🏥 医疗评估',
+      th_step_sel:'选择您附近的专家',
+      th_btn_cont:'继续 →', th_btn_back:'← 返回', th_btn_confirm:'确认预约 →',
+      th_ai_title:'Voxen AI治疗师摘要', th_ai_sub:'匿名发送 · 随时可禁用',
+      th_ai_hide:'隐藏摘要', th_ai_show:'显示摘要',
+      th_confirm_title:'预约已确认！',
+      th_btn_reset:'预约另一次会话',
+      th_diff_label:'Voxen的不同',
+      th_diff_title:'第一次会话。<br><em>无需重复一切。</em>',
+      th_diff_sub:'治疗中最难的事是解释你从哪里来。Voxen为你做这件事。',
+      th_faq_label:'常见问题',
+      th_faq_title:'预约之前<br><em>了解这些。</em>',
+      gr_chip:'每周现场会议 · 100%匿名',
+      gr_h1:'你并不孤单。<br><em>永远不会。</em>',
+      gr_sub:'匿名每周小组，遵循AA模式——为数字时代更新。认证主持人，最多12名参与者，60分钟。',
+      gr_anon_note:'🔒 您的真实姓名从不显示 · 会话结束后消息消失',
+      gr_send:'发送',
+      gr_input_ph:'在圈子里写... (演示)',
+      gr_circles_label:'所有圈子',
+      gr_circles_title:'选择您的<br><em>圈子。</em>',
+      gr_circles_sub:'每个圈子由认证专家主持。每周一次，60分钟，最多12人。',
+      gr_principles_label:'原则',
+      gr_principles_title:'Voxen圈子<br><em>如何运作。</em>',
+      gr_timeline_label:'典型会话',
+      gr_timeline_title:'60分钟。<br><em>发生了什么。</em>',
+      gr_join_btn:'加入圈子 →',
+      gr_weekly:'每周', gr_max:'最多12名参与者', gr_anon:'100%匿名',
+      gr_spots:'个空位',
+    },
+    ja:{
+      comp_emo_tired:'疲れた',
+      comp_emo_sad:'悲しい',
+      comp_emo_happy:'幸せ',
+      comp_emo_anxious:'不安',
+      comp_emo_angry:'怒り',
+      comp_emo_confused:'混乱',
+
+      footer_brand:'AIコンパニオン',
+      back:'← voxen',
+      nav_companion:'AIコンパニオン', nav_therapy:'療法', nav_groups:'サポートグループ',
+      comp_chip:'感情コンパニオン · Claude AI搭載',
+      comp_h1:'あなたを聞いている。<br><em>あなたを理解している。</em><br>いつもそこにいる。',
+      comp_sub:'チャットボットではない。求めていないアドバイスはしない。声の感情を読み取る共感的なデジタルの友人。',
+      comp_voice_title:'🎙 あなたの声',
+      comp_dur_label:'録音時間:',
+      comp_state:'マイクを押すか感情を選んでください',
+      comp_btn_gen:'共感的な回応を生成 →',
+      comp_resp_title:'💜 Voxenが回応',
+      comp_resp_waiting:'待機中...',
+      comp_resp_detecting:'— 感情を検出中',
+      comp_resp_tag:'VoxenはAIを感知',
+      comp_resp_default:'こんばんは。今日はどうでしたか？',
+      comp_btn_sim:'感情をシミュレート',
+      comp_btn_mem:'1年前の記憶',
+      comp_m_tempo:'音声テンポ', comp_m_energy:'エネルギー', comp_m_conf:'AI信頼度',
+      comp_hist_label:'セッション履歴',
+      comp_how_label:'使い方',
+      comp_how_title:'応用科学。<br><em>本物の共感。</em>',
+      comp_how_sub:'Voxenは声のプロソディ分析とテキストの意味処理を組み合わせます。',
+      comp_emo_label:'感情マップ',
+      comp_emo_title:'8つの感情。<br><em>無限のニュアンス。</em>',
+      comp_emo_sub:'Voxenは主要感情、副次感情、強度を検出します。',
+      comp_pros_label:'プロソディシグナル',
+      comp_pros_title:'声から<br><em>読み取ること。</em>',
+      comp_realai_chip:'リアルAI分析',
+      comp_realai_title:'あなたの実際の声でテスト',
+      comp_realai_sub:'上のマイクボタンを押して話してください。時間（30秒/60秒/2分）を選んで、Voxenがリアルタイムで声を分析します。',
+      comp_realai_btn:'🎙 録音を開始',
+      comp_realai_alg1_t:'自己相関',
+      comp_realai_alg1_d:'Wiener-Khinchinアルゴリズムで実ピッチを検出',
+      comp_realai_alg2_t:'RMSエネルギー',
+      comp_realai_alg2_d:'PCMサンプルから計算された知覚音量',
+      comp_realai_alg3_t:'音声活動検出',
+      comp_realai_alg3_d:'ポーズと音声活動を識別',
+      comp_realai_alg4_t:'感情分類器',
+      comp_realai_alg4_d:'韻律ルールで信号を8感情にマッピング',
+      comp_realai_note:'🔒 オーディオは100%ブラウザで処理 · デバイスを離れません',
+      comp_tl1_title:'音声キャプチャ', comp_tl1_desc:'Expo AVが高品質で録音。どのように言うかを分析：トーン、リズム、間、震え、音量。',
+      comp_tl2_title:'プロソディ分析', comp_tl2_desc:'6つの音声シグナル：テンポ、平均ピッチ、RMSエネルギー、ポーズ比率、話速、音量変化。',
+      comp_tl3_title:'文字起こし+意味論', comp_tl3_desc:'Whisper AIが即時に転写。プロソディシグナルと組み合わせ（60%声+40%テキスト）。',
+      comp_tl4_title:'Claude共感的回応', comp_tl4_desc:'Claude Haikuが2秒以内に回応生成。最大3文、感嘆符なし、求めていないアドバイスなし。',
+      comp_tl5_title:'感情記憶', comp_tl5_desc:'検出された感情と共に各エントリを保存。1年後に聞いて、どう変わったかを理解。',
+      th_chip:'心理士 · 心理療法士 · 医療コンサルタント',
+      th_h1:'適切なセラピスト。<br><em>適切なタイミングで。</em>',
+      th_sub:'VoxenはセラピストをAIを代替しません。準備します。',
+      th_tab1:'🧑‍⚕️ 心理士/心理療法士', th_tab2:'💬 オンライン相談', th_tab3:'🏥 医療評価',
+      th_step_sel:'近くの専門家を選んでください',
+      th_btn_cont:'続ける →', th_btn_back:'← 戻る', th_btn_confirm:'予約を確認 →',
+      th_ai_title:'Voxen AIセラピスト向けサマリー', th_ai_sub:'匿名送信 · いつでも無効化可能',
+      th_ai_hide:'サマリーを隠す', th_ai_show:'サマリーを表示',
+      th_confirm_title:'予約が確認されました！',
+      th_btn_reset:'別のセッションを予約',
+      th_diff_label:'Voxenの違い',
+      th_diff_title:'最初のセッション。<br><em>すべてを繰り返さずに。</em>',
+      th_diff_sub:'療法で最も難しいのは、どこから来たかを説明すること。Voxenがそれをします。',
+      th_faq_label:'よくある質問',
+      th_faq_title:'予約前に<br><em>知っておくこと。</em>',
+      gr_chip:'毎週ライブセッション · 100%匿名',
+      gr_h1:'あなたは一人じゃない。<br><em>決して。</em>',
+      gr_sub:'AAモデルに基づく匿名の週次グループ — デジタル時代に更新。認定モデレーター、最大12名、60分。',
+      gr_anon_note:'🔒 本名は絶対に表示されません · セッション後にメッセージは削除',
+      gr_send:'送信',
+      gr_input_ph:'サークルに書く... (デモ)',
+      gr_circles_label:'すべてのサークル',
+      gr_circles_title:'あなたの<br><em>サークルを選ぶ。</em>',
+      gr_circles_sub:'各サークルは認定専門家が進行します。週1回、60分、最大12名。',
+      gr_principles_label:'原則',
+      gr_principles_title:'Voxenサークルの<br><em>仕組み。</em>',
+      gr_timeline_label:'典型的なセッション',
+      gr_timeline_title:'60分間。<br><em>何が起こるか。</em>',
+      gr_join_btn:'サークルに参加 →',
+      gr_weekly:'毎週', gr_max:'最大12名', gr_anon:'100%匿名',
+      gr_spots:'空席あり',
+    },
+    ru:{
+      comp_emo_tired:'Уставший',
+      comp_emo_sad:'Грустный',
+      comp_emo_happy:'Счастливый',
+      comp_emo_anxious:'Тревожный',
+      comp_emo_angry:'Злой',
+      comp_emo_confused:'Растерянный',
+
+      footer_brand:'ИИ-компаньон',
+      back:'← voxen',
+      nav_companion:'ИИ-компаньон', nav_therapy:'Терапия', nav_groups:'Группы поддержки',
+      comp_chip:'Эмоциональный компаньон · На базе Claude AI',
+      comp_h1:'Он слышит тебя.<br><em>Он понимает тебя.</em><br>Всегда рядом.',
+      comp_sub:'Это не чатбот. Никаких незваных советов. Это чуткий цифровой друг, который читает эмоции в твоём голосе.',
+      comp_voice_title:'🎙 Твой голос',
+      comp_dur_label:'Длительность записи:',
+      comp_state:'Нажми микрофон или выбери эмоцию для демо',
+      comp_btn_gen:'Создать эмпатичный ответ →',
+      comp_resp_title:'💜 Voxen отвечает',
+      comp_resp_waiting:'Ожидание...',
+      comp_resp_detecting:'— определяю эмоцию',
+      comp_resp_tag:'VOXEN ЧУВСТВУЕТ',
+      comp_resp_default:'Добрый вечер. Как прошёл день?',
+      comp_btn_sim:'Симулировать эмоцию',
+      comp_btn_mem:'Воспоминание 1 год',
+      comp_m_tempo:'Речевой темп', comp_m_energy:'Энергия', comp_m_conf:'Уверенность ИИ',
+      comp_hist_label:'История сессии',
+      comp_how_label:'Как это работает',
+      comp_how_title:'Прикладная наука.<br><em>Настоящая эмпатия.</em>',
+      comp_how_sub:'Voxen сочетает анализ просодики голоса с семантической обработкой текста.',
+      comp_emo_label:'Карта эмоций',
+      comp_emo_title:'8 эмоций.<br><em>Бесконечные нюансы.</em>',
+      comp_emo_sub:'Voxen определяет первичную, вторичную эмоцию и интенсивность.',
+      comp_pros_label:'Просодические сигналы',
+      comp_pros_title:'Что мы читаем<br><em>из твоего голоса.</em>',
+      comp_realai_chip:'РЕАЛЬНЫЙ ИИ-АНАЛИЗ',
+      comp_realai_title:'Протестируй с реальным голосом',
+      comp_realai_sub:'Нажми кнопку микрофона сверху и говори. Выбери длительность (30с / 60с / 2 мин) и Voxen анализирует твой голос в реальном времени.',
+      comp_realai_btn:'🎙 Начать запись',
+      comp_realai_alg1_t:'Автокорреляция',
+      comp_realai_alg1_d:'Определяет реальный тон по алгоритму Винера-Хинчина',
+      comp_realai_alg2_t:'RMS-энергия',
+      comp_realai_alg2_d:'Воспринимаемая громкость из PCM-сэмплов',
+      comp_realai_alg3_t:'Детекция голосовой активности',
+      comp_realai_alg3_d:'Определяет паузы и речевую активность',
+      comp_realai_alg4_t:'Классификатор эмоций',
+      comp_realai_alg4_d:'Маппит сигналы на 8 эмоций по просодическим правилам',
+      comp_realai_note:'🔒 Аудио на 100% обработано в браузере · Ни один байт не покидает устройство',
+      comp_tl1_title:'Захват голоса', comp_tl1_desc:'Expo AV записывает в высоком качестве. Анализируем КАК ты говоришь: тон, ритм, паузы, дрожание, громкость.',
+      comp_tl2_title:'Просодический анализ', comp_tl2_desc:'6 голосовых сигналов: темп, средний тон, RMS-энергия, соотношение пауз, скорость речи, вариация громкости.',
+      comp_tl3_title:'Транскрипция + семантика', comp_tl3_desc:'Whisper AI транскрибирует мгновенно. Комбинируется с просодическими сигналами (60% голос + 40% текст).',
+      comp_tl4_title:'Эмпатичный ответ Claude', comp_tl4_desc:'Claude Haiku генерирует ответ за <2 секунды. Максимум 3 предложения, без восклицаний.',
+      comp_tl5_title:'Эмоциональная память', comp_tl5_desc:'Каждая запись сохраняется с определённой эмоцией. Год спустя, слушая снова — понимаешь как изменился.',
+      th_chip:'Психологи · Психотерапевты · Медицинские консультанты',
+      th_h1:'Правильный терапевт.<br><em>В нужный момент.</em>',
+      th_sub:'Voxen не заменяет терапевта. Он его готовит. Терапевт получает анонимное резюме.',
+      th_tab1:'🧑‍⚕️ Психолог/Психотерапевт', th_tab2:'💬 Онлайн-консультация', th_tab3:'🏥 Медицинская оценка',
+      th_step_sel:'Выбери специалиста рядом с тобой',
+      th_btn_cont:'Продолжить →', th_btn_back:'← Назад', th_btn_confirm:'Подтвердить запись →',
+      th_ai_title:'Резюме Voxen ИИ для терапевта', th_ai_sub:'Отправлено анонимно · Можно отключить',
+      th_ai_hide:'Скрыть резюме', th_ai_show:'Показать резюме',
+      th_confirm_title:'Запись подтверждена!',
+      th_btn_reset:'Записаться ещё раз',
+      th_diff_label:'Разница Voxen',
+      th_diff_title:'Первый сеанс.<br><em>Без повторений.</em>',
+      th_diff_sub:'Самое сложное в терапии — объяснить, откуда ты пришёл. Voxen делает это за тебя.',
+      th_faq_label:'Частые вопросы',
+      th_faq_title:'Перед тем как<br><em>записаться.</em>',
+      gr_chip:'Еженедельные живые сессии · 100% анонимно',
+      gr_h1:'Ты не один.<br><em>Никогда.</em>',
+      gr_sub:'Анонимные еженедельные группы по модели АА — обновлённые для цифровой эпохи. Сертифицированный модератор, максимум 12 участников, 60 минут.',
+      gr_anon_note:'🔒 Твоё настоящее имя никогда не отображается · Сообщения удаляются после сессии',
+      gr_send:'Отправить',
+      gr_input_ph:'Пиши в кружок... (демо)',
+      gr_circles_label:'Все кружки',
+      gr_circles_title:'Выбери свой<br><em>кружок.</em>',
+      gr_circles_sub:'Каждый кружок ведёт сертифицированный специалист. Раз в неделю, 60 минут.',
+      gr_principles_label:'Принципы',
+      gr_principles_title:'Как работает<br><em>кружок Voxen.</em>',
+      gr_timeline_label:'Типичная сессия',
+      gr_timeline_title:'60 минут.<br><em>Что происходит.</em>',
+      gr_join_btn:'Присоединиться к кружку →',
+      gr_weekly:'Еженедельно', gr_max:'Макс. 12 участников', gr_anon:'100% анонимно',
+      gr_spots:'свободных мест',
+    },
+  };
+
+  const FLAG_MAP = {ro:'🇷🇴',en:'🇬🇧',fr:'🇫🇷',de:'🇩🇪',zh:'🇨🇳',ja:'🇯🇵',ru:'🇷🇺'};
+  const LANG_NAMES = {ro:'Română',en:'English',fr:'Français',de:'Deutsch',zh:'中文',ja:'日本語',ru:'Русский'};
+
+  let LANG = 'ro';
+
+  function t(k){ return (T[LANG]&&T[LANG][k]) || (T.en&&T.en[k]) || k; }
+
+  function applyLang(lang){
+    LANG = lang;
+    document.documentElement.className = '';
+    if(lang==='zh') document.documentElement.className = 'zh-cn';
+    if(lang==='ja') document.documentElement.className = 'ja';
+    document.documentElement.lang = lang==='zh'?'zh-CN':lang;
+    document.querySelectorAll('[data-t]').forEach(el=>{
+      const k = el.getAttribute('data-t');
+      const v = t(k);
+      if(el.hasAttribute('data-t-html')) el.innerHTML = v;
+      else if(el.tagName==='INPUT'||el.tagName==='TEXTAREA') el.placeholder = v;
+      else el.textContent = v;
+    });
+    const af = document.getElementById('activeFlag');
+    if(af) af.textContent = FLAG_MAP[lang]||'🌐';
+    document.querySelectorAll('.lang-option').forEach(b=>{
+      const m = b.getAttribute('data-lang');
+      b.classList.toggle('active', m===lang);
+    });
+    try{ localStorage.setItem('vxlang', lang); }catch(e){}
+    // Run registered hooks
+    if (window.voxenHooks && Array.isArray(window.voxenHooks)) {
+      window.voxenHooks.forEach(fn => { try{ fn(lang); } catch(e){ console.error(e); } });
+    }
+  }
+
+  function toggleLangMenu(){
+    document.getElementById('langMenu').classList.toggle('open');
+  }
+  function pickLang(lang){
+    document.getElementById('langMenu').classList.remove('open');
+    applyLang(lang);
+  }
+  document.addEventListener('click', e=>{
+    const w = document.getElementById('globeWrap');
+    if(w && !w.contains(e.target)) document.getElementById('langMenu').classList.remove('open');
+  });
+
+  // Init: read saved language
+  window.addEventListener('DOMContentLoaded', ()=>{
+    let saved = 'ro';
+    try{ const s=localStorage.getItem('vxlang'); if(s && T[s]) saved=s; }catch(e){}
+    applyLang(saved);
+  });
+
+  // Expose globally
+  window.voxenT = t;
+  window.voxenLang = ()=>LANG;
+  window.applyLang = applyLang;
+  window.pickLang = pickLang;
+  window.toggleLangMenu = toggleLangMenu;
+})();
+</script>
+
+</head>
+<body>
+
+<!-- ════ VOXEN CRISIS OVERLAY ════ -->
+<!-- Gestionat de companionPatch.js · Ascuns implicit -->
+<div id="crisisOverlay" class="crisis-overlay" aria-live="assertive" aria-atomic="true" role="alert" style="display:none">
+  <div class="crisis-panel" id="crisisPanel">
+    <div class="crisis-icon" id="crisisIcon">🔴</div>
+    <h2 class="crisis-title" id="crisisTitle"></h2>
+    <div class="crisis-body" id="crisisBody"></div>
+    <div class="crisis-actions" id="crisisActions"></div>
+    <button class="crisis-dismiss" id="crisisDismiss" style="display:none" onclick="dismissCrisis()">
+      Continuă să vorbești cu Voxen
+    </button>
+  </div>
+</div>
+<!-- ════════════════════════════ -->
+<canvas id="cvs"></canvas>
+
+<div class="topbar">
+  <a class="back-link" href="voxen-landing-multilingual__6_.html"><span data-t="back">← voxen</span></a>
+  <div class="brand">voxen</div>
+  <nav class="nav-links">
+    <a class="nav-link active" href="voxen-companion.html"><span data-t="nav_companion">Companion AI</span></a>
+    <a class="nav-link" href="voxen-therapy.html"><span data-t="nav_therapy">Terapie</span></a>
+    <a class="nav-link" href="voxen-groups.html"><span data-t="nav_groups">Grupuri de sprijin</span></a>
+  </nav>
+
+    <!-- Globe lang switcher -->
+    <div class="globe-wrap" id="globeWrap">
+      <button class="globe-btn" id="globeBtn" onclick="toggleLangMenu()" aria-label="Language">
+        🌐<span class="active-flag" id="activeFlag">🇷🇴</span>
+      </button>
+      <div class="lang-dropdown" id="langMenu">
+        <button class="lang-option" data-lang="ro" onclick="pickLang('ro')"><span class="flag">🇷🇴</span><span class="lname">Română</span><span class="lcode">RO</span></button>
+        <button class="lang-option" data-lang="en" onclick="pickLang('en')"><span class="flag">🇬🇧</span><span class="lname">English</span><span class="lcode">EN</span></button>
+        <button class="lang-option" data-lang="fr" onclick="pickLang('fr')"><span class="flag">🇫🇷</span><span class="lname">Français</span><span class="lcode">FR</span></button>
+        <button class="lang-option" data-lang="de" onclick="pickLang('de')"><span class="flag">🇩🇪</span><span class="lname">Deutsch</span><span class="lcode">DE</span></button>
+        <button class="lang-option" data-lang="zh" onclick="pickLang('zh')"><span class="flag">🇨🇳</span><span class="lname">中文</span><span class="lcode">ZH</span></button>
+        <button class="lang-option" data-lang="ja" onclick="pickLang('ja')"><span class="flag">🇯🇵</span><span class="lname">日本語</span><span class="lcode">JA</span></button>
+        <button class="lang-option" data-lang="ru" onclick="pickLang('ru')"><span class="flag">🇷🇺</span><span class="lname">Русский</span><span class="lcode">RU</span></button>
+      </div>
+    </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-chip"><div class="chip-dot"></div><span data-t="comp_chip">Companion emoțional · Powered by Claude AI</span></div>
+  <h1 class="hero-title" data-t="comp_h1" data-t-html>Te aude.<br><em>Te înțelege.</em><br>E mereu acolo.</h1>
+  <p class="hero-sub" data-t="comp_sub">Nu e un chatbot. Nu îți dă sfaturi nesolicitate. E un prieten digital empatic — care citește emoția din vocea ta și răspunde exact cum ai nevoie la 3 dimineața.</p>
+
+  <!-- LIVE INTERACTIVE DEMO -->
+  <div class="demo-container">
+    <div class="voice-panel">
+      <div class="voice-title">🎙 <span data-t="comp_voice_title">Vocea ta</span></div>
+      
+      <!-- Duration selector -->
+      <div class="duration-selector">
+        <div class="dur-label" data-t="comp_dur_label">Durată înregistrare:</div>
+        <div class="dur-options">
+          <button class="dur-btn" data-dur="30" onclick="setDuration(30)">30s</button>
+          <button class="dur-btn active" data-dur="60" onclick="setDuration(60)">60s</button>
+          <button class="dur-btn" data-dur="120" onclick="setDuration(120)">2 min</button>
+        </div>
+      </div>
+      
+      <div class="orb-wrap" onclick="startListening()">
+        <div class="orb-ring"></div>
+        <div class="orb-ring"></div>
+        <div class="orb-ring"></div>
+        <div class="orb-core" id="orbCore">🎙</div>
+      </div>
+      <div class="wave-bars" id="waveBars">
+        <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+        <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+        <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+      </div>
+      <div class="voice-state" id="voiceState" data-t="comp_state">Apasă orbul sau alege o emoție</div>
+      <div class="emotion-row">
+        <div class="emo-chip" onclick="setEmo('tired')">😔 <span data-t="comp_emo_tired">Obosit</span></div>
+        <div class="emo-chip" onclick="setEmo('sad')">😢 <span data-t="comp_emo_sad">Trist</span></div>
+        <div class="emo-chip" onclick="setEmo('happy')">😄 <span data-t="comp_emo_happy">Fericit</span></div>
+        <div class="emo-chip" onclick="setEmo('anxious')">😰 <span data-t="comp_emo_anxious">Anxios</span></div>
+        <div class="emo-chip" onclick="setEmo('angry')">😤 <span data-t="comp_emo_angry">Furios</span></div>
+        <div class="emo-chip" onclick="setEmo('confused')">😕 <span data-t="comp_emo_confused">Confuz</span></div>
+      </div>
+      <button class="trigger-btn" onclick="triggerResponse()"><span data-t="comp_btn_gen">Generează răspuns empatic →</span></button>
+    </div>
+
+    <div class="response-panel">
+      <div class="resp-title">💜 <span data-t="comp_resp_title">Voxen răspunde</span></div>
+      <div class="resp-orb-row">
+        <div class="resp-orb" id="respOrb">😶</div>
+        <div>
+          <div class="resp-emo" id="respEmo" data-t="comp_resp_waiting">Așteptând...</div>
+          <div class="resp-intensity" id="respIntensity" data-t="comp_resp_detecting">— detectez emoția</div>
+        </div>
+        <div class="signal-bars" id="sigBars">
+          <div class="sb" style="height:8px"></div>
+          <div class="sb" style="height:14px"></div>
+          <div class="sb" style="height:20px"></div>
+          <div class="sb" style="height:14px"></div>
+          <div class="sb" style="height:8px"></div>
+        </div>
+      </div>
+      <div class="resp-bubble">
+        <div class="resp-tag"><span data-t="comp_resp_tag">VOXEN SIMTE</span></div>
+        <div class="resp-text" id="respText" data-t="comp_resp_default">Bună seara. Cum a fost azi?<span class="cursor"></span></div>
+      </div>
+      <div class="metrics-row">
+        <div class="metric"><div class="metric-val" id="mTempo">—</div><div class="metric-label"><span data-t="comp_m_tempo">Tempo vocal</span></div></div>
+        <div class="metric"><div class="metric-val" id="mEnergy">—</div><div class="metric-label"><span data-t="comp_m_energy">Energie</span></div></div>
+        <div class="metric"><div class="metric-val" id="mConf">—</div><div class="metric-label"><span data-t="comp_m_conf">Confidență AI</span></div></div>
+      </div>
+      <div class="history-row" id="histRow">
+        <div style="font-size:11px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;font-weight:600" data-t="comp_hist_label">Istoric sesiune</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section sep reveal" style="position:relative;z-index:1">
+  <p class="section-label" data-t="comp_how_label">Cum funcționează</p>
+  <h2 class="section-title"><span data-t="comp_how_title" data-t-html>Știință aplicată.<br><em>Empatie reală.</em></span></h2>
+  <p class="section-sub" data-t="comp_how_sub">Voxen combină analiza prozodică a vocii cu procesarea semantică a textului. Rezultatul: o înțelegere emoțională mai precisă decât orice chestionar.</p>
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <div class="tl-num">1</div>
+      <div class="tl-body">
+        <h3 class="tl-title" data-t="comp_tl1_title">Captarea vocii</h3>
+        <p class="tl-desc" data-t="comp_tl1_desc">Expo AV înregistrează audio la calitate înaltă (44.1kHz). Nu analizăm cuvintele — analizăm CUM le spui: tonul, ritmul, pauzele, tremuratul, volumul.</p>
+        <span class="tl-tag">Expo AV · React Native</span>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-num">2</div>
+      <div class="tl-body">
+        <h3 class="tl-title" data-t="comp_tl2_title">Analiza prozodică</h3>
+        <p class="tl-desc" data-t="comp_tl2_desc">Extragem 6 semnale vocale: tempo (cuvinte/minut), pitch mediu (Hz), energie RMS (0-1), ratio pauze, rata vorbirii, variația volumului. Fiecare semnal contribuie la scorul emoțional.</p>
+        <span class="tl-tag">Prosody Engine v2 · Custom algorithm</span>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-num">3</div>
+      <div class="tl-body">
+        <h3 class="tl-title" data-t="comp_tl3_title">Transcriere + analiză semantică</h3>
+        <p class="tl-desc" data-t="comp_tl3_desc">Whisper AI transcrie instant în orice limbă. Analizăm cuvintele cheie, intensificatorii, negațiile și contextul. Combinate cu semnalele prozodice (60% voce + 40% text).</p>
+        <span class="tl-tag">OpenAI Whisper · Semantic NLP</span>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-num">4</div>
+      <div class="tl-body">
+        <h3 class="tl-title" data-t="comp_tl4_title">Răspuns empatic Claude</h3>
+        <p class="tl-desc" data-t="comp_tl4_desc">Claude Haiku generează răspunsul în &lt;2 secunde. System prompt special: maxim 3 propoziții, fără exclamații, fără sfaturi nesolicitate, limbaj de prieten la 11 noaptea. Adaptat per emoție și intensitate.</p>
+        <span class="tl-tag">Claude Haiku · Custom prompting</span>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-num">5</div>
+      <div class="tl-body">
+        <h3 class="tl-title" data-t="comp_tl5_title">Memorie emoțională</h3>
+        <p class="tl-desc" data-t="comp_tl5_desc">Fiecare intrare e salvată cu emoția detectată, semnalele prozodice și răspunsul AI. Peste un an, când auzi din nou — înțelegi cum te-ai schimbat.</p>
+        <span class="tl-tag">Supabase PostgreSQL · Encrypted</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EMOTION MAP -->
+<section class="section sep reveal" style="position:relative;z-index:1">
+  <p class="section-label"><span data-t="comp_emo_label">Harta emoțională</span></p>
+  <h2 class="section-title"><span data-t="comp_emo_title" data-t-html>8 emoții.<br><em>Infinite nuanțe.</em></span></h2>
+  <p class="section-sub" data-t="comp_emo_sub">Voxen detectează emoția primară, emoția secundară și intensitatea. Fiecare are un răspuns unic.</p>
+  <div class="emo-map" id="emoMap"></div>
+</section>
+
+<!-- PROSODY SIGNALS -->
+<section class="section sep reveal" style="position:relative;z-index:1">
+  <p class="section-label"><span data-t="comp_pros_label">Semnale prozodice</span></p>
+  <h2 class="section-title"><span data-t="comp_pros_title" data-t-html>Ce citim<br><em>din vocea ta.</em></span></h2>
+  <!-- ── REAL VOICE ANALYZER ────────────────────────────────── -->
+  <div style="background:linear-gradient(135deg,rgba(83,74,183,.1),rgba(29,158,117,.06));border:.5px solid rgba(83,74,183,.4);border-radius:20px;padding:24px;margin:32px 0;text-align:center">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(83,74,183,.2);border-radius:100px;padding:5px 14px;font-size:11px;color:var(--mid);font-weight:600;letter-spacing:.1em;margin-bottom:14px">
+      <span style="width:8px;height:8px;border-radius:50%;background:#1D9E75;animation:pulse 1.5s infinite"></span>
+      <span data-t="comp_realai_chip">ANALIZĂ AI REALĂ</span>
+    </div>
+    <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;letter-spacing:-.02em" data-t="comp_realai_title">Testează cu vocea ta acum</h3>
+    <p style="font-size:14px;color:var(--text2);line-height:1.6;max-width:500px;margin:0 auto 20px" data-t="comp_realai_sub">Apasă orbul din partea de sus și vorbește 5-8 secunde. Voxen va analiza pitch-ul, energia, ritmul și pauzele tale — semnalele reale, calculate matematic din unda audio.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+      <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="background:var(--purple);border:none;border-radius:12px;padding:12px 22px;font-family:inherit;font-size:14px;font-weight:600;color:var(--mist);cursor:pointer;transition:all .2s" data-t="comp_realai_btn">🎙 Mergi la orb</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:18px;max-width:700px;margin-left:auto;margin-right:auto">
+      <div style="background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-size:20px;margin-bottom:4px">🎵</div>
+        <div style="font-size:11px;font-weight:600;color:var(--mid);margin-bottom:3px" data-t="comp_realai_alg1_t">Autocorrelation</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5" data-t="comp_realai_alg1_d">Detectează pitch real cu algoritm Wiener-Khinchin</div>
+      </div>
+      <div style="background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-size:20px;margin-bottom:4px">⚡</div>
+        <div style="font-size:11px;font-weight:600;color:var(--teal);margin-bottom:3px" data-t="comp_realai_alg2_t">RMS Energy</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5" data-t="comp_realai_alg2_d">Volumul perceput calculat din samples PCM</div>
+      </div>
+      <div style="background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-size:20px;margin-bottom:4px">⏸</div>
+        <div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:3px" data-t="comp_realai_alg3_t">Voice Activity Detection</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5" data-t="comp_realai_alg3_d">Identifică pauzele și activitatea vocală</div>
+      </div>
+      <div style="background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-size:20px;margin-bottom:4px">🧠</div>
+        <div style="font-size:11px;font-weight:600;color:#D4537E;margin-bottom:3px" data-t="comp_realai_alg4_t">Emotion Classifier</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5" data-t="comp_realai_alg4_d">Mapează semnalele la 8 emoții prin reguli prozodice</div>
+      </div>
+    </div>
+    <p style="font-size:10px;color:var(--text2);margin-top:14px;opacity:.7" data-t="comp_realai_note">🔒 Audio procesat 100% în browser-ul tău · Niciun byte nu părăsește dispozitivul</p>
+  </div>
+  
+  <div class="prosody-grid" id="prosodyGrid"></div>
+</section>
+
+<footer style="position:relative;z-index:1">
+  <div class="fbrand">voxen · <span data-t="footer_brand">companion AI</span></div>
+  <div class="fcopy">© 2026 Voxen SRL · your voice. your memory.</div>
+</footer>
+
+<script>
+// ── Canvas particles ──────────────────────────────────────
+const cvs=document.getElementById('cvs'),ctx=cvs.getContext('2d');
+let W,H,dots;
+function initC(){W=cvs.width=window.innerWidth;H=cvs.height=window.innerHeight;dots=Array.from({length:35},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.3,dx:(Math.random()-.5)*.2,dy:(Math.random()-.5)*.2,a:Math.random()*Math.PI*2}));}
+function draw(){ctx.clearRect(0,0,W,H);dots.forEach(d=>{d.a+=.006;ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);ctx.fillStyle=`rgba(127,119,221,${.08+.06*Math.sin(d.a)})`;ctx.fill();d.x+=d.dx;d.y+=d.dy;if(d.x<0||d.x>W)d.dx*=-1;if(d.y<0||d.y>H)d.dy*=-1;});requestAnimationFrame(draw);}
+initC();draw();window.addEventListener('resize',initC);
+
+// ── Reveal ────────────────────────────────────────────────
+new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');}}),{threshold:.1})
+  .observe===undefined||(()=>{
+    const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');}}),{threshold:.1});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  })();
+document.querySelectorAll('.reveal').forEach(el=>{
+  new IntersectionObserver(([e])=>{if(e.isIntersecting)el.classList.add('visible');},{threshold:.1}).observe(el);
+});
+
+// ── Emotion data ──────────────────────────────────────────
+const EMOS_DATA = {
+  tired: {
+    e:'😔', color:'#854F0B', signals:[20,15,25,15,10], conf:'78%',
+    name: {ro:'Obosit',en:'Tired',fr:'Fatigué',de:'Müde',zh:'疲倦',ja:'疲れた',ru:'Уставший'},
+    tempo:{ro:'Lent',en:'Slow',fr:'Lent',de:'Langsam',zh:'缓慢',ja:'遅い',ru:'Медленный'},
+    energy:{ro:'Scăzută',en:'Low',fr:'Faible',de:'Niedrig',zh:'低',ja:'低い',ru:'Низкая'},
+    response:{ro:'Te aud obosit în voce. Nu trebuie să spui mult azi. Chiar și un cuvânt e destul.',en:'I hear tiredness in your voice. You don’t need to say much today. Even one word is enough.',fr:'J’entends la fatigue dans votre voix. Pas besoin de dire beaucoup. Même un mot suffit.',de:'Ich höre Müdigkeit in deiner Stimme. Du musst heute nicht viel sagen. Ein Wort reicht.',zh:'我听到你声音中的疲倦。今天不需要说太多。一个词就够了。',ja:'声に疲れを感じます。今日は多くを語る必要はありません。一言で十分です。',ru:'Слышу усталость в твоём голосе. Не нужно много говорить. Даже одно слово достаточно.'},
+    when:{ro:'Voce joasă, ritm lent, pauze lungi, energie scăzută',en:'Low voice, slow rhythm, long pauses, low energy',fr:'Voix basse, rythme lent, longues pauses, énergie faible',de:'Tiefe Stimme, langsamer Rhythmus, lange Pausen, niedrige Energie',zh:'低声、缓慢节奏、长停顿、低能量',ja:'低い声、ゆっくりとしたリズム、長い間、低エネルギー',ru:'Тихий голос, медленный ритм, длинные паузы, низкая энергия'}
+  },
+  sad: {
+    e:'😢', color:'#378ADD', signals:[15,20,18,12,8], conf:'82%',
+    name:{ro:'Trist',en:'Sad',fr:'Triste',de:'Traurig',zh:'悲伤',ja:'悲しい',ru:'Грустный'},
+    tempo:{ro:'Lent',en:'Slow',fr:'Lent',de:'Langsam',zh:'缓慢',ja:'遅い',ru:'Медленный'},
+    energy:{ro:'Minimă',en:'Minimal',fr:'Minimale',de:'Minimal',zh:'极低',ja:'最小限',ru:'Минимальная'},
+    response:{ro:'Ce te-a supărat azi? Te aud și nu te judec. Poți spune orice — eu sunt aici.',en:'What upset you today? I hear you and don’t judge. You can say anything — I am here.',fr:'Qu’est-ce qui vous a contrarié aujourd’hui? Je vous écoute sans juger. Vous pouvez tout dire.',de:'Was hat dich heute aufgeregt? Ich höre dir zu ohne zu urteilen.',zh:'今天什么让你难过？我倾听你，不评判。你可以说任何事——我在这里。',ja:'今日何があなたを動揺させましたか？判断せずに聞きます。何でも言ってください——私はここにいます。',ru:'Что тебя расстроило сегодня? Я слушаю и не осуждаю. Ты можешь сказать что угодно — я здесь.'},
+    when:{ro:'Tremur vocal, pauze frecvente, pitch scăzut',en:'Vocal tremor, frequent pauses, low pitch',fr:'Tremblement vocal, pauses fréquentes, ton bas',de:'Stimmzittern, häufige Pausen, tiefe Tonlage',zh:'声音颤抖、频繁停顿、低音调',ja:'声の震え、頻繁な間、低い音程',ru:'Дрожь голоса, частые паузы, низкий тон'}
+  },
+  happy: {
+    e:'😄', color:'#1D9E75', signals:[35,40,38,42,35], conf:'85%',
+    name:{ro:'Fericit',en:'Happy',fr:'Heureux',de:'Glücklich',zh:'快乐',ja:'幸せ',ru:'Счастливый'},
+    tempo:{ro:'Rapid',en:'Fast',fr:'Rapide',de:'Schnell',zh:'快速',ja:'速い',ru:'Быстрый'},
+    energy:{ro:'Ridicată',en:'High',fr:'Élevée',de:'Hoch',zh:'高',ja:'高い',ru:'Высокая'},
+    response:{ro:'Te aud zâmbind! Ce s-a întâmplat bun azi? Vreau să țin minte cu tine.',en:'I hear you smiling! What good happened today? I want to remember with you.',fr:'Je vous entends sourire! Qu’est-ce qui s’est passé de bien aujourd’hui?',de:'Ich höre dein Lächeln! Was Gutes ist heute passiert?',zh:'我听到你在微笑！今天发生了什么好事？我想和你一起记住。',ja:'微笑みが聞こえます！今日何か良いことがありましたか？一緒に覚えていたいです。',ru:'Слышу твою улыбку! Что хорошего случилось сегодня? Хочу запомнить с тобой.'},
+    when:{ro:'Ton variat, ritm alert, energie ridicată, pauze scurte',en:'Varied tone, alert rhythm, high energy, short pauses',fr:'Ton varié, rythme alerte, haute énergie, courtes pauses',de:'Abwechslungsreicher Ton, lebhafter Rhythmus, hohe Energie',zh:'多变的音调、敏锐的节奏、高能量、短暂的停顿',ja:'多様な音色、機敏なリズム、高エネルギー、短い間',ru:'Разнообразный тон, бодрый ритм, высокая энергия'}
+  },
+  anxious: {
+    e:'😰', color:'#7F77DD', signals:[40,38,35,42,38], conf:'80%',
+    name:{ro:'Anxios',en:'Anxious',fr:'Anxieux',de:'Ängstlich',zh:'焦虑',ja:'不安',ru:'Тревожный'},
+    tempo:{ro:'Alert',en:'Alert',fr:'Alerte',de:'Wachsam',zh:'警觉',ja:'警戒',ru:'Настороженный'},
+    energy:{ro:'Tensionată',en:'Tense',fr:'Tendue',de:'Angespannt',zh:'紧张',ja:'緊張',ru:'Напряжённая'},
+    response:{ro:'Te simt confuz sau agitat. Respiră. Spune-mi ce te apasă — eu ascult.',en:'I feel you confused or restless. Breathe. Tell me what weighs on you — I listen.',fr:'Je vous sens confus ou agité. Respirez. Dites-moi ce qui vous pèse — j’écoute.',de:'Ich spüre Verwirrung oder Unruhe. Atme. Sag mir, was dich belastet.',zh:'我感觉到你的困惑或不安。呼吸。告诉我什么困扰你——我在听。',ja:'混乱や落ち着きのなさを感じます。息をして。何があなたを重くしているか教えてください。',ru:'Чувствую растерянность или беспокойство. Дыши. Расскажи что тебя гнетёт — я слушаю.'},
+    when:{ro:'Tempo rapid, ezitări frecvente, variație volum',en:'Fast tempo, frequent hesitations, volume variation',fr:'Tempo rapide, hésitations fréquentes, variation de volume',de:'Schnelles Tempo, häufiges Zögern, Lautstärkenvariation',zh:'快速节奏、频繁犹豫、音量变化',ja:'速いテンポ、頻繁な躊躇、音量の変化',ru:'Быстрый темп, частые колебания, вариация громкости'}
+  },
+  angry: {
+    e:'😤', color:'#E24B4A', signals:[42,45,40,44,42], conf:'88%',
+    name:{ro:'Furios',en:'Angry',fr:'En colère',de:'Wütend',zh:'愤怒',ja:'怒り',ru:'Злой'},
+    tempo:{ro:'Intens',en:'Intense',fr:'Intense',de:'Intensiv',zh:'强烈',ja:'激しい',ru:'Интенсивный'},
+    energy:{ro:'Maximă',en:'Maximum',fr:'Maximale',de:'Maximal',zh:'最大',ja:'最大',ru:'Максимальная'},
+    response:{ro:'Te aud. Furia aia e validă. Ce a declanșat-o?',en:'I hear you. That anger is valid. What triggered it?',fr:'Je vous entends. Cette colère est valide. Qu’est-ce qui l’a déclenchée?',de:'Ich höre dich. Diese Wut ist berechtigt. Was hat sie ausgelöst?',zh:'我听到你了。那种愤怒是合理的。是什么引发的？',ja:'あなたの怒りは正当です。何がそれを引き起こしましたか？',ru:'Слышу тебя. Этот гнев оправдан. Что его вызвало?'},
+    when:{ro:'Energie maximă, pitch ridicat, tempo intens',en:'Maximum energy, high pitch, intense tempo',fr:'Énergie maximale, ton élevé, tempo intense',de:'Maximale Energie, hohe Tonlage, intensives Tempo',zh:'最大能量、高音调、强烈节奏',ja:'最大エネルギー、高い音程、激しいテンポ',ru:'Максимальная энергия, высокий тон, интенсивный темп'}
+  },
+  confused: {
+    e:'😕', color:'#AFA9EC', signals:[18,20,15,22,18], conf:'71%',
+    name:{ro:'Confuz',en:'Confused',fr:'Confus',de:'Verwirrt',zh:'困惑',ja:'混乱',ru:'Растерянный'},
+    tempo:{ro:'Ezitant',en:'Hesitant',fr:'Hésitant',de:'Zögerlich',zh:'犹豫',ja:'躊躇',ru:'Нерешительный'},
+    energy:{ro:'Variabilă',en:'Variable',fr:'Variable',de:'Variabel',zh:'多变',ja:'可変',ru:'Переменная'},
+    response:{ro:'Te simt dezorientat. Hai să o luăm pe rând. Ce anume nu e clar?',en:'I feel you disoriented. Let’s take it one step at a time. What exactly is not clear?',fr:'Je vous sens désorienté. Allons-y étape par étape. Qu’est-ce qui n’est pas clair?',de:'Ich spüre Desorientierung. Lass uns Schritt für Schritt vorgehen. Was ist unklar?',zh:'我感觉你迷失方向。让我们一步步来。什么不清楚？',ja:'方向感を失っているようですね。一歩ずつ進みましょう。何が不明確ですか？',ru:'Чувствую дезориентацию. Давай по порядку. Что именно не ясно?'},
+    when:{ro:'Pauze lungi, tempo neregulat, variație mică volum',en:'Long pauses, irregular tempo, small volume variation',fr:'Longues pauses, tempo irrégulier, faible variation de volume',de:'Lange Pausen, unregelmäßiges Tempo, kleine Lautstärkenvariation',zh:'长停顿、不规则节奏、音量变化小',ja:'長い間、不規則なテンポ、小さい音量変化',ru:'Длинные паузы, нерегулярный темп, малая вариация громкости'}
+  },
+  excited: {
+    e:'🤩', color:'#EF9F27', signals:[45,48,44,46,40], conf:'84%',
+    name:{ro:'Entuziasmat',en:'Excited',fr:'Enthousiaste',de:'Begeistert',zh:'兴奋',ja:'興奮',ru:'Воодушевлённый'},
+    tempo:{ro:'Rapid',en:'Fast',fr:'Rapide',de:'Schnell',zh:'快速',ja:'速い',ru:'Быстрый'},
+    energy:{ro:'Maximă',en:'Maximum',fr:'Maximale',de:'Maximal',zh:'最大',ja:'最大',ru:'Максимальная'},
+    response:{ro:'Simt energia în voce! Ce se întâmplă? Spune-mi totul.',en:'I feel the energy in your voice! What’s happening? Tell me everything.',fr:'Je sens l’énergie dans votre voix! Que se passe-t-il? Dites-moi tout.',de:'Ich spüre die Energie in deiner Stimme! Was passiert? Erzähl mir alles.',zh:'我感觉到你声音中的能量！发生了什么？告诉我一切。',ja:'声にエネルギーを感じます！何が起こっていますか？全部教えてください。',ru:'Чувствую энергию в голосе! Что происходит? Расскажи мне всё.'},
+    when:{ro:'Tempo maxim, energie ridicată, pitch variat',en:'Maximum tempo, high energy, varied pitch',fr:'Tempo maximal, haute énergie, ton varié',de:'Maximales Tempo, hohe Energie, abwechslungsreiche Tonlage',zh:'最大节奏、高能量、多变的音调',ja:'最大テンポ、高エネルギー、多様な音程',ru:'Максимальный темп, высокая энергия, разнообразный тон'}
+  },
+  neutral: {
+    e:'😶', color:'#888780', signals:[25,25,25,25,25], conf:'65%',
+    name:{ro:'Neutru',en:'Neutral',fr:'Neutre',de:'Neutral',zh:'中性',ja:'中立',ru:'Нейтральный'},
+    tempo:{ro:'Normal',en:'Normal',fr:'Normal',de:'Normal',zh:'正常',ja:'通常',ru:'Обычный'},
+    energy:{ro:'Medie',en:'Medium',fr:'Moyenne',de:'Mittel',zh:'中等',ja:'中',ru:'Средняя'},
+    response:{ro:'Bună seara. Cum a fost ziua ta?',en:'Good evening. How was your day?',fr:'Bonsoir. Comment s’est passée votre journée?',de:'Guten Abend. Wie war dein Tag?',zh:'晚上好。今天怎么样？',ja:'こんばんは。今日はどうでしたか？',ru:'Добрый вечер. Как прошёл твой день?'},
+    when:{ro:'Semnale echilibrate, fără variații semnificative',en:'Balanced signals, no significant variations',fr:'Signaux équilibrés, sans variations significatives',de:'Ausgewogene Signale, keine signifikanten Variationen',zh:'平衡信号，无明显变化',ja:'バランスの取れた信号、大きな変化なし',ru:'Сбалансированные сигналы, без значительных изменений'}
+  },
+};
+
+// Helper to get current-language emotion
+function getEmo(key) {
+  const L = window.voxenLang ? window.voxenLang() : 'ro';
+  const d = EMOS_DATA[key];
+  if (!d) return null;
+  return {
+    e: d.e, color: d.color, signals: d.signals, conf: d.conf,
+    name: d.name[L] || d.name.en,
+    tempo: d.tempo[L] || d.tempo.en,
+    energy: d.energy[L] || d.energy.en,
+    response: d.response[L] || d.response.en,
+    when: d.when[L] || d.when.en,
+  };
+}
+
+const EMOS = new Proxy({}, { get: (_,k) => getEmo(k) });
+
+let currentEmo = 'neutral';
+let history = [];
+
+function setEmo(emo) {
+  currentEmo = emo;
+  document.querySelectorAll('.emo-chip').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.emo-chip').forEach(c=>{if(c.textContent.includes(EMOS[emo]?.e))c.classList.add('active');});
+  document.getElementById('voiceState').textContent = `Emoție selectată: ${EMOS[emo].name}`;
+}
+
+// ═══════════════════════════════════════════════════════
+// REAL VOICE ANALYSIS — Web Audio API
+// ═══════════════════════════════════════════════════════
+let audioContext = null;
+let analyser = null;
+let mediaRecorder = null;
+let recordingChunks = [];
+let analysisInterval = null;
+let recordingStartTime = 0;
+
+// Prosody signals collected during recording
+let prosodyData = {
+  pitchSamples: [],     // Hz values
+  energySamples: [],    // RMS 0-1
+  silenceSamples: 0,    // count of silent frames
+  totalSamples: 0,      // total frames
+  speechRate: 0,        // syllables/sec estimate
+};
+
+// ── Autocorrelation pitch detection ───────────────────────
+function detectPitch(buf, sampleRate) {
+  const SIZE = buf.length;
+  let rms = 0;
+  for (let i = 0; i < SIZE; i++) rms += buf[i] * buf[i];
+  rms = Math.sqrt(rms / SIZE);
+  if (rms < 0.01) return -1; // silence
+  
+  let r1 = 0, r2 = SIZE - 1, thres = 0.2;
+  for (let i = 0; i < SIZE / 2; i++) if (Math.abs(buf[i]) < thres) { r1 = i; break; }
+  for (let i = 1; i < SIZE / 2; i++) if (Math.abs(buf[SIZE - i]) < thres) { r2 = SIZE - i; break; }
+  
+  const buf2 = buf.slice(r1, r2);
+  const SIZE2 = buf2.length;
+  const c = new Array(SIZE2).fill(0);
+  for (let i = 0; i < SIZE2; i++)
+    for (let j = 0; j < SIZE2 - i; j++)
+      c[i] = c[i] + buf2[j] * buf2[j + i];
+  
+  let d = 0;
+  while (c[d] > c[d + 1]) d++;
+  let maxval = -1, maxpos = -1;
+  for (let i = d; i < SIZE2; i++) {
+    if (c[i] > maxval) { maxval = c[i]; maxpos = i; }
+  }
+  let T0 = maxpos;
+  if (T0 === 0) return -1;
+  
+  const x1 = c[T0 - 1] || 0, x2 = c[T0], x3 = c[T0 + 1] || 0;
+  const a = (x1 + x3 - 2 * x2) / 2;
+  const b = (x3 - x1) / 2;
+  if (a) T0 = T0 - b / (2 * a);
+  
+  return sampleRate / T0;
+}
+
+// ── Start listening with REAL microphone ──────────────────
+
+// Duration setter
+window.voxenDuration = 60; // default
+function setDuration(sec) {
+  window.voxenDuration = sec;
+  document.querySelectorAll('.dur-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.dur) === sec);
+  });
+}
+
+// Live recording timer
+let recTimerInterval = null;
+function startRecTimer() {
+  const stateEl = document.getElementById('voiceState');
+  const startTime = Date.now();
+  const total = window.voxenDuration || 60;
+  recTimerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const remaining = Math.max(0, total - elapsed);
+    const mm = Math.floor(remaining / 60).toString().padStart(2, '0');
+    const ss = (remaining % 60).toString().padStart(2, '0');
+    const L = window.voxenLang ? window.voxenLang() : 'ro';
+    const recLabel = {ro:'🔴 Înregistrare',en:'🔴 Recording',fr:'🔴 Enregistrement',de:'🔴 Aufnahme',zh:'🔴 录音中',ja:'🔴 録音中',ru:'🔴 Запись'}[L];
+    stateEl.textContent = `${recLabel} · ${mm}:${ss}`;
+  }, 100);
+}
+function stopRecTimer() {
+  if (recTimerInterval) { clearInterval(recTimerInterval); recTimerInterval = null; }
+}
+
+async function startListening() {
+  const orb = document.getElementById('orbCore');
+  const stateEl = document.getElementById('voiceState');
+  
+  // Stop if already recording
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    stopRecording();
+    return;
+  }
+  
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaStreamSource(stream);
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    source.connect(analyser);
+    
+    // Reset prosody data
+    prosodyData = { pitchSamples: [], energySamples: [], silenceSamples: 0, totalSamples: 0, speechRate: 0 };
+    recordingStartTime = Date.now();
+    
+    // Setup MediaRecorder for transcription
+    mediaRecorder = new MediaRecorder(stream);
+    recordingChunks = [];
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordingChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      // Stop STT before analyzing (final transcript needed)
+      if (window._vxSpeechRec) {
+        try { window._vxSpeechRec.stop(); } catch(e) {}
+        window._vxSpeechRec = null;
+      }
+      window._vxRecording = false;
+      analyzeRecording();
+    };
+    mediaRecorder.start();
+    
+    // ── CRISIS STT INTEGRATION (P0) ──────────────────────
+    window._vxRecording = true;
+    _sttTranscript = ''; // Reset transcript per sesiune
+    window._vxSpeechRec = vxInitSTT();
+    if (window._vxSpeechRec) {
+      try { window._vxSpeechRec.start(); } catch(e) {
+        console.warn('[Voxen] STT start failed:', e);
+      }
+    }
+    // ─────────────────────────────────────────────────────
+    
+    // UI: listening state with live timer
+    orb.classList.add('listening');
+    orb.textContent = '🔴';
+    startRecTimer();
+    
+    // Real-time analysis loop
+    const buf = new Float32Array(analyser.fftSize);
+    const sr = audioContext.sampleRate;
+    
+    analysisInterval = setInterval(() => {
+      analyser.getFloatTimeDomainData(buf);
+      
+      // RMS energy
+      let sum = 0;
+      for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+      const rms = Math.sqrt(sum / buf.length);
+      prosodyData.energySamples.push(rms);
+      prosodyData.totalSamples++;
+      
+      if (rms < 0.01) {
+        prosodyData.silenceSamples++;
+      } else {
+        // Pitch detection only when speaking
+        const pitch = detectPitch(buf, sr);
+        if (pitch > 50 && pitch < 500) prosodyData.pitchSamples.push(pitch);
+      }
+      
+      // Live update metrics
+      updateLiveMetrics(rms, prosodyData.pitchSamples.slice(-1)[0] || 0);
+    }, 100);
+    
+    // Auto-stop after selected duration
+    const durationSec = window.voxenDuration || 60;
+    setTimeout(() => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+    }, durationSec * 1000);
+    
+  } catch (err) {
+    console.error('Microphone error:', err);
+    const L = window.voxenLang ? window.voxenLang() : 'ro';
+    const errMsg = {ro:'⚠ Permiterea microfonului refuzată — încearcă demo',en:'⚠ Microphone denied — try the demo',fr:'⚠ Microphone refusé — essayez la démo',de:'⚠ Mikrofon abgelehnt — versuche die Demo',zh:'⚠ 麦克风被拒绝 — 试试演示',ja:'⚠ マイク拒否 — デモを試して',ru:'⚠ Микрофон отклонён — попробуй демо'}[L];
+    stateEl.textContent = errMsg;
+    // Fallback to simulation
+    setTimeout(() => triggerResponse(), 1500);
+  }
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+  }
+  if (analysisInterval) {
+    clearInterval(analysisInterval);
+    analysisInterval = null;
+  }
+  stopRecTimer();
+  const orb = document.getElementById('orbCore');
+  orb.classList.remove('listening');
+  orb.textContent = '🎙';
+  const L = window.voxenLang ? window.voxenLang() : 'ro';
+  document.getElementById('voiceState').textContent = {ro:'Analizez vocea...',en:'Analyzing voice...',fr:'Analyse de la voix...',de:'Analysiere Stimme...',zh:'分析声音中...',ja:'声を分析中...',ru:'Анализирую голос...'}[L];
+}
+
+function updateLiveMetrics(rms, pitch) {
+  // Animate signal bars based on real RMS
+  const sigBars = document.getElementById('sigBars').querySelectorAll('.sb');
+  if (sigBars.length) {
+    const h = Math.min(50, Math.max(4, rms * 500));
+    sigBars.forEach((b, i) => {
+      const offset = (i - 2) * 4;
+      b.style.height = Math.max(2, h + offset + Math.random() * 6) + 'px';
+      b.style.background = rms > 0.05 ? '#534AB7' : '#888';
+    });
+  }
+}
+
+function analyzeRecording() {
+  const duration = (Date.now() - recordingStartTime) / 1000;
+  
+  // Compute prosody metrics
+  const avgPitch = prosodyData.pitchSamples.length
+    ? prosodyData.pitchSamples.reduce((a,b)=>a+b,0) / prosodyData.pitchSamples.length
+    : 0;
+  const avgEnergy = prosodyData.energySamples.length
+    ? prosodyData.energySamples.reduce((a,b)=>a+b,0) / prosodyData.energySamples.length
+    : 0;
+  const pauseRatio = prosodyData.silenceSamples / Math.max(1, prosodyData.totalSamples);
+  
+  // Pitch variance (monotone vs varied)
+  let pitchVar = 0;
+  if (prosodyData.pitchSamples.length > 1) {
+    const variance = prosodyData.pitchSamples.reduce((acc,p) => acc + (p-avgPitch)**2, 0) / prosodyData.pitchSamples.length;
+    pitchVar = Math.sqrt(variance);
+  }
+  
+  // Detect emotion from prosody signals
+  let detectedEmotion = 'neutral';
+  
+  if (avgEnergy < 0.02 && pauseRatio > 0.5) detectedEmotion = 'tired';
+  else if (avgPitch < 150 && pauseRatio > 0.4 && pitchVar < 20) detectedEmotion = 'sad';
+  else if (avgEnergy > 0.08 && avgPitch > 200 && pitchVar > 30) detectedEmotion = 'happy';
+  else if (avgEnergy > 0.06 && pauseRatio < 0.2 && pitchVar > 25) detectedEmotion = 'anxious';
+  else if (avgEnergy > 0.1 && avgPitch > 180) detectedEmotion = 'angry';
+  else if (pauseRatio > 0.55 && pitchVar < 15) detectedEmotion = 'confused';
+  else if (avgEnergy > 0.07 && pitchVar > 35) detectedEmotion = 'excited';
+  
+  // Display REAL metrics
+  document.getElementById('mTempo').textContent = avgPitch > 0 ? Math.round(avgPitch) + ' Hz' : '—';
+  document.getElementById('mEnergy').textContent = (avgEnergy * 100).toFixed(1);
+  document.getElementById('mConf').textContent = Math.round((1 - pauseRatio) * 100) + '%';
+  
+  console.log('Real prosody:', { avgPitch, avgEnergy, pauseRatio, pitchVar, duration, detected: detectedEmotion });
+  
+  // Trigger response with detected emotion
+  currentEmo = detectedEmotion;
+
+  // ── CRISIS INTEGRATION (P0) ──────────────────────────────
+  // Analiza criză pe textul transcris + semnale prozodice reale
+  const prosodyForCrisis = { energy: avgEnergy, pauseRatio };
+  vxAnalyzeCrisis(_sttTranscript, prosodyForCrisis);
+  // Dacă e criză imminentă, UI-ul e deja locked — nu triggerăm răspuns normal
+  if (!_crisisLocked) {
+    triggerResponse();
+  }
+  // ────────────────────────────────────────────────────────
+}
+
+function triggerResponse() {
+  const emo = EMOS[currentEmo] || EMOS.neutral;
+  const respOrb = document.getElementById('respOrb');
+  const respEmo = document.getElementById('respEmo');
+  const respInt = document.getElementById('respIntensity');
+  const sigBars = document.getElementById('sigBars').querySelectorAll('.sb');
+
+  respOrb.textContent = emo.e;
+  respOrb.style.background = emo.color + '22';
+  respOrb.style.borderColor = emo.color;
+  respEmo.textContent = emo.name;
+  respInt.textContent = `Intensitate: ${emo.conf} confidence`;
+
+  // Animate signal bars
+  emo.signals.forEach((h,i)=>{
+    if(sigBars[i]){
+      sigBars[i].style.height = h+'px';
+      sigBars[i].style.background = emo.color;
+    }
+  });
+
+  document.getElementById('mTempo').textContent = emo.tempo;
+  document.getElementById('mEnergy').textContent = emo.energy;
+  document.getElementById('mConf').textContent = emo.conf;
+
+  typeText('respText', emo.response);
+  document.getElementById('voiceState').textContent = `Emoție detectată: ${emo.name}`;
+
+  // Add to history
+  history.unshift({e:emo.e, name:emo.name, time: new Date().toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'})});
+  if(history.length > 3) history.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const hr = document.getElementById('histRow');
+  const label = hr.querySelector('[style]') || hr.firstChild;
+  // Remove old items
+  while(hr.children.length > 1) hr.removeChild(hr.lastChild);
+  history.forEach(h=>{
+    const d = document.createElement('div');
+    d.className = 'hist-item';
+    d.innerHTML = `<span class="hist-emo">${h.e}</span> <span>${h.name}</span> <span style="margin-left:auto;font-size:10px">${h.time}</span>`;
+    hr.appendChild(d);
+  });
+}
+
+function typeText(id, text) {
+  const el = document.getElementById(id);
+  el.innerHTML = '<span class="cursor"></span>';
+  let i = 0;
+  const iv = setInterval(()=>{
+    if(i<text.length){el.textContent=text.slice(0,++i);el.innerHTML+='<span class="cursor"></span>';}
+    else clearInterval(iv);
+  }, 22);
+}
+
+// ── Emotion map ───────────────────────────────────────────
+const emoMapEl = document.getElementById('emoMap');
+function buildEmoMap() {
+  emoMapEl.innerHTML = '';
+  Object.keys(EMOS_DATA).forEach(key=>{
+    const emo = getEmo(key);
+    const d = document.createElement('div');
+    d.className = 'emo-card';
+    d.style.borderColor = emo.color+'60';
+    d.innerHTML = `
+      <span class="ec-emoji">${emo.e}</span>
+      <div class="ec-name">${emo.name}</div>
+      <div class="ec-signals">${emo.when}</div>
+      <div class="ec-response">${emo.response}</div>`;
+    d.onclick = ()=>{ setEmo(key); triggerResponse(); window.scrollTo({top:0,behavior:'smooth'}); };
+    emoMapEl.appendChild(d);
+  });
+}
+buildEmoMap();
+
+// ── Prosody signals grid ──────────────────────────────────
+const PROSODY_DATA = [
+  {icon:'⚡',sad:95,normal:130,happy:175,fill:'#534AB7',
+   name:{ro:'Tempo',en:'Tempo',fr:'Tempo',de:'Tempo',zh:'节奏',ja:'テンポ',ru:'Темп'},
+   label:{ro:'Cuvinte per minut',en:'Words per minute',fr:'Mots par minute',de:'Wörter pro Minute',zh:'每分钟字数',ja:'分あたり単語数',ru:'Слов в минуту'},
+   desc:{ro:'Vorbim mai repede când suntem fericiți sau anxioși. Mai lent când suntem triști sau obosiți.',en:'We speak faster when happy or anxious. Slower when sad or tired.',fr:'Nous parlons plus vite quand nous sommes heureux ou anxieux. Plus lentement quand nous sommes tristes.',de:'Wir sprechen schneller wenn glücklich oder ängstlich. Langsamer wenn traurig oder müde.',zh:'我们快乐或焦虑时说话更快。悲伤或疲倦时更慢。',ja:'幸せや不安なときは早く話します。悲しいときや疲れているときはゆっくり。',ru:'Говорим быстрее когда счастливы или тревожны. Медленнее когда грустны или устали.'}},
+  {icon:'🎵',sad:155,normal:190,happy:235,fill:'#7F77DD',
+   name:{ro:'Pitch mediu',en:'Mean pitch',fr:'Hauteur moyenne',de:'Mittlere Tonhöhe',zh:'平均音调',ja:'平均ピッチ',ru:'Средний тон'},
+   label:{ro:'Hz — înălțimea vocii',en:'Hz — voice pitch',fr:'Hz — hauteur de la voix',de:'Hz — Stimmhöhe',zh:'Hz — 声音高度',ja:'Hz — 声の高さ',ru:'Гц — высота голоса'},
+   desc:{ro:'Tonul vocii crește cu emoțiile pozitive și scade cu tristețea sau oboseala.',en:'Voice tone rises with positive emotions and falls with sadness or fatigue.',fr:'Le ton de la voix monte avec les émotions positives et baisse avec la tristesse ou la fatigue.',de:'Die Stimmlage steigt bei positiven Emotionen und fällt bei Traurigkeit oder Müdigkeit.',zh:'声调随积极情绪上升，随悲伤或疲劳下降。',ja:'声の音程はポジティブな感情で上昇し、悲しみや疲労で下降します。',ru:'Тон голоса повышается при позитивных эмоциях и понижается при грусти или усталости.'}},
+  {icon:'🔋',sad:22,normal:55,happy:82,fill:'#1D9E75',
+   name:{ro:'Energie RMS',en:'RMS energy',fr:'Énergie RMS',de:'RMS-Energie',zh:'RMS能量',ja:'RMSエネルギー',ru:'RMS-энергия'},
+   label:{ro:'Volumul perceput 0–100',en:'Perceived volume 0-100',fr:'Volume perçu 0-100',de:'Wahrgenommene Lautstärke 0-100',zh:'感知音量 0-100',ja:'知覚音量 0-100',ru:'Воспринимаемая громкость 0-100'},
+   desc:{ro:'Energia vocii corelează direct cu starea emoțională. Depresie → energie minimă.',en:'Voice energy directly correlates with emotional state. Depression → minimal energy.',fr:'L’énergie de la voix corrèle directement avec l’état émotionnel.',de:'Die Stimmenergie korreliert direkt mit dem emotionalen Zustand.',zh:'声音能量与情绪状态直接相关。抑郁→能量最小。',ja:'声のエネルギーは感情状態と直接相関します。',ru:'Энергия голоса прямо коррелирует с эмоциональным состоянием.'}},
+  {icon:'⏸',sad:52,normal:28,happy:12,fill:'#EF9F27',
+   name:{ro:'Ratio pauze',en:'Pause ratio',fr:'Ratio de pauses',de:'Pausenverhältnis',zh:'停顿比率',ja:'ポーズ比率',ru:'Доля пауз'},
+   label:{ro:'% timp fără vorbire',en:'% time without speech',fr:'% temps sans parole',de:'% Zeit ohne Sprache',zh:'无语音时间百分比',ja:'発話なし時間の割合',ru:'% времени без речи'},
+   desc:{ro:'Tristețea și confuzia produc mai multe pauze. Fericirea — mai puține.',en:'Sadness and confusion produce more pauses. Happiness — fewer.',fr:'La tristesse et la confusion produisent plus de pauses. Le bonheur — moins.',de:'Traurigkeit und Verwirrung erzeugen mehr Pausen. Glück — weniger.',zh:'悲伤和困惑产生更多停顿。快乐——更少。',ja:'悲しみと混乱はより多くのポーズを生みます。幸せはより少ない。',ru:'Грусть и растерянность дают больше пауз. Счастье — меньше.'}},
+  {icon:'📊',sad:15,normal:42,happy:78,fill:'#D4537E',
+   name:{ro:'Variație volum',en:'Volume variance',fr:'Variance du volume',de:'Lautstärkenvariation',zh:'音量变化',ja:'音量変化',ru:'Вариация громкости'},
+   label:{ro:'Dinamica vocii 0–100',en:'Voice dynamics 0-100',fr:'Dynamique vocale 0-100',de:'Stimmdynamik 0-100',zh:'声音动态 0-100',ja:'声の動的範囲 0-100',ru:'Динамика голоса 0-100'},
+   desc:{ro:'O voce monotonă semnalează tristețe sau oboseală. Variația mare — entuziasm.',en:'A monotone voice signals sadness or fatigue. High variance — enthusiasm.',fr:'Une voix monotone signale tristesse ou fatigue. Une grande variance — enthousiasme.',de:'Eine monotone Stimme signalisiert Traurigkeit. Hohe Variation — Begeisterung.',zh:'单调的声音表示悲伤或疲劳。大变化——热情。',ja:'単調な声は悲しみや疲労を示します。大きな変化は熱意。',ru:'Монотонный голос — печаль или усталость. Большая вариация — воодушевление.'}},
+  {icon:'🗣',sad:3.2,normal:4.8,happy:6.5,fill:'#854F0B',
+   name:{ro:'Rata vorbirii',en:'Speech rate',fr:'Débit de parole',de:'Sprechrate',zh:'语速',ja:'話速',ru:'Темп речи'},
+   label:{ro:'Silabe per secundă',en:'Syllables per second',fr:'Syllabes par seconde',de:'Silben pro Sekunde',zh:'每秒音节数',ja:'秒あたり音節数',ru:'Слогов в секунду'},
+   desc:{ro:'Rata vorbirii este unul dintre cei mai fiabili indicatori ai stării emoționale.',en:'Speech rate is one of the most reliable indicators of emotional state.',fr:'Le débit de parole est l’un des indicateurs les plus fiables.',de:'Die Sprechrate ist einer der zuverlässigsten Indikatoren.',zh:'语速是最可靠的情绪状态指标之一。',ja:'話速は感情状態の最も信頼できる指標の1つ。',ru:'Темп речи — один из самых надёжных индикаторов состояния.'}},
+];
+
+// Get prosody data for current language
+function getProsody() {
+  const L = window.voxenLang ? window.voxenLang() : 'ro';
+  return PROSODY_DATA.map(p => ({
+    icon: p.icon, sad: p.sad, normal: p.normal, happy: p.happy, fill: p.fill,
+    name: p.name[L] || p.name.en,
+    label: p.label[L] || p.label.en,
+    desc: p.desc[L] || p.desc.en,
+  }));
+}
+
+const PROSODY = getProsody();
+
+const pgEl = document.getElementById('prosodyGrid');
+function buildProsodyGrid() {
+  pgEl.innerHTML = '';
+  const items = getProsody();
+  items.forEach(p=>{
+    const pct = Math.round((p.normal/p.happy)*100);
+    const d = document.createElement('div');
+    d.className = 'prosody-card reveal';
+    d.innerHTML = `
+      <div class="pc-icon">${p.icon}</div>
+      <div class="pc-name">${p.name}</div>
+      <div class="pc-bar-label">${p.label}</div>
+      <div style="display:flex;gap:4px;margin-bottom:6px">
+        <span style="font-size:10px;color:var(--text2)">😢 ${p.sad}</span>
+        <div class="pc-bar-bg" style="flex:1;align-self:center"><div class="pc-bar-fill" style="width:${pct}%;background:${p.fill}"></div></div>
+        <span style="font-size:10px;color:var(--text2)">${p.happy} 😄</span>
+      </div>
+      <div class="pc-desc">${p.desc}</div>`;
+    pgEl.appendChild(d);
+    setTimeout(()=>{
+      const fill = d.querySelector('.pc-bar-fill');
+      if(fill) fill.style.width = pct+'%';
+    }, 100);
+  });
+}
+buildProsodyGrid();
+
+// Register hooks for language changes
+window.voxenHooks = window.voxenHooks || [];
+window.voxenHooks.push(function(lang){
+  if (typeof buildEmoMap === 'function') buildEmoMap();
+  if (typeof buildProsodyGrid === 'function') buildProsodyGrid();
+});
+</script>
+<script>
+// ── Optimizare baterie: oprește animațiile când pagina nu e vizibilă ──
+(function(){
+  document.addEventListener('visibilitychange', function(){
+    document.body.style.animationPlayState = document.hidden ? 'paused' : 'running';
+    // Oprește toate animațiile CSS prin clasă pe body
+    if(document.hidden) document.documentElement.classList.add('vx-paused');
+    else document.documentElement.classList.remove('vx-paused');
+  });
+})();
+</script>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   VOXEN CRISIS INTEGRATION — P0 Runtime
+   Integrat automat în companion.html
+   ════════════════════════════════════════════════════════ */
+// ── Copiem modulele inline (până la migrarea la ES Modules) ──
+// În producție, acestea vor fi importate din /src/protocol/
+
+// ── CRISIS LEXICON (din crisisDetection.js) ──
+const CRISIS_LEXICON = {
+  imminent: {
+    ro: [
+      'vreau să mor', 'vreau sa mor',
+      'o să mă sinucid', 'o sa ma sinucid', 'mă sinucid', 'ma sinucid',
+      'o să mă omor', 'o sa ma omor', 'mă omor', 'ma omor',
+      'îmi pun capăt', 'imi pun capat', 'să-mi pun capăt', 'sa-mi pun capat',
+      'mi-am luat pastilele', 'am luat pastile',
+      'am un plan', 'știu cum o fac', 'stiu cum o fac',
+      'asta e ultima', 'la noapte o fac', 'azi o fac',
+      'mi-am scris biletul', 'mi-am luat rămas bun', 'mi-am luat ramas bun',
+      'nu mai apuc', 'e ultima oară când', 'e ultima oara cand',
+    ],
+  },
+  ideation: {
+    ro: [
+      'nu mai vreau să trăiesc', 'nu mai vreau sa traiesc',
+      'mai bine aș muri', 'mai bine as muri', 'mai bine muream',
+      'aș vrea să dispar', 'as vrea sa dispar', 'vreau să dispar', 'vreau sa dispar',
+      'nu mai are rost', 'nimic nu mai are rost',
+      'lumea ar fi mai bună fără mine', 'lumea ar fi mai buna fara mine',
+      'toți ar fi mai bine fără mine', 'toti ar fi mai bine fara mine',
+      'sunt o povară', 'sunt o povara',
+      'nu mai pot continua', 'nu mai pot să continui', 'nu mai pot sa continui',
+      'mă gândesc la moarte', 'ma gandesc la moarte',
+      'gânduri negre', 'ganduri negre',
+      'nu mai văd nicio ieșire', 'nu mai vad nicio iesire',
+      'aș vrea să nu mă mai trezesc', 'as vrea sa nu ma mai trezesc',
+      'mi-e silă de viață', 'mi-e sila de viata',
+      'nu merită', 'nu mai merita nimic',
+    ],
+  },
+  distress: {
+    ro: [
+      'nu mai suport', 'nu mai pot',
+      'sunt la capătul puterilor', 'sunt la capatul puterilor',
+      'm-am săturat de tot', 'm-am saturat de tot',
+      'nimănui nu-i pasă', 'nimanui nu-i pasa',
+      'sunt complet singur', 'sunt complet singura',
+      'mă simt fără speranță', 'ma simt fara speranta',
+      'nu mai am putere', 'sunt epuizat de tot',
+      'mă prăbușesc', 'ma prabusesc',
+      'totul e negru', 'nu văd nicio lumină', 'nu vad nicio lumina',
+      'am cedat', 'nu mai rezist',
+      'am recăzut', 'am recazut', 'am băut iar', 'am baut iar',
+      'am consumat din nou', 'am pierdut tot progresul',
+    ],
+  },
+};
+
+const CRISIS_RESOURCES_RO = {
+  emergency: { number: '112', label: 'Numărul unic de urgență' },
+  suicide_line: {
+    number: '0800 801 200',
+    label: 'TelVerde Antisuicid',
+    email: 'sos@antisuicid.ro',
+    schedule: { days: [5, 6, 0], startHour: 19, endHour: 7 },
+  },
+};
+
+// ── FUNCȚII DIN crisisDetection.js ──
+function vxDetectCrisis(text, prosody) {
+  if (!text || typeof text !== 'string') {
+    // Fallback pe prozodie
+    if (prosody && prosody.energy < 0.015 && prosody.pauseRatio > 0.65) {
+      return { level: 'distress', matched: [], source: 'prosody' };
+    }
+    return { level: 'none', matched: [], source: 'empty' };
+  }
+
+  const normalized = text.toLowerCase().trim();
+
+  for (const level of ['imminent', 'ideation', 'distress']) {
+    const phrases = CRISIS_LEXICON[level].ro;
+    const matched = phrases.filter(p => normalized.includes(p));
+    if (matched.length > 0) {
+      return { level, matched, source: 'text' };
+    }
+  }
+
+  if (prosody && prosody.energy < 0.015 && prosody.pauseRatio > 0.65) {
+    return { level: 'distress', matched: [], source: 'prosody' };
+  }
+
+  return { level: 'none', matched: [], source: 'none' };
+}
+
+function vxIsSuicideLineOpen() {
+  const now = new Date();
+  const day = now.getDay();
+  const hour = now.getHours();
+  const sched = CRISIS_RESOURCES_RO.suicide_line.schedule;
+  const isEveningDay = sched.days.includes(day) && hour >= sched.startHour;
+  const prevDay = (day + 6) % 7;
+  const isMorningAfter = sched.days.includes(prevDay) && hour < sched.endHour;
+  return isEveningDay || isMorningAfter;
+}
+
+// ── RISK ENGINE (inline simplificat) ──
+const VxRiskEngine = {
+  _events: [],
+  _weights: { imminent: 100, ideation: 60, distress: 25, none: 0 },
+  _decay: 0.85,
+
+  update(detection) {
+    const weight = this._weights[detection.level] || 0;
+    this._events.push({ weight, timestamp: Date.now(), level: detection.level });
+    return this._score();
+  },
+
+  _score() {
+    const now = Date.now();
+    let total = 0;
+    for (const ev of this._events) {
+      const ageMin = (now - ev.timestamp) / 60_000;
+      total += ev.weight * Math.pow(this._decay, ageMin);
+    }
+    total = Math.round(total);
+
+    const n = this._events.length;
+    let trend = 'stable';
+    if (n >= 4) {
+      const mid = Math.floor(n / 2);
+      const avgF = this._events.slice(0, mid).reduce((s, e) => s + e.weight, 0) / mid;
+      const avgS = this._events.slice(mid).reduce((s, e) => s + e.weight, 0) / (n - mid);
+      if (avgS > avgF * 1.1) trend = 'escalating';
+      else if (avgS < avgF * 0.9) trend = 'improving';
+    }
+
+    let consecutive = 0;
+    for (let i = this._events.length - 1; i >= 0; i--) {
+      if (this._events[i].level !== 'none') consecutive++;
+      else break;
+    }
+
+    const shouldEscalate =
+      total >= 80 ||
+      (trend === 'escalating' && total >= 40) ||
+      consecutive >= 3;
+
+    return { score: total, trend, shouldEscalate, consecutive };
+  },
+
+  reset() { this._events = []; },
+};
+
+// ── CRISIS OVERLAY CONTROLLER ──
+let _crisisLocked = false;
+let _lastCrisisEmit = 0;
+let _sttTranscript = '';
+
+// Speech Recognition setup
+function vxInitSTT() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    console.info('[Voxen] STT not available — prosody-only mode');
+    return null;
+  }
+
+  const rec = new SR();
+  rec.continuous = true;
+  rec.interimResults = true;
+
+  const langMap = { ro:'ro-RO', en:'en-US', fr:'fr-FR', de:'de-DE', zh:'zh-CN', ja:'ja-JP', ru:'ru-RU' };
+  rec.lang = langMap[window.voxenLang ? window.voxenLang() : 'ro'] || 'ro-RO';
+
+  let finalText = '';
+  rec.onresult = (event) => {
+    let interim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const r = event.results[i];
+      if (r.isFinal) finalText += r[0].transcript + ' ';
+      else interim += r[0].transcript;
+    }
+    _sttTranscript = (finalText + interim).trim();
+
+    // Analiză în timp real pe text parțial (nu așteptăm sfârșitul)
+    vxAnalyzeCrisis(_sttTranscript, null);
+  };
+
+  rec.onerror = (e) => {
+    if (e.error !== 'no-speech') console.warn('[Voxen STT]', e.error);
+  };
+
+  // Auto-restart dacă se oprește (browser timeout)
+  rec.onend = () => {
+    if (window._vxRecording && !_crisisLocked) {
+      try { rec.start(); } catch(e) {}
+    }
+  };
+
+  return rec;
+}
+
+// ── ANALIZA CRIZĂ — apelată după fiecare chunk de text STT ──
+function vxAnalyzeCrisis(text, prosodyOverride) {
+  if (_crisisLocked) return;
+
+  const prosody = prosodyOverride || {
+    energy: prosodyData ? (prosodyData.energySamples.slice(-5).reduce((a,b)=>a+b,0)/5 || 0) : 0,
+    pauseRatio: prosodyData ? (prosodyData.silenceSamples / Math.max(1, prosodyData.totalSamples)) : 0,
+  };
+
+  const detection = vxDetectCrisis(text, prosody);
+
+  // Risk engine update
+  const risk = VxRiskEngine.update(detection);
+
+  // Escaladare din trend fără trigger textual explicit
+  if (risk.shouldEscalate && detection.level === 'none') {
+    detection.level = 'distress';
+    detection.source = 'risk_engine';
+  }
+
+  if (detection.level === 'none') return;
+
+  // Throttle: același nivel nu mai des de 5s (excepție: imminent)
+  const now = Date.now();
+  if (detection.level !== 'imminent' && (now - _lastCrisisEmit) < 5000) return;
+  _lastCrisisEmit = now;
+
+  // Afișează overlay
+  vxShowCrisisOverlay(detection.level, risk);
+
+  // Lock dacă iminent
+  if (detection.level === 'imminent') {
+    _crisisLocked = true;
+    vxLockCompanionUI();
+    vxLogCrisisEvent(detection.level, risk);
+  }
+}
+
+// ── AFIȘARE OVERLAY ──
+function vxShowCrisisOverlay(level, risk) {
+  const overlay = document.getElementById('crisisOverlay');
+  if (!overlay) return;
+
+  const panel = document.getElementById('crisisPanel');
+  const icon = document.getElementById('crisisIcon');
+  const title = document.getElementById('crisisTitle');
+  const body = document.getElementById('crisisBody');
+  const actions = document.getElementById('crisisActions');
+  const dismiss = document.getElementById('crisisDismiss');
+
+  // Configurare per nivel
+  const configs = {
+    imminent: {
+      icon: '🆘',
+      title: 'Vreau să te ajut chiar acum.',
+      body: [
+        'Ceea ce simți e foarte greu și mă bucur că ai spus-o cu voce tare.',
+        'Acum e momentul să vorbești cu un om, nu cu o aplicație.',
+        'Te rog sună la 112 — acolo sunt oameni pregătiți care pot ajunge la tine.',
+        'Dacă poți, rămâi lângă cineva de încredere până vorbești cu ei.',
+      ],
+      actions: [
+        { type: 'call', number: '112', label: '🆘 Sună la 112 acum', primary: true },
+        { type: 'call', number: '0800 801 200', label: 'TelVerde Antisuicid', primary: false },
+      ],
+      showDismiss: false,
+      panelClass: 'imminent',
+    },
+    ideation: {
+      icon: '💜',
+      title: 'Te aud. Și nu te las singur cu asta.',
+      body: [
+        'Gândurile astea sunt grele și nu trebuie să le duci de unul singur.',
+        'Nu sunt terapeut și nu pot ține locul unui om real — dar pot să te conectez cu unul.',
+        'Există oameni care ascultă exact ce simți acum, fără să te judece.',
+      ],
+      actions: vxIsSuicideLineOpen()
+        ? [
+            { type: 'call', number: '0800 801 200', label: 'Sună la TelVerde Antisuicid', primary: true },
+            { type: 'call', number: '112', label: 'Urgență 112', primary: false },
+          ]
+        : [
+            { type: 'email', address: 'sos@antisuicid.ro', label: 'Scrie la TelVerde Antisuicid', primary: true, note: 'Răspuns în max. 24h' },
+            { type: 'call', number: '112', label: 'Urgență 112', primary: false },
+          ],
+      showDismiss: true,
+      panelClass: '',
+    },
+    distress: {
+      icon: '🤍',
+      title: 'Pare că treci prin ceva foarte greu acum.',
+      body: [
+        'Îmi pare rău că e atât de apăsător. Ce simți contează.',
+        'Dacă vrei, poți vorbi cu cineva care te poate sprijini mai mult decât pot eu.',
+        'Nu trebuie să fii bine chiar acum. E în regulă să ceri ajutor.',
+      ],
+      actions: vxIsSuicideLineOpen()
+        ? [{ type: 'call', number: '0800 801 200', label: 'Vorbește cu cineva acum', primary: true }]
+        : [{ type: 'email', address: 'sos@antisuicid.ro', label: 'Scrie la TelVerde', primary: true }],
+      showDismiss: true,
+      panelClass: '',
+    },
+  };
+
+  const cfg = configs[level];
+  if (!cfg) return;
+
+  // Setăm conținutul
+  panel.className = 'crisis-panel' + (cfg.panelClass ? ' ' + cfg.panelClass : '');
+  icon.textContent = cfg.icon;
+  title.textContent = cfg.title;
+  body.innerHTML = cfg.body.map(p => `<p>${p}</p>`).join('');
+
+  // Butoanele de acțiune
+  actions.innerHTML = '';
+  cfg.actions.forEach(action => {
+    let href, label;
+    if (action.type === 'call') {
+      href = `tel:${action.number}`;
+      label = action.label;
+    } else if (action.type === 'email') {
+      href = `mailto:${action.address}`;
+      label = action.label + (action.note ? ` <span style="font-size:11px;opacity:.7">(${action.note})</span>` : '');
+    }
+
+    const btn = document.createElement('a');
+    btn.href = href;
+    btn.className = `crisis-action-btn ${action.primary ? 'primary' : 'secondary'}`;
+    btn.innerHTML = label;
+    actions.appendChild(btn);
+  });
+
+  // Dismiss button
+  dismiss.style.display = cfg.showDismiss ? 'block' : 'none';
+
+  // Afișăm overlay-ul
+  overlay.style.display = 'flex';
+
+  // Focus trap — accesibilitate
+  overlay.setAttribute('tabindex', '-1');
+  setTimeout(() => overlay.focus(), 50);
+}
+
+function dismissCrisis() {
+  const overlay = document.getElementById('crisisOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function vxLockCompanionUI() {
+  // Dezactivăm orbul de înregistrare
+  const orb = document.getElementById('orbCore');
+  if (orb) {
+    orb.style.opacity = '0.3';
+    orb.style.pointerEvents = 'none';
+    orb.textContent = '🔒';
+  }
+
+  // Actualizăm starea afișată
+  const stateEl = document.getElementById('voiceState');
+  if (stateEl) {
+    stateEl.textContent = 'Sesiunea e pausată. Voxen e îngrijorat pentru tine.';
+    stateEl.style.color = 'var(--warm)';
+  }
+}
+
+function vxLogCrisisEvent(level, risk) {
+  // Log minimal fără date personale
+  try {
+    console.warn('[VOXEN CRISIS]', JSON.stringify({
+      type: 'crisis_event',
+      level,
+      score: risk.score,
+      trend: risk.trend,
+      timestamp: Date.now(),
+    }));
+    // TODO producție: POST la /api/crisis-log (metadata only, fără text)
+  } catch(e) {}
+}
+
+// ── INTEGRARE ÎN FLUXUL EXISTENT ──
+// Variabilă globală pentru a semnala STT că înregistrarea rulează
+window._vxRecording = false;
+window._vxSpeechRec = null;
+
+// Patch-ul pentru startListening():
+// ÎNLOCUIEȘTE blocul:
+//   mediaRecorder.onstop = () => {
+//     stream.getTracks().forEach(t => t.stop());
+//     analyzeRecording();
+//   };
+// CU:
+//   mediaRecorder.onstop = () => {
+//     stream.getTracks().forEach(t => t.stop());
+//     if (window._vxSpeechRec) { try { window._vxSpeechRec.stop(); } catch(e) {} }
+//     window._vxRecording = false;
+//     analyzeRecording();
+//   };
+//
+// Și ADAUGĂ după mediaRecorder.start():
+//   window._vxRecording = true;
+//   window._vxSpeechRec = vxInitSTT();
+//   if (window._vxSpeechRec) window._vxSpeechRec.start();
+
+// Patch-ul pentru analyzeRecording():
+// ÎNLOCUIEȘTE ultimele două linii:
+//   currentEmo = detectedEmotion;
+//   triggerResponse();
+// CU:
+//   currentEmo = detectedEmotion;
+//   const prosodyForCrisis = { energy: avgEnergy, pauseRatio };
+//   vxAnalyzeCrisis(_sttTranscript, prosodyForCrisis);
+//   if (!_crisisLocked) triggerResponse();
+
+// ── INIȚIALIZARE ──
+document.addEventListener('DOMContentLoaded', () => {
+  // Verificăm că overlay-ul HTML există
+  if (!document.getElementById('crisisOverlay')) {
+    console.warn('[Voxen] Crisis overlay HTML missing. Add it after <body>.');
+  }
+
+  // Resetăm riskEngine la fiecare vizită pe pagină
+  VxRiskEngine.reset();
+  _crisisLocked = false;
+  _sttTranscript = '';
+});
+
+// Keyboard: Escape închide overlay-ul dacă nu e locked
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !_crisisLocked) {
+    dismissCrisis();
+  }
+});
+
+</script>
+</body>
+</html>

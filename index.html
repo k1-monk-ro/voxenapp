@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxen</title>
+<style>
+  body { margin: 0; background: #0D0B1A; }
+</style>
+</head>
+<body>
+<script>
+  // Smart redirect: utilizator nou → onboarding, utilizator existent → home
+  // Fix pentru bug-ul din index.html original care trimitea TOȚI la onboarding
+  (function() {
+    try {
+      var profile = localStorage.getItem('voxen_profile');
+      if (profile) {
+        // Utilizator cunoscut — merge direct la home
+        window.location.replace('voxen-home.html');
+      } else {
+        // Utilizator nou — merge la onboarding
+        window.location.replace('voxen-onboarding.html');
+      }
+    } catch(e) {
+      // localStorage blocat (private browsing strict mode)
+      window.location.replace('voxen-landing-multilingual__6_.html');
+    }
+  })();
+</script>
+<noscript>
+  <a href="voxen-landing-multilingual__6_.html">Intră în Voxen</a>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>voxen · Grupuri de sprijin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --void:#0D0B1A;--surface:#1A1630;--card:#201C38;--border:#2E2850;
+  --purple:#534AB7;--mid:#7F77DD;--soft:#AFA9EC;--mist:#EEEDFE;
+  --teal:#1D9E75;--amber:#EF9F27;--white:#F0EFF8;--text2:#8B88C3;
+  --warm:#D4537E;
+}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden}
+#cvs{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.25}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(13,11,26,.88);backdrop-filter:blur(16px);border-bottom:.5px solid var(--border)}
+.back-link{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text2);font-size:13px;font-weight:500;transition:color .2s}
+.back-link:hover{color:var(--white)}
+.brand{font-size:18px;font-weight:700;color:var(--white);letter-spacing:-.03em}
+.nav-links{display:flex;gap:6px}
+.nav-link{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;color:var(--text2);text-decoration:none;transition:all .2s}
+.nav-link:hover{color:var(--white);background:var(--surface)}
+.nav-link.active{color:var(--mist);background:var(--warm)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 60px;text-align:center;position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(212,83,126,.1) 0%,transparent 70%);pointer-events:none}
+.hero-chip{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:.5px solid rgba(212,83,126,.4);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--warm);margin-bottom:32px}
+.chip-dot{width:7px;height:7px;border-radius:50%;background:var(--warm);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero-title{font-size:clamp(38px,7vw,84px);font-weight:800;line-height:1.02;letter-spacing:-.04em;margin-bottom:20px}
+.hero-title em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--warm)}
+.hero-sub{font-size:16px;color:var(--text2);max-width:580px;line-height:1.75;margin-bottom:48px}
+
+/* ── LIVE CIRCLE PREVIEW ── */
+.circle-preview{width:100%;max-width:820px;background:var(--card);border:.5px solid var(--border);border-radius:28px;padding:28px;position:relative;z-index:1;margin-bottom:16px}
+.circle-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.circle-title-row{display:flex;align-items:center;gap:10px}
+.circle-live-dot{width:8px;height:8px;border-radius:50%;background:#E24B4A;animation:pulse 1.5s infinite}
+.circle-title{font-size:15px;font-weight:600}
+.circle-members{font-size:11px;color:var(--text2)}
+.circle-type-tabs{display:flex;gap:7px;flex-wrap:wrap}
+.circle-tab{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:500;color:var(--text2);cursor:pointer;border:.5px solid var(--border);background:var(--surface);transition:all .2s}
+.circle-tab:hover{border-color:var(--warm);color:var(--white)}
+.circle-tab.active{background:rgba(212,83,126,.2);border-color:var(--warm);color:var(--warm)}
+
+/* Chat simulation */
+.chat-area{height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 0;margin-bottom:16px;scroll-behavior:smooth}
+.chat-area::-webkit-scrollbar{width:3px}
+.chat-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.msg{display:flex;align-items:flex-start;gap:10px;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.system{justify-content:center}
+.msg-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:var(--surface);border:.5px solid var(--border)}
+.msg-body{flex:1;max-width:85%}
+.msg-name{font-size:10px;font-weight:600;color:var(--text2);margin-bottom:4px;letter-spacing:.04em;text-transform:uppercase}
+.msg-text{background:var(--surface);border:.5px solid var(--border);border-radius:12px;border-top-left-radius:3px;padding:10px 13px;font-size:13px;color:var(--white);line-height:1.6}
+.msg.mod .msg-text{background:rgba(83,74,183,.12);border-color:var(--purple)}
+.msg.system .msg-text{background:transparent;border:none;font-size:11px;color:var(--text2);text-align:center;padding:4px}
+.msg.me .msg-avatar{order:2}
+.msg.me .msg-body{order:1}
+.msg.me .msg-name{text-align:right}
+.msg.me .msg-text{background:rgba(212,83,126,.15);border-color:var(--warm);border-radius:12px;border-top-right-radius:3px}
+
+.chat-input-row{display:flex;gap:8px}
+.chat-input{flex:1;background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:11px 14px;font-family:'Syne',sans-serif;font-size:13px;color:var(--white);outline:none;transition:border-color .2s}
+.chat-input:focus{border-color:var(--warm)}
+.chat-input::placeholder{color:var(--text2)}
+.chat-send{background:var(--warm);border:none;border-radius:10px;padding:11px 16px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--white);cursor:pointer;transition:all .2s;flex-shrink:0}
+.chat-send:hover{background:#de6d8f;transform:scale(1.02)}
+.anon-note{font-size:11px;color:var(--text2);text-align:center;padding:8px 0}
+
+/* ── GROUPS GRID ── */
+.section{padding:80px 24px;max-width:1000px;margin:0 auto;position:relative;z-index:1}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--warm);margin-bottom:14px}
+.section-title{font-size:clamp(26px,3.5vw,44px);font-weight:700;line-height:1.12;letter-spacing:-.03em;margin-bottom:14px}
+.section-title em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--warm)}
+.section-sub{font-size:15px;color:var(--text2);max-width:500px;line-height:1.7;margin-bottom:40px}
+.sep{border-top:.5px solid var(--border)}
+
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.gr-card{background:var(--card);border:.5px solid var(--border);border-radius:22px;padding:24px;transition:all .25s;cursor:pointer;position:relative;overflow:hidden}
+.gr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--warm);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.gr-card:hover{border-color:var(--warm);transform:translateY(-3px)}
+.gr-card:hover::before{transform:scaleX(1)}
+.gr-icon-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.gr-icon{font-size:32px}
+.gr-next-badge{background:rgba(29,158,117,.15);border:.5px solid rgba(29,158,117,.4);border-radius:100px;padding:4px 10px;font-size:10px;font-weight:600;color:var(--teal)}
+.gr-title{font-size:17px;font-weight:600;margin-bottom:7px;letter-spacing:-.01em}
+.gr-desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:14px}
+.gr-meta{display:flex;flex-direction:column;gap:5px;background:var(--surface);border-radius:10px;padding:10px 12px;margin-bottom:14px}
+.gr-meta-row{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--soft)}
+.members-row{display:flex;align-items:center;gap:-4px;margin-bottom:6px}
+.member-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--card);display:flex;align-items:center;justify-content:center;font-size:13px;margin-left:-8px}
+.member-dot:first-child{margin-left:0}
+.spots-left{font-size:11px;color:var(--text2);margin-left:6px}
+.gr-join-btn{width:100%;border:none;border-radius:10px;padding:11px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;background:rgba(212,83,126,.15);color:var(--warm);border:.5px solid rgba(212,83,126,.4)}
+.gr-join-btn:hover{background:rgba(212,83,126,.3);transform:scale(1.02)}
+
+/* ── HOW CIRCLE WORKS ── */
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:40px}
+.principle{background:var(--card);border:.5px solid var(--border);border-radius:16px;padding:20px;text-align:center}
+.principle-icon{font-size:32px;margin-bottom:12px}
+.principle-title{font-size:15px;font-weight:600;margin-bottom:7px}
+.principle-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ── TIMELINE ── */
+.session-timeline{display:flex;flex-direction:column;gap:0;margin-top:40px;max-width:600px}
+.st-item{display:grid;grid-template-columns:80px 1fr;gap:16px;position:relative}
+.st-item:not(:last-child)::after{content:'';position:absolute;left:39px;top:38px;bottom:-8px;width:1px;background:linear-gradient(to bottom,var(--warm),transparent)}
+.st-time{font-size:13px;font-weight:600;color:var(--warm);padding-top:10px;text-align:right}
+.st-body{background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px}
+.st-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.st-desc{font-size:12px;color:var(--text2);line-height:1.5}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+footer{border-top:.5px solid var(--border);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.fbrand{font-size:15px;font-weight:700;color:var(--text2)}
+.fcopy{font-size:11px;color:#4A4670}
+
+/* ── Optimizare baterie: respectă preferința de mișcare redusă ── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
+
+/* Când pagina nu e vizibilă — oprește toate animațiile (economie baterie) */
+html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
+  animation-play-state:paused!important;
+}
+</style>
+
+<!-- ═══ VOXEN i18n MODULE ═══ -->
+<style>
+.globe-wrap{position:relative;display:flex;align-items:center}
+.globe-btn{width:34px;height:34px;border-radius:8px;border:.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;position:relative;flex-shrink:0}
+.globe-btn:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.active-flag{position:absolute;bottom:-3px;right:-3px;font-size:10px;line-height:1}
+.lang-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#201C38;border:.5px solid #2E2850;border-radius:12px;padding:6px;min-width:175px;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+.lang-dropdown.open{display:block;animation:dropIn .18s ease}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.lang-option{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;font-size:13px;font-weight:500;color:#8B88C3;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.lang-option:hover{background:#1A1630;color:#F0EFF8}
+.lang-option.active{background:rgba(83,74,183,.2);color:#EEEDFE}
+.lang-option .flag{font-size:17px;line-height:1;flex-shrink:0}
+.lang-option .lname{flex:1}
+.lang-option .lcode{font-size:10px;color:#534AB7;margin-left:auto}
+</style>
+
+<script id="voxen-i18n">
+window.voxenHooks = window.voxenHooks || [];
+(function(){
+  // ── Translations for subpages ──────────────────────────
+  const T = {
+    ro:{
+      gr_tab_alcohol:'Alcool',
+      gr_tab_gambling:'Gambling',
+      gr_tab_substances:'Substanțe',
+      gr_tab_stress:'Stres',
+      gr_demo_note:'Simulare demo · Mesajele reale sunt criptate și nu sunt stocate',
+
+      footer_brand:'grupuri de sprijin',
+      back:'← voxen',
+      nav_companion:'Companion AI', nav_therapy:'Terapie', nav_groups:'Grupuri de sprijin',
+      // Companion
+      comp_chip:'Companion emoțional · Powered by Claude AI',
+      comp_h1:'Te aude.<br><em>Te înțelege.</em><br>E mereu acolo.',
+      comp_sub:'Nu e un chatbot. Nu îți dă sfaturi nesolicitate. E un prieten digital empatic — care citește emoția din vocea ta și răspunde exact cum ai nevoie la 3 dimineața.',
+      comp_voice_title:'🎙 Vocea ta',
+      comp_state:'Apasă orbul sau alege o emoție',
+      comp_btn_gen:'Generează răspuns empatic →',
+      comp_resp_title:'💜 Voxen răspunde',
+      comp_resp_waiting:'Așteptând...',
+      comp_resp_detecting:'— detectez emoția',
+      comp_resp_tag:'VOXEN SIMTE',
+      comp_resp_default:'Bună seara. Cum a fost azi?',
+      comp_btn_sim:'Simulează stare',
+      comp_btn_mem:'Amintire 1 an',
+      comp_m_tempo:'Tempo vocal', comp_m_energy:'Energie', comp_m_conf:'Confidență AI',
+      comp_hist_label:'Istoric sesiune',
+      comp_how_label:'Cum funcționează',
+      comp_how_title:'Știință aplicată.<br><em>Empatie reală.</em>',
+      comp_how_sub:'Voxen combină analiza prozodică a vocii cu procesarea semantică a textului.',
+      comp_emo_label:'Harta emoțională',
+      comp_emo_title:'8 emoții.<br><em>Infinite nuanțe.</em>',
+      comp_emo_sub:'Voxen detectează emoția primară, emoția secundară și intensitatea.',
+      comp_pros_label:'Semnale prozodice',
+      comp_pros_title:'Ce citim<br><em>din vocea ta.</em>',
+      comp_tl1_title:'Captarea vocii', comp_tl1_desc:'Expo AV înregistrează audio la calitate înaltă. Nu analizăm cuvintele — analizăm CUM le spui: tonul, ritmul, pauzele, tremuratul, volumul.',
+      comp_tl2_title:'Analiza prozodică', comp_tl2_desc:'Extragem 6 semnale vocale: tempo, pitch mediu, energie RMS, ratio pauze, rata vorbirii, variația volumului.',
+      comp_tl3_title:'Transcriere + semantică', comp_tl3_desc:'Whisper AI transcrie instant în orice limbă. Combinate cu semnalele prozodice (60% voce + 40% text).',
+      comp_tl4_title:'Răspuns empatic Claude', comp_tl4_desc:'Claude Haiku generează răspunsul în <2 secunde. Maxim 3 propoziții, fără exclamații, fără sfaturi nesolicitate.',
+      comp_tl5_title:'Memorie emoțională', comp_tl5_desc:'Fiecare intrare e salvată cu emoția detectată. Peste un an, când auzi din nou — înțelegi cum te-ai schimbat.',
+      // Therapy
+      th_chip:'Psihologi · Psihoterapeuți · Consultanți medicali',
+      th_h1:'Terapeutul potrivit.<br><em>La momentul potrivit.</em>',
+      th_sub:'Voxen nu înlocuiește terapeutul. Îl pregătește. Terapeutul tău primește un rezumat anonim al stării tale emoționale.',
+      th_tab1:'🧑‍⚕️ Psiholog / Psihoterapeut', th_tab2:'💬 Consultație online', th_tab3:'🏥 Evaluare medicală',
+      th_step_sel:'Selectează un specialist din zona ta',
+      th_btn_cont:'Continuă →', th_btn_back:'← Înapoi', th_btn_confirm:'Confirmă programarea →',
+      th_ai_title:'Rezumat Voxen AI pentru terapeut', th_ai_sub:'Trimis anonim · Poți dezactiva oricând',
+      th_ai_hide:'Ascunde rezumatul', th_ai_show:'Afișează rezumatul',
+      th_confirm_title:'Programare confirmată!',
+      th_btn_reset:'Programează altă ședință',
+      th_diff_label:'Diferența Voxen',
+      th_diff_title:'Prima ședință.<br><em>Fără să repeți totul.</em>',
+      th_diff_sub:'Cel mai greu lucru în terapie e să explici de unde vii. Voxen face asta pentru tine.',
+      th_faq_label:'Întrebări frecvente',
+      th_faq_title:'Înainte să<br><em>rezervi.</em>',
+      // Groups
+      gr_chip:'Sesiuni live săptămânale · 100% anonime',
+      gr_h1:'Nu ești singur.<br><em>Niciodată.</em>',
+      gr_sub:'Grupuri săptămânale anonime după modelul AA — actualizat pentru era digitală. Un moderator certificat, maximum 12 participanți, 60 de minute.',
+      gr_anon_note:'🔒 Numele tău real nu este niciodată afișat · Mesajele dispar după sesiune',
+      gr_send:'Trimite',
+      gr_input_ph:'Scrie în cerc... (demo)',
+      gr_circles_label:'Toate cercurile',
+      gr_circles_title:'Alege cercul<br><em>tău.</em>',
+      gr_circles_sub:'Fiecare cerc e facilitat de un specialist certificat. O dată pe săptămână, 60 de minute, maximum 12 persoane.',
+      gr_principles_label:'Principii',
+      gr_principles_title:'Cum funcționează<br><em>un cerc Voxen.</em>',
+      gr_timeline_label:'O sesiune tipică',
+      gr_timeline_title:'60 de minute.<br><em>Ce se întâmplă.</em>',
+      gr_join_btn:'Alătură-te cercului →',
+      gr_weekly:'Săptămânal', gr_max:'Max 12 participanți', gr_anon:'100% anonim',
+      gr_spots:'locuri libere',
+    
+      // Principles
+      gr_p1_title:'Anonimat total',
+      gr_p1_desc:'Numele real nu e niciodată afișat. Alegi un pseudonim la intrare. Nu există profil public.',
+      gr_p2_title:'Moderator certificat',
+      gr_p2_desc:'Fiecare cerc e ghidat de un psiholog sau consilier certificat în terapia de grup.',
+      gr_p3_title:'Ceea ce se spune rămâne',
+      gr_p3_desc:'Nu există înregistrări. Mesajele sunt criptate end-to-end și șterse la finalul sesiunii.',
+      gr_p4_title:'Max 12 persoane',
+      gr_p4_desc:'Cercuri mici pentru conexiuni reale. Nu audiențe. Fiecare voce contează.',
+      gr_p5_title:'Biometrice opționale',
+      gr_p5_desc:'Dacă porți un wearable, moderatorul vede agregate anonimizate ale stresului grupului.',
+      gr_p6_title:'Progres vizibil',
+      gr_p6_desc:'Milestones împărtășite în grup. Când cineva atinge 30 de zile, întregul cerc celebrează.',
+      // Timeline
+      gr_t1_title:'Check-in',
+      gr_t1_desc:'Fiecare participant spune un singur cuvânt care descrie cum se simte azi. Fără judecată, fără comentarii.',
+      gr_t2_title:'Recap săptămânal',
+      gr_t2_desc:'Moderatorul prezintă (anonim) pattern-urile biometrice agregate ale grupului din ultima săptămână.',
+      gr_t3_title:'Spațiu de împărtășire',
+      gr_t3_desc:'Cine vrea, vorbește. Ceilalți ascultă fără să întrerupă. Moderatorul menține spațiul sigur.',
+      gr_t4_title:'Instrument săptămânal',
+      gr_t4_desc:'Moderatorul ghidează grupul prin unul din cele 18 instrumente Voxen — de ex. Urge Surfing sau Box Breathing în grup.',
+      gr_t5_title:'Intenția pentru săptămâna viitoare',
+      gr_t5_desc:'Fiecare participant setează un micro-obiectiv pentru 7 zile. Săptămâna viitoare — raportare voluntară.',
+      gr_t6_title:'Check-out',
+      gr_t6_desc:'Un cuvânt din nou. Înainte și după — adesea diferite. Sesiunea se încheie. Mesajele se șterg.',
+    },
+    en:{
+      gr_tab_alcohol:'Alcohol',
+      gr_tab_gambling:'Gambling',
+      gr_tab_substances:'Substances',
+      gr_tab_stress:'Stress',
+      gr_demo_note:'Demo simulation · Real messages are encrypted and not stored',
+
+      footer_brand:'support groups',
+      back:'← voxen',
+      nav_companion:'AI Companion', nav_therapy:'Therapy', nav_groups:'Support Groups',
+      comp_chip:'Emotional companion · Powered by Claude AI',
+      comp_h1:'It hears you.<br><em>It understands you.</em><br>Always there.',
+      comp_sub:'It’s not a chatbot. It doesn’t give unsolicited advice. It’s an empathetic digital friend who reads emotion from your voice.',
+      comp_voice_title:'🎙 Your voice',
+      comp_state:'Tap the orb or choose an emotion',
+      comp_btn_gen:'Generate empathetic response →',
+      comp_resp_title:'💜 Voxen responds',
+      comp_resp_waiting:'Waiting...',
+      comp_resp_detecting:'— detecting emotion',
+      comp_resp_tag:'VOXEN FEELS',
+      comp_resp_default:'Good evening. How was today?',
+      comp_btn_sim:'Simulate emotion',
+      comp_btn_mem:'1-year memory',
+      comp_m_tempo:'Vocal tempo', comp_m_energy:'Energy', comp_m_conf:'AI Confidence',
+      comp_hist_label:'Session history',
+      comp_how_label:'How it works',
+      comp_how_title:'Applied science.<br><em>Real empathy.</em>',
+      comp_how_sub:'Voxen combines voice prosody analysis with semantic text processing.',
+      comp_emo_label:'Emotion map',
+      comp_emo_title:'8 emotions.<br><em>Infinite nuances.</em>',
+      comp_emo_sub:'Voxen detects primary emotion, secondary emotion and intensity.',
+      comp_pros_label:'Prosody signals',
+      comp_pros_title:'What we read<br><em>from your voice.</em>',
+      comp_tl1_title:'Voice capture', comp_tl1_desc:'Expo AV records high quality audio. We analyze HOW you say it: tone, rhythm, pauses, tremor, volume.',
+      comp_tl2_title:'Prosody analysis', comp_tl2_desc:'We extract 6 vocal signals: tempo, mean pitch, RMS energy, pause ratio, speech rate, volume variance.',
+      comp_tl3_title:'Transcription + semantics', comp_tl3_desc:'Whisper AI transcribes instantly in any language. Combined with prosody signals (60% voice + 40% text).',
+      comp_tl4_title:'Empathetic Claude response', comp_tl4_desc:'Claude Haiku generates response in <2 seconds. Max 3 sentences, no exclamations, no unsolicited advice.',
+      comp_tl5_title:'Emotional memory', comp_tl5_desc:'Each entry saved with detected emotion. One year later, hearing it again — you understand how you changed.',
+      th_chip:'Psychologists · Psychotherapists · Medical consultants',
+      th_h1:'The right therapist.<br><em>At the right time.</em>',
+      th_sub:'Voxen doesn’t replace the therapist. It prepares them. Your therapist receives an anonymous summary of your emotional state.',
+      th_tab1:'🧑‍⚕️ Psychologist / Psychotherapist', th_tab2:'💬 Online consultation', th_tab3:'🏥 Medical evaluation',
+      th_step_sel:'Select a specialist near you',
+      th_btn_cont:'Continue →', th_btn_back:'← Back', th_btn_confirm:'Confirm booking →',
+      th_ai_title:'Voxen AI summary for therapist', th_ai_sub:'Sent anonymously · You can disable anytime',
+      th_ai_hide:'Hide summary', th_ai_show:'Show summary',
+      th_confirm_title:'Booking confirmed!',
+      th_btn_reset:'Book another session',
+      th_diff_label:'The Voxen difference',
+      th_diff_title:'First session.<br><em>Without repeating everything.</em>',
+      th_diff_sub:'The hardest thing in therapy is explaining where you come from. Voxen does that for you.',
+      th_faq_label:'Frequently asked questions',
+      th_faq_title:'Before you<br><em>book.</em>',
+      gr_chip:'Live weekly sessions · 100% anonymous',
+      gr_h1:'You are not alone.<br><em>Never.</em>',
+      gr_sub:'Anonymous weekly groups following the AA model — updated for the digital era. A certified moderator, maximum 12 participants, 60 minutes.',
+      gr_anon_note:'🔒 Your real name is never shown · Messages disappear after session',
+      gr_send:'Send',
+      gr_input_ph:'Write in circle... (demo)',
+      gr_circles_label:'All circles',
+      gr_circles_title:'Choose your<br><em>circle.</em>',
+      gr_circles_sub:'Each circle is facilitated by a certified specialist. Once a week, 60 minutes, maximum 12 people.',
+      gr_principles_label:'Principles',
+      gr_principles_title:'How a Voxen<br><em>circle works.</em>',
+      gr_timeline_label:'A typical session',
+      gr_timeline_title:'60 minutes.<br><em>What happens.</em>',
+      gr_join_btn:'Join the circle →',
+      gr_weekly:'Weekly', gr_max:'Max 12 participants', gr_anon:'100% anonymous',
+      gr_spots:'spots left',
+    
+      gr_p1_title:'Total anonymity',
+      gr_p1_desc:'Your real name is never shown. You choose a pseudonym at entry. No public profile.',
+      gr_p2_title:'Certified moderator',
+      gr_p2_desc:'Each circle is guided by a psychologist or certified counselor in group therapy.',
+      gr_p3_title:'What is said stays here',
+      gr_p3_desc:'No recordings. Messages are end-to-end encrypted and deleted at the end of the session.',
+      gr_p4_title:'Max 12 people',
+      gr_p4_desc:'Small circles for real connections. Not audiences. Every voice matters.',
+      gr_p5_title:'Optional biometrics',
+      gr_p5_desc:'If you wear a wearable, the moderator sees anonymized group stress aggregates only.',
+      gr_p6_title:'Visible progress',
+      gr_p6_desc:'Milestones shared in the group. When someone reaches 30 days, the whole circle celebrates.',
+      gr_t1_title:'Check-in',
+      gr_t1_desc:'Each participant says one word describing how they feel today. No judgment, no comments.',
+      gr_t2_title:'Weekly recap',
+      gr_t2_desc:'The moderator presents (anonymously) the aggregated biometric patterns of the group from the past week.',
+      gr_t3_title:'Sharing space',
+      gr_t3_desc:'Whoever wants to speaks. Others listen without interrupting. The moderator keeps the space safe.',
+      gr_t4_title:'Weekly tool',
+      gr_t4_desc:'The moderator guides the group through one of the 18 Voxen tools — e.g. Urge Surfing or Box Breathing in group.',
+      gr_t5_title:'Intention for next week',
+      gr_t5_desc:'Each participant sets a micro-goal for 7 days. Next week — voluntary reporting.',
+      gr_t6_title:'Check-out',
+      gr_t6_desc:'One word again. Before and after — often different. The session ends. Messages are deleted.',
+    },
+    fr:{
+      gr_tab_alcohol:'Alcool',
+      gr_tab_gambling:'Jeu',
+      gr_tab_substances:'Substances',
+      gr_tab_stress:'Stress',
+      gr_demo_note:'Simulation démo · Les vrais messages sont chiffrés et non stockés',
+
+      footer_brand:'groupes de soutien',
+      back:'← voxen',
+      nav_companion:'Compagnon IA', nav_therapy:'Thérapie', nav_groups:'Groupes de soutien',
+      comp_chip:'Compagnon émotionnel · Propulsé par Claude AI',
+      comp_h1:'Il vous entend.<br><em>Il vous comprend.</em><br>Toujours là.',
+      comp_sub:"Ce n’est pas un chatbot. Il ne donne pas de conseils non sollicités. C’est un ami numérique empathique.",
+      comp_voice_title:'🎙 Votre voix',
+      comp_state:'Appuyez sur l’orbe ou choisissez une émotion',
+      comp_btn_gen:'Générer une réponse empathique →',
+      comp_resp_title:'💜 Voxen répond',
+      comp_resp_waiting:'En attente...',
+      comp_resp_detecting:'— détection de l’émotion',
+      comp_resp_tag:'VOXEN RESSENT',
+      comp_resp_default:'Bonsoir. Comment s’est passée votre journée?',
+      comp_btn_sim:'Simuler une émotion',
+      comp_btn_mem:'Souvenir 1 an',
+      comp_m_tempo:'Tempo vocal', comp_m_energy:'Énergie', comp_m_conf:'Confiance IA',
+      comp_hist_label:'Historique de session',
+      comp_how_label:'Comment ça marche',
+      comp_how_title:'Science appliquée.<br><em>Empathie réelle.</em>',
+      comp_how_sub:'Voxen combine l’analyse prosodique de la voix avec le traitement sémantique du texte.',
+      comp_emo_label:'Carte des émotions',
+      comp_emo_title:'8 émotions.<br><em>Nuances infinies.</em>',
+      comp_emo_sub:'Voxen détecte l’émotion primaire, secondaire et l’intensité.',
+      comp_pros_label:'Signaux prosodiques',
+      comp_pros_title:'Ce que nous lisons<br><em>dans votre voix.</em>',
+      comp_tl1_title:'Capture vocale', comp_tl1_desc:'Expo AV enregistre en haute qualité. Nous analysons COMMENT vous le dites.',
+      comp_tl2_title:'Analyse prosodique', comp_tl2_desc:'6 signaux vocaux: tempo, hauteur, énergie, pauses, débit, variance du volume.',
+      comp_tl3_title:'Transcription + sémantique', comp_tl3_desc:'Whisper AI transcrit instantanément. Combiné avec les signaux prosodiques (60% voix + 40% texte).',
+      comp_tl4_title:'Réponse empathique Claude', comp_tl4_desc:'Claude Haiku génère la réponse en <2 secondes. Max 3 phrases, sans conseils non sollicités.',
+      comp_tl5_title:'Mémoire émotionnelle', comp_tl5_desc:'Chaque entrée sauvegardée avec l’émotion détectée. Un an après, vous comprenez comment vous avez changé.',
+      th_chip:'Psychologues · Psychothérapeutes · Consultants médicaux',
+      th_h1:'Le bon thérapeute.<br><em>Au bon moment.</em>',
+      th_sub:'Voxen ne remplace pas le thérapeute. Il le prépare. Votre thérapeute reçoit un résumé anonyme.',
+      th_tab1:'🧑‍⚕️ Psychologue / Psychothérapeute', th_tab2:'💬 Consultation en ligne', th_tab3:'🏥 Évaluation médicale',
+      th_step_sel:'Sélectionnez un spécialiste près de chez vous',
+      th_btn_cont:'Continuer →', th_btn_back:'← Retour', th_btn_confirm:'Confirmer le rendez-vous →',
+      th_ai_title:'Résumé Voxen IA pour le thérapeute', th_ai_sub:'Envoyé anonymement · Désactivable à tout moment',
+      th_ai_hide:'Masquer le résumé', th_ai_show:'Afficher le résumé',
+      th_confirm_title:'Rendez-vous confirmé!',
+      th_btn_reset:'Réserver une autre séance',
+      th_diff_label:'La différence Voxen',
+      th_diff_title:'Première séance.<br><em>Sans tout répéter.</em>',
+      th_diff_sub:'La chose la plus difficile en thérapie est d’expliquer d’où vous venez. Voxen le fait pour vous.',
+      th_faq_label:'Questions fréquentes',
+      th_faq_title:'Avant de<br><em>réserver.</em>',
+      gr_chip:'Sessions hebdomadaires en direct · 100% anonymes',
+      gr_h1:'Vous n’êtes pas seul.<br><em>Jamais.</em>',
+      gr_sub:'Groupes anonymes hebdomadaires selon le modèle AA — mis à jour pour l’ère numérique.',
+      gr_anon_note:'🔒 Votre vrai nom n’est jamais affiché · Messages supprimés après la session',
+      gr_send:'Envoyer',
+      gr_input_ph:'Écrire dans le cercle... (démo)',
+      gr_circles_label:'Tous les cercles',
+      gr_circles_title:'Choisissez votre<br><em>cercle.</em>',
+      gr_circles_sub:'Chaque cercle est animé par un spécialiste certifié. Une fois par semaine, 60 minutes.',
+      gr_principles_label:'Principes',
+      gr_principles_title:'Comment fonctionne<br><em>un cercle Voxen.</em>',
+      gr_timeline_label:'Une session typique',
+      gr_timeline_title:'60 minutes.<br><em>Ce qui se passe.</em>',
+      gr_join_btn:'Rejoindre le cercle →',
+      gr_weekly:'Hebdomadaire', gr_max:'Max 12 participants', gr_anon:'100% anonyme',
+      gr_spots:'places disponibles',
+    
+      gr_p1_title:'Anonymat total',
+      gr_p1_desc:'Votre vrai nom n’est jamais affiché. Vous choisissez un pseudonyme. Aucun profil public.',
+      gr_p2_title:'Modérateur certifié',
+      gr_p2_desc:'Chaque cercle est guidé par un psychologue ou conseiller certifié en thérapie de groupe.',
+      gr_p3_title:'Ce qui est dit reste ici',
+      gr_p3_desc:'Pas d’enregistrements. Messages chiffrés de bout en bout et supprimés à la fin.',
+      gr_p4_title:'Max 12 personnes',
+      gr_p4_desc:'Petits cercles pour de vraies connexions. Pas des audiences. Chaque voix compte.',
+      gr_p5_title:'Biométrie optionnelle',
+      gr_p5_desc:'Si vous portez un wearable, le modérateur voit uniquement des agrégats anonymes de stress.',
+      gr_p6_title:'Progrès visibles',
+      gr_p6_desc:'Jalons partagés dans le groupe. Quand quelqu’un atteint 30 jours, tout le cercle célèbre.',
+      gr_t1_title:'Check-in',
+      gr_t1_desc:'Chaque participant dit un seul mot décrivant comment il se sent aujourd’hui. Sans jugement.',
+      gr_t2_title:'Récapitulatif hebdomadaire',
+      gr_t2_desc:'Le modérateur présente (anonymement) les patterns biométriques agrégés du groupe de la semaine.',
+      gr_t3_title:'Espace de partage',
+      gr_t3_desc:'Qui veut parle. Les autres écoutent sans interrompre. Le modérateur maintient l’espace sûr.',
+      gr_t4_title:'Outil de la semaine',
+      gr_t4_desc:'Le modérateur guide le groupe à travers l’un des 18 outils Voxen — ex. Urge Surfing en groupe.',
+      gr_t5_title:'Intention pour la semaine prochaine',
+      gr_t5_desc:'Chaque participant fixe un micro-objectif pour 7 jours. La semaine prochaine — rapport volontaire.',
+      gr_t6_title:'Check-out',
+      gr_t6_desc:'Un mot encore. Avant et après — souvent différents. La session se termine. Les messages sont supprimés.',
+    },
+    de:{
+      gr_tab_alcohol:'Alkohol',
+      gr_tab_gambling:'Glücksspiel',
+      gr_tab_substances:'Substanzen',
+      gr_tab_stress:'Stress',
+      gr_demo_note:'Demo-Simulation · Echte Nachrichten sind verschlüsselt und werden nicht gespeichert',
+
+      footer_brand:'Selbsthilfegruppen',
+      back:'← voxen',
+      nav_companion:'KI-Begleiter', nav_therapy:'Therapie', nav_groups:'Selbsthilfegruppen',
+      comp_chip:'Emotionaler Begleiter · Powered by Claude AI',
+      comp_h1:'Er hört dich.<br><em>Er versteht dich.</em><br>Immer da.',
+      comp_sub:'Kein Chatbot. Keine ungebetenen Ratschläge. Ein einfühlsamer digitaler Freund.',
+      comp_voice_title:'🎙 Deine Stimme',
+      comp_state:'Orb drücken oder Emotion wählen',
+      comp_btn_gen:'Einfühlsame Antwort generieren →',
+      comp_resp_title:'💜 Voxen antwortet',
+      comp_resp_waiting:'Warten...',
+      comp_resp_detecting:'— erkenne Emotion',
+      comp_resp_tag:'VOXEN SPÜRT',
+      comp_resp_default:'Guten Abend. Wie war dein Tag?',
+      comp_btn_sim:'Emotion simulieren',
+      comp_btn_mem:'Erinnerung 1 Jahr',
+      comp_m_tempo:'Sprachtempo', comp_m_energy:'Energie', comp_m_conf:'KI-Konfidenz',
+      comp_hist_label:'Sitzungsverlauf',
+      comp_how_label:'Wie es funktioniert',
+      comp_how_title:'Angewandte Wissenschaft.<br><em>Echte Empathie.</em>',
+      comp_how_sub:'Voxen kombiniert Sprachprosodie-Analyse mit semantischer Textverarbeitung.',
+      comp_emo_label:'Emotionskarte',
+      comp_emo_title:'8 Emotionen.<br><em>Unendliche Nuancen.</em>',
+      comp_emo_sub:'Voxen erkennt primäre, sekundäre Emotion und Intensität.',
+      comp_pros_label:'Prosodie-Signale',
+      comp_pros_title:'Was wir lesen<br><em>aus deiner Stimme.</em>',
+      comp_tl1_title:'Stimmaufnahme', comp_tl1_desc:'Expo AV nimmt in hoher Qualität auf. Wir analysieren WIE du es sagst.',
+      comp_tl2_title:'Prosodie-Analyse', comp_tl2_desc:'6 Stimmsignale: Tempo, Tonhöhe, Energie, Pausen, Sprechrate, Lautstärkevariation.',
+      comp_tl3_title:'Transkription + Semantik', comp_tl3_desc:'Whisper KI transkribiert sofort. Kombiniert mit Prosodie-Signalen (60% Stimme + 40% Text).',
+      comp_tl4_title:'Einfühlsame Claude-Antwort', comp_tl4_desc:'Claude Haiku generiert Antwort in <2 Sekunden. Max 3 Sätze, keine ungebetenen Ratschläge.',
+      comp_tl5_title:'Emotionsgedächtnis', comp_tl5_desc:'Jeder Eintrag mit erkannter Emotion gespeichert. Ein Jahr später verstehst du, wie du dich verändert hast.',
+      th_chip:'Psychologen · Psychotherapeuten · Medizinische Berater',
+      th_h1:'Der richtige Therapeut.<br><em>Zum richtigen Zeitpunkt.</em>',
+      th_sub:'Voxen ersetzt den Therapeuten nicht. Es bereitet ihn vor.',
+      th_tab1:'🧑‍⚕️ Psychologe / Psychotherapeut', th_tab2:'💬 Online-Beratung', th_tab3:'🏥 Medizinische Bewertung',
+      th_step_sel:'Wähle einen Spezialisten in deiner Nähe',
+      th_btn_cont:'Weiter →', th_btn_back:'← Zurück', th_btn_confirm:'Buchung bestätigen →',
+      th_ai_title:'Voxen KI-Zusammenfassung für Therapeut', th_ai_sub:'Anonym gesendet · Jederzeit deaktivierbar',
+      th_ai_hide:'Zusammenfassung ausblenden', th_ai_show:'Zusammenfassung anzeigen',
+      th_confirm_title:'Buchung bestätigt!',
+      th_btn_reset:'Weitere Sitzung buchen',
+      th_diff_label:'Der Voxen-Unterschied',
+      th_diff_title:'Erste Sitzung.<br><em>Ohne alles zu wiederholen.</em>',
+      th_diff_sub:'Das Schwerste in der Therapie ist zu erklären, woher du kommst. Voxen tut das für dich.',
+      th_faq_label:'Häufige Fragen',
+      th_faq_title:'Bevor du<br><em>buchst.</em>',
+      gr_chip:'Live wöchentliche Sitzungen · 100% anonym',
+      gr_h1:'Du bist nicht allein.<br><em>Niemals.</em>',
+      gr_sub:'Anonyme wöchentliche Gruppen nach dem AA-Modell — aktualisiert für das digitale Zeitalter.',
+      gr_anon_note:'🔒 Dein echter Name wird nie angezeigt · Nachrichten werden nach der Sitzung gelöscht',
+      gr_send:'Senden',
+      gr_input_ph:'Im Kreis schreiben... (Demo)',
+      gr_circles_label:'Alle Kreise',
+      gr_circles_title:'Wähle deinen<br><em>Kreis.</em>',
+      gr_circles_sub:'Jeder Kreis wird von einem zertifizierten Spezialisten moderiert.',
+      gr_principles_label:'Prinzipien',
+      gr_principles_title:'Wie ein Voxen-<br><em>Kreis funktioniert.</em>',
+      gr_timeline_label:'Eine typische Sitzung',
+      gr_timeline_title:'60 Minuten.<br><em>Was passiert.</em>',
+      gr_join_btn:'Kreis beitreten →',
+      gr_weekly:'Wöchentlich', gr_max:'Max. 12 Teilnehmer', gr_anon:'100% anonym',
+      gr_spots:'Plätze frei',
+    
+      gr_p1_title:'Vollständige Anonymität',
+      gr_p1_desc:'Dein richtiger Name wird nie angezeigt. Du wählst ein Pseudonym. Kein öffentliches Profil.',
+      gr_p2_title:'Zertifizierter Moderator',
+      gr_p2_desc:'Jeder Kreis wird von einem zertifizierten Psychologen oder Berater für Gruppentherapie geleitet.',
+      gr_p3_title:'Was gesagt wird bleibt hier',
+      gr_p3_desc:'Keine Aufzeichnungen. Nachrichten end-to-end verschlüsselt und am Ende gelöscht.',
+      gr_p4_title:'Max. 12 Personen',
+      gr_p4_desc:'Kleine Kreise für echte Verbindungen. Keine Zuschauer. Jede Stimme zählt.',
+      gr_p5_title:'Optionale Biometrie',
+      gr_p5_desc:'Wenn du ein Wearable trägst, sieht der Moderator nur anonymisierte Gruppenstresspegel.',
+      gr_p6_title:'Sichtbarer Fortschritt',
+      gr_p6_desc:'Meilensteine im Kreis geteilt. Wenn jemand 30 Tage erreicht, feiert der ganze Kreis.',
+      gr_t1_title:'Check-in',
+      gr_t1_desc:'Jeder Teilnehmer sagt ein Wort, das beschreibt, wie er sich heute fühlt. Ohne Urteil.',
+      gr_t2_title:'Wöchentlicher Rückblick',
+      gr_t2_desc:'Der Moderator präsentiert (anonym) die aggregierten Biometrik-Muster der Gruppe.',
+      gr_t3_title:'Teileraum',
+      gr_t3_desc:'Wer möchte, spricht. Andere hören zu ohne zu unterbrechen. Der Moderator hält den Raum sicher.',
+      gr_t4_title:'Wöchentliches Werkzeug',
+      gr_t4_desc:'Der Moderator führt die Gruppe durch eines der 18 Voxen-Werkzeuge — z.B. Urge Surfing in der Gruppe.',
+      gr_t5_title:'Absicht für nächste Woche',
+      gr_t5_desc:'Jeder Teilnehmer setzt ein Mikroziel für 7 Tage. Nächste Woche — freiwillige Berichterstattung.',
+      gr_t6_title:'Check-out',
+      gr_t6_desc:'Noch ein Wort. Vorher und nachher — oft unterschiedlich. Die Sitzung endet. Nachrichten werden gelöscht.',
+    },
+    zh:{
+      gr_tab_alcohol:'酒精',
+      gr_tab_gambling:'赌博',
+      gr_tab_substances:'药物',
+      gr_tab_stress:'压力',
+      gr_demo_note:'演示模拟 · 真实消息已加密且不存储',
+
+      footer_brand:'支持小组',
+      back:'← voxen',
+      nav_companion:'AI伴侣', nav_therapy:'治疗', nav_groups:'支持小组',
+      comp_chip:'情感伴侣 · 由 Claude AI 驱动',
+      comp_h1:'它倾听您。<br><em>它理解您。</em><br>始终在您身边。',
+      comp_sub:'这不是聊天机器人。它不给出未经请求的建议。它是一个能读懂您声音中情绪的数字朋友。',
+      comp_voice_title:'🎙 您的声音',
+      comp_state:'点击球体或选择情绪',
+      comp_btn_gen:'生成移情回应 →',
+      comp_resp_title:'💜 Voxen 回应',
+      comp_resp_waiting:'等待中...',
+      comp_resp_detecting:'— 检测情绪',
+      comp_resp_tag:'VOXEN感受到',
+      comp_resp_default:'晚上好。今天怎么样？',
+      comp_btn_sim:'模拟情绪',
+      comp_btn_mem:'一年前的记忆',
+      comp_m_tempo:'声音节奏', comp_m_energy:'能量', comp_m_conf:'AI置信度',
+      comp_hist_label:'会话历史',
+      comp_how_label:'工作原理',
+      comp_how_title:'应用科学。<br><em>真实共情。</em>',
+      comp_how_sub:'Voxen将声音韵律分析与语义文本处理相结合。',
+      comp_emo_label:'情绪图谱',
+      comp_emo_title:'8种情绪。<br><em>无限细微差别。</em>',
+      comp_emo_sub:'Voxen检测主要情绪、次要情绪和强度。',
+      comp_pros_label:'韵律信号',
+      comp_pros_title:'我们从<br><em>您的声音中读取什么。</em>',
+      comp_tl1_title:'声音采集', comp_tl1_desc:'Expo AV录制高质量音频。我们分析您怎么说：语调、节奏、停顿、颤抖、音量。',
+      comp_tl2_title:'韵律分析', comp_tl2_desc:'提取6个声音信号：节奏、平均音调、RMS能量、停顿比、语速、音量变化。',
+      comp_tl3_title:'转录+语义', comp_tl3_desc:'Whisper AI即时转录任何语言。与韵律信号结合（60%声音+40%文本）。',
+      comp_tl4_title:'Claude移情回应', comp_tl4_desc:'Claude Haiku在<2秒内生成回应。最多3句话，无感叹号，无未经请求的建议。',
+      comp_tl5_title:'情绪记忆', comp_tl5_desc:'每条记录都保存检测到的情绪。一年后再听——了解自己如何改变。',
+      th_chip:'心理学家 · 心理治疗师 · 医疗顾问',
+      th_h1:'合适的治疗师。<br><em>在合适的时机。</em>',
+      th_sub:'Voxen不替代治疗师。它为治疗师做准备。您的治疗师收到匿名情绪摘要。',
+      th_tab1:'🧑‍⚕️ 心理学家/心理治疗师', th_tab2:'💬 在线咨询', th_tab3:'🏥 医疗评估',
+      th_step_sel:'选择您附近的专家',
+      th_btn_cont:'继续 →', th_btn_back:'← 返回', th_btn_confirm:'确认预约 →',
+      th_ai_title:'Voxen AI治疗师摘要', th_ai_sub:'匿名发送 · 随时可禁用',
+      th_ai_hide:'隐藏摘要', th_ai_show:'显示摘要',
+      th_confirm_title:'预约已确认！',
+      th_btn_reset:'预约另一次会话',
+      th_diff_label:'Voxen的不同',
+      th_diff_title:'第一次会话。<br><em>无需重复一切。</em>',
+      th_diff_sub:'治疗中最难的事是解释你从哪里来。Voxen为你做这件事。',
+      th_faq_label:'常见问题',
+      th_faq_title:'预约之前<br><em>了解这些。</em>',
+      gr_chip:'每周现场会议 · 100%匿名',
+      gr_h1:'你并不孤单。<br><em>永远不会。</em>',
+      gr_sub:'匿名每周小组，遵循AA模式——为数字时代更新。认证主持人，最多12名参与者，60分钟。',
+      gr_anon_note:'🔒 您的真实姓名从不显示 · 会话结束后消息消失',
+      gr_send:'发送',
+      gr_input_ph:'在圈子里写... (演示)',
+      gr_circles_label:'所有圈子',
+      gr_circles_title:'选择您的<br><em>圈子。</em>',
+      gr_circles_sub:'每个圈子由认证专家主持。每周一次，60分钟，最多12人。',
+      gr_principles_label:'原则',
+      gr_principles_title:'Voxen圈子<br><em>如何运作。</em>',
+      gr_timeline_label:'典型会话',
+      gr_timeline_title:'60分钟。<br><em>发生了什么。</em>',
+      gr_join_btn:'加入圈子 →',
+      gr_weekly:'每周', gr_max:'最多12名参与者', gr_anon:'100%匿名',
+      gr_spots:'个空位',
+    
+      gr_p1_title:'完全匿名',
+      gr_p1_desc:'您的真实姓名从不显示。您在入场时选择一个假名。没有公开档案。',
+      gr_p2_title:'认证主持人',
+      gr_p2_desc:'每个圈子由获得团体治疗认证的心理学家或顾问引导。',
+      gr_p3_title:'所说的留在这里',
+      gr_p3_desc:'没有录音。消息进行端对端加密并在会话结束时删除。',
+      gr_p4_title:'最多12人',
+      gr_p4_desc:'小圈子建立真实的联系。不是观众。每个声音都很重要。',
+      gr_p5_title:'可选生物识别',
+      gr_p5_desc:'如果您佩戴可穿戴设备，主持人只能看到匿名的群体压力聚合数据。',
+      gr_p6_title:'可见的进步',
+      gr_p6_desc:'在小组中共享里程碑。当有人达到30天时，整个圈子庆祝。',
+      gr_t1_title:'签到',
+      gr_t1_desc:'每位参与者说一个描述今天感受的词。无评判，无评论。',
+      gr_t2_title:'每周回顾',
+      gr_t2_desc:'主持人（匿名地）展示上周小组的汇总生物识别模式。',
+      gr_t3_title:'分享空间',
+      gr_t3_desc:'想说的人说话。其他人不打断地倾听。主持人维护安全空间。',
+      gr_t4_title:'每周工具',
+      gr_t4_desc:'主持人引导小组完成18种Voxen工具之一——例如团体冲动冲浪或箱式呼吸。',
+      gr_t5_title:'下周意图',
+      gr_t5_desc:'每位参与者设定7天的微目标。下周——自愿汇报。',
+      gr_t6_title:'签出',
+      gr_t6_desc:'再一个词。之前和之后——往往不同。会话结束。消息被删除。',
+    },
+    ja:{
+      gr_tab_alcohol:'アルコール',
+      gr_tab_gambling:'ギャンブル',
+      gr_tab_substances:'薬物',
+      gr_tab_stress:'ストレス',
+      gr_demo_note:'デモシミュレーション · 実際のメッセージは暗号化され保存されません',
+
+      footer_brand:'サポートグループ',
+      back:'← voxen',
+      nav_companion:'AIコンパニオン', nav_therapy:'療法', nav_groups:'サポートグループ',
+      comp_chip:'感情コンパニオン · Claude AI搭載',
+      comp_h1:'あなたを聞いている。<br><em>あなたを理解している。</em><br>いつもそこにいる。',
+      comp_sub:'チャットボットではない。求めていないアドバイスはしない。声の感情を読み取る共感的なデジタルの友人。',
+      comp_voice_title:'🎙 あなたの声',
+      comp_state:'球を押すか感情を選んでください',
+      comp_btn_gen:'共感的な回応を生成 →',
+      comp_resp_title:'💜 Voxenが回応',
+      comp_resp_waiting:'待機中...',
+      comp_resp_detecting:'— 感情を検出中',
+      comp_resp_tag:'VoxenはAIを感知',
+      comp_resp_default:'こんばんは。今日はどうでしたか？',
+      comp_btn_sim:'感情をシミュレート',
+      comp_btn_mem:'1年前の記憶',
+      comp_m_tempo:'音声テンポ', comp_m_energy:'エネルギー', comp_m_conf:'AI信頼度',
+      comp_hist_label:'セッション履歴',
+      comp_how_label:'使い方',
+      comp_how_title:'応用科学。<br><em>本物の共感。</em>',
+      comp_how_sub:'Voxenは声のプロソディ分析とテキストの意味処理を組み合わせます。',
+      comp_emo_label:'感情マップ',
+      comp_emo_title:'8つの感情。<br><em>無限のニュアンス。</em>',
+      comp_emo_sub:'Voxenは主要感情、副次感情、強度を検出します。',
+      comp_pros_label:'プロソディシグナル',
+      comp_pros_title:'声から<br><em>読み取ること。</em>',
+      comp_tl1_title:'音声キャプチャ', comp_tl1_desc:'Expo AVが高品質で録音。どのように言うかを分析：トーン、リズム、間、震え、音量。',
+      comp_tl2_title:'プロソディ分析', comp_tl2_desc:'6つの音声シグナル：テンポ、平均ピッチ、RMSエネルギー、ポーズ比率、話速、音量変化。',
+      comp_tl3_title:'文字起こし+意味論', comp_tl3_desc:'Whisper AIが即時に転写。プロソディシグナルと組み合わせ（60%声+40%テキスト）。',
+      comp_tl4_title:'Claude共感的回応', comp_tl4_desc:'Claude Haikuが2秒以内に回応生成。最大3文、感嘆符なし、求めていないアドバイスなし。',
+      comp_tl5_title:'感情記憶', comp_tl5_desc:'検出された感情と共に各エントリを保存。1年後に聞いて、どう変わったかを理解。',
+      th_chip:'心理士 · 心理療法士 · 医療コンサルタント',
+      th_h1:'適切なセラピスト。<br><em>適切なタイミングで。</em>',
+      th_sub:'VoxenはセラピストをAIを代替しません。準備します。',
+      th_tab1:'🧑‍⚕️ 心理士/心理療法士', th_tab2:'💬 オンライン相談', th_tab3:'🏥 医療評価',
+      th_step_sel:'近くの専門家を選んでください',
+      th_btn_cont:'続ける →', th_btn_back:'← 戻る', th_btn_confirm:'予約を確認 →',
+      th_ai_title:'Voxen AIセラピスト向けサマリー', th_ai_sub:'匿名送信 · いつでも無効化可能',
+      th_ai_hide:'サマリーを隠す', th_ai_show:'サマリーを表示',
+      th_confirm_title:'予約が確認されました！',
+      th_btn_reset:'別のセッションを予約',
+      th_diff_label:'Voxenの違い',
+      th_diff_title:'最初のセッション。<br><em>すべてを繰り返さずに。</em>',
+      th_diff_sub:'療法で最も難しいのは、どこから来たかを説明すること。Voxenがそれをします。',
+      th_faq_label:'よくある質問',
+      th_faq_title:'予約前に<br><em>知っておくこと。</em>',
+      gr_chip:'毎週ライブセッション · 100%匿名',
+      gr_h1:'あなたは一人じゃない。<br><em>決して。</em>',
+      gr_sub:'AAモデルに基づく匿名の週次グループ — デジタル時代に更新。認定モデレーター、最大12名、60分。',
+      gr_anon_note:'🔒 本名は絶対に表示されません · セッション後にメッセージは削除',
+      gr_send:'送信',
+      gr_input_ph:'サークルに書く... (デモ)',
+      gr_circles_label:'すべてのサークル',
+      gr_circles_title:'あなたの<br><em>サークルを選ぶ。</em>',
+      gr_circles_sub:'各サークルは認定専門家が進行します。週1回、60分、最大12名。',
+      gr_principles_label:'原則',
+      gr_principles_title:'Voxenサークルの<br><em>仕組み。</em>',
+      gr_timeline_label:'典型的なセッション',
+      gr_timeline_title:'60分間。<br><em>何が起こるか。</em>',
+      gr_join_btn:'サークルに参加 →',
+      gr_weekly:'毎週', gr_max:'最大12名', gr_anon:'100%匿名',
+      gr_spots:'空席あり',
+    
+      gr_p1_title:'完全匿名',
+      gr_p1_desc:'本名は絶対に表示されません。入場時に仮名を選びます。公開プロフィールなし。',
+      gr_p2_title:'認定モデレーター',
+      gr_p2_desc:'各サークルはグループ療法の認定心理士またはカウンセラーが進行します。',
+      gr_p3_title:'話したことはここに留まる',
+      gr_p3_desc:'録音なし。メッセージはエンドツーエンドで暗号化され、セッション終了時に削除。',
+      gr_p4_title:'最大12人',
+      gr_p4_desc:'本当のつながりのための小さなサークル。観客ではありません。すべての声が重要です。',
+      gr_p5_title:'オプションの生体認証',
+      gr_p5_desc:'ウェアラブルをつけている場合、モデレーターはグループの匿名化されたストレス集計のみ確認。',
+      gr_p6_title:'可視化された進捗',
+      gr_p6_desc:'グループで共有されるマイルストーン。誰かが30日に達すると、サークル全体でお祝い。',
+      gr_t1_title:'チェックイン',
+      gr_t1_desc:'各参加者が今日の気分を表す一言を言います。判断なし、コメントなし。',
+      gr_t2_title:'週次まとめ',
+      gr_t2_desc:'モデレーターが先週のグループの集計生体認証パターンを（匿名で）発表します。',
+      gr_t3_title:'シェアリングスペース',
+      gr_t3_desc:'話したい人が話します。他の人は中断せずに聞きます。モデレーターが安全な空間を維持。',
+      gr_t4_title:'週次ツール',
+      gr_t4_desc:'モデレーターがグループで18のVoxenツールの1つ（例：アージサーフィン）を案内。',
+      gr_t5_title:'来週の意図',
+      gr_t5_desc:'各参加者が7日間のマイクロゴールを設定。来週——自発的な報告。',
+      gr_t6_title:'チェックアウト',
+      gr_t6_desc:'もう一言。前と後——よく違います。セッション終了。メッセージは削除されます。',
+    },
+    ru:{
+      gr_tab_alcohol:'Алкоголь',
+      gr_tab_gambling:'Азарт',
+      gr_tab_substances:'Вещества',
+      gr_tab_stress:'Стресс',
+      gr_demo_note:'Демо-симуляция · Реальные сообщения зашифрованы и не хранятся',
+
+      footer_brand:'группы поддержки',
+      back:'← voxen',
+      nav_companion:'ИИ-компаньон', nav_therapy:'Терапия', nav_groups:'Группы поддержки',
+      comp_chip:'Эмоциональный компаньон · На базе Claude AI',
+      comp_h1:'Он слышит тебя.<br><em>Он понимает тебя.</em><br>Всегда рядом.',
+      comp_sub:'Это не чатбот. Никаких незваных советов. Это чуткий цифровой друг, который читает эмоции в твоём голосе.',
+      comp_voice_title:'🎙 Твой голос',
+      comp_state:'Нажми на шар или выбери эмоцию',
+      comp_btn_gen:'Создать эмпатичный ответ →',
+      comp_resp_title:'💜 Voxen отвечает',
+      comp_resp_waiting:'Ожидание...',
+      comp_resp_detecting:'— определяю эмоцию',
+      comp_resp_tag:'VOXEN ЧУВСТВУЕТ',
+      comp_resp_default:'Добрый вечер. Как прошёл день?',
+      comp_btn_sim:'Симулировать эмоцию',
+      comp_btn_mem:'Воспоминание 1 год',
+      comp_m_tempo:'Речевой темп', comp_m_energy:'Энергия', comp_m_conf:'Уверенность ИИ',
+      comp_hist_label:'История сессии',
+      comp_how_label:'Как это работает',
+      comp_how_title:'Прикладная наука.<br><em>Настоящая эмпатия.</em>',
+      comp_how_sub:'Voxen сочетает анализ просодики голоса с семантической обработкой текста.',
+      comp_emo_label:'Карта эмоций',
+      comp_emo_title:'8 эмоций.<br><em>Бесконечные нюансы.</em>',
+      comp_emo_sub:'Voxen определяет первичную, вторичную эмоцию и интенсивность.',
+      comp_pros_label:'Просодические сигналы',
+      comp_pros_title:'Что мы читаем<br><em>из твоего голоса.</em>',
+      comp_tl1_title:'Захват голоса', comp_tl1_desc:'Expo AV записывает в высоком качестве. Анализируем КАК ты говоришь: тон, ритм, паузы, дрожание, громкость.',
+      comp_tl2_title:'Просодический анализ', comp_tl2_desc:'6 голосовых сигналов: темп, средний тон, RMS-энергия, соотношение пауз, скорость речи, вариация громкости.',
+      comp_tl3_title:'Транскрипция + семантика', comp_tl3_desc:'Whisper AI транскрибирует мгновенно. Комбинируется с просодическими сигналами (60% голос + 40% текст).',
+      comp_tl4_title:'Эмпатичный ответ Claude', comp_tl4_desc:'Claude Haiku генерирует ответ за <2 секунды. Максимум 3 предложения, без восклицаний.',
+      comp_tl5_title:'Эмоциональная память', comp_tl5_desc:'Каждая запись сохраняется с определённой эмоцией. Год спустя, слушая снова — понимаешь как изменился.',
+      th_chip:'Психологи · Психотерапевты · Медицинские консультанты',
+      th_h1:'Правильный терапевт.<br><em>В нужный момент.</em>',
+      th_sub:'Voxen не заменяет терапевта. Он его готовит. Терапевт получает анонимное резюме.',
+      th_tab1:'🧑‍⚕️ Психолог/Психотерапевт', th_tab2:'💬 Онлайн-консультация', th_tab3:'🏥 Медицинская оценка',
+      th_step_sel:'Выбери специалиста рядом с тобой',
+      th_btn_cont:'Продолжить →', th_btn_back:'← Назад', th_btn_confirm:'Подтвердить запись →',
+      th_ai_title:'Резюме Voxen ИИ для терапевта', th_ai_sub:'Отправлено анонимно · Можно отключить',
+      th_ai_hide:'Скрыть резюме', th_ai_show:'Показать резюме',
+      th_confirm_title:'Запись подтверждена!',
+      th_btn_reset:'Записаться ещё раз',
+      th_diff_label:'Разница Voxen',
+      th_diff_title:'Первый сеанс.<br><em>Без повторений.</em>',
+      th_diff_sub:'Самое сложное в терапии — объяснить, откуда ты пришёл. Voxen делает это за тебя.',
+      th_faq_label:'Частые вопросы',
+      th_faq_title:'Перед тем как<br><em>записаться.</em>',
+      gr_chip:'Еженедельные живые сессии · 100% анонимно',
+      gr_h1:'Ты не один.<br><em>Никогда.</em>',
+      gr_sub:'Анонимные еженедельные группы по модели АА — обновлённые для цифровой эпохи. Сертифицированный модератор, максимум 12 участников, 60 минут.',
+      gr_anon_note:'🔒 Твоё настоящее имя никогда не отображается · Сообщения удаляются после сессии',
+      gr_send:'Отправить',
+      gr_input_ph:'Пиши в кружок... (демо)',
+      gr_circles_label:'Все кружки',
+      gr_circles_title:'Выбери свой<br><em>кружок.</em>',
+      gr_circles_sub:'Каждый кружок ведёт сертифицированный специалист. Раз в неделю, 60 минут.',
+      gr_principles_label:'Принципы',
+      gr_principles_title:'Как работает<br><em>кружок Voxen.</em>',
+      gr_timeline_label:'Типичная сессия',
+      gr_timeline_title:'60 минут.<br><em>Что происходит.</em>',
+      gr_join_btn:'Присоединиться к кружку →',
+      gr_weekly:'Еженедельно', gr_max:'Макс. 12 участников', gr_anon:'100% анонимно',
+      gr_spots:'свободных мест',
+    
+      gr_p1_title:'Полная анонимность',
+      gr_p1_desc:'Твоё настоящее имя никогда не отображается. Ты выбираешь псевдоним. Нет публичного профиля.',
+      gr_p2_title:'Сертифицированный модератор',
+      gr_p2_desc:'Каждый кружок ведёт сертифицированный психолог или консультант по групповой терапии.',
+      gr_p3_title:'Сказанное остаётся здесь',
+      gr_p3_desc:'Нет записей. Сообщения зашифрованы end-to-end и удаляются в конце сессии.',
+      gr_p4_title:'Макс. 12 человек',
+      gr_p4_desc:'Маленькие кружки для настоящих связей. Не аудитории. Каждый голос важен.',
+      gr_p5_title:'Опциональная биометрия',
+      gr_p5_desc:'Если ты носишь носимое устройство, модератор видит только анонимизированные данные стресса группы.',
+      gr_p6_title:'Видимый прогресс',
+      gr_p6_desc:'Вехи, которыми делятся в группе. Когда кто-то достигает 30 дней, весь кружок празднует.',
+      gr_t1_title:'Чек-ин',
+      gr_t1_desc:'Каждый участник говорит одно слово, описывающее его состояние сегодня. Без осуждения.',
+      gr_t2_title:'Еженедельный дайджест',
+      gr_t2_desc:'Модератор представляет (анонимно) агрегированные биометрические паттерны группы за неделю.',
+      gr_t3_title:'Пространство для обмена',
+      gr_t3_desc:'Кто хочет — говорит. Остальные слушают не перебивая. Модератор поддерживает безопасное пространство.',
+      gr_t4_title:'Инструмент недели',
+      gr_t4_desc:'Модератор проводит группу через один из 18 инструментов Voxen — напр. Серфинг на побуждениях.',
+      gr_t5_title:'Намерение на следующую неделю',
+      gr_t5_desc:'Каждый участник ставит микроцель на 7 дней. На следующей неделе — добровольный отчёт.',
+      gr_t6_title:'Чек-аут',
+      gr_t6_desc:'Снова одно слово. До и после — часто разные. Сессия завершается. Сообщения удаляются.',
+    },
+  };
+
+  const FLAG_MAP = {ro:'🇷🇴',en:'🇬🇧',fr:'🇫🇷',de:'🇩🇪',zh:'🇨🇳',ja:'🇯🇵',ru:'🇷🇺'};
+  const LANG_NAMES = {ro:'Română',en:'English',fr:'Français',de:'Deutsch',zh:'中文',ja:'日本語',ru:'Русский'};
+
+  let LANG = 'ro';
+
+  function t(k){ return (T[LANG]&&T[LANG][k]) || (T.en&&T.en[k]) || k; }
+
+  function applyLang(lang){
+    LANG = lang;
+    document.documentElement.className = '';
+    if(lang==='zh') document.documentElement.className = 'zh-cn';
+    if(lang==='ja') document.documentElement.className = 'ja';
+    document.documentElement.lang = lang==='zh'?'zh-CN':lang;
+    document.querySelectorAll('[data-t]').forEach(el=>{
+      const k = el.getAttribute('data-t');
+      const v = t(k);
+      if(el.hasAttribute('data-t-html')) el.innerHTML = v;
+      else if(el.tagName==='INPUT'||el.tagName==='TEXTAREA') el.placeholder = v;
+      else el.textContent = v;
+    });
+    const af = document.getElementById('activeFlag');
+    if(af) af.textContent = FLAG_MAP[lang]||'🌐';
+    document.querySelectorAll('.lang-option').forEach(b=>{
+      const m = b.getAttribute('data-lang');
+      b.classList.toggle('active', m===lang);
+    });
+    try{ localStorage.setItem('vxlang', lang); }catch(e){}
+    // Run registered hooks
+    if (window.voxenHooks && Array.isArray(window.voxenHooks)) {
+      window.voxenHooks.forEach(fn => { try{ fn(lang); } catch(e){ console.error(e); } });
+    }
+  }
+
+  function toggleLangMenu(){
+    document.getElementById('langMenu').classList.toggle('open');
+  }
+  function pickLang(lang){
+    document.getElementById('langMenu').classList.remove('open');
+    applyLang(lang);
+  }
+  document.addEventListener('click', e=>{
+    const w = document.getElementById('globeWrap');
+    if(w && !w.contains(e.target)) document.getElementById('langMenu').classList.remove('open');
+  });
+
+  // Init: read saved language
+  window.addEventListener('DOMContentLoaded', ()=>{
+    let saved = 'ro';
+    try{ const s=localStorage.getItem('vxlang'); if(s && T[s]) saved=s; }catch(e){}
+    applyLang(saved);
+  });
+
+  // Expose globally
+  window.voxenT = t;
+  window.voxenLang = ()=>LANG;
+  window.applyLang = applyLang;
+  window.pickLang = pickLang;
+  window.toggleLangMenu = toggleLangMenu;
+})();
+</script>
+
+</head>
+<body>
+<canvas id="cvs"></canvas>
+
+<div class="topbar">
+  <a class="back-link" href="voxen-landing-multilingual__6_.html"><span data-t="back">← voxen</span></a>
+  <div class="brand">voxen</div>
+  <nav class="nav-links">
+    <a class="nav-link" href="voxen-companion.html"><span data-t="nav_companion">Companion AI</span></a>
+    <a class="nav-link" href="voxen-therapy.html"><span data-t="nav_therapy">Terapie</span></a>
+    <a class="nav-link active" href="voxen-groups.html"><span data-t="nav_groups">Grupuri de sprijin</span></a>
+  </nav>
+</div>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-chip"><div class="chip-dot"></div><span data-t="gr_chip">Sesiuni live săptămânale · 100% anonime</span></div>
+  <h1 class="hero-title"><span data-t="gr_h1" data-t-html>Nu ești singur.<br><em>Niciodată.</em></span></h1>
+  <p class="hero-sub" data-t="gr_sub">Grupuri săptămânale anonime după modelul "Alcoolicii Anonimi" — actualizat pentru era digitală. Un moderator certificat, maximum 12 participanți, 60 de minute de prezență reală.</p>
+
+  <!-- LIVE CIRCLE SIMULATION -->
+  <div class="circle-preview">
+    <div class="circle-header">
+      <div class="circle-title-row">
+        <div class="circle-live-dot"></div>
+        <div>
+          <div class="circle-title" id="circleTitle">Cerc Recuperare Alcool</div>
+          <div class="circle-members" id="circleMembers">7 participanți · Joi 20:00</div>
+        </div>
+      </div>
+      <div class="circle-type-tabs">
+        <div class="circle-tab active" onclick="loadCircle('alcohol',this)">🍷 <span data-t="gr_tab_alcohol">Alcool</span></div>
+        <div class="circle-tab" onclick="loadCircle('gambling',this)">🎰 <span data-t="gr_tab_gambling">Gambling</span></div>
+        <div class="circle-tab" onclick="loadCircle('substances',this)">💊 <span data-t="gr_tab_substances">Substanțe</span></div>
+        <div class="circle-tab" onclick="loadCircle('stress',this)">🧠 <span data-t="gr_tab_stress">Stres</span></div>
+      </div>
+    </div>
+
+    <div class="chat-area" id="chatArea"></div>
+
+    <div class="anon-note"><span data-t="gr_anon_note">🔒 Numele tău real nu este niciodată afișat · Mesajele dispar după sesiune</span></div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatInput" placeholder="Scrie în cerc... (demo)" data-t="gr_input_ph" maxlength="200" onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="chat-send" onclick="sendMsg()"><span data-t="gr_send">Trimite</span></button>
+    </div>
+  </div>
+  <p style="font-size:11px;color:var(--text2);position:relative;z-index:1" data-t="gr_demo_note">Simulare demo · Mesajele reale sunt criptate și nu sunt stocate</p>
+</section>
+
+<!-- GROUPS -->
+<section class="section sep reveal">
+  <p class="section-label"><span data-t="gr_circles_label">Toate cercurile</span></p>
+  <h2 class="section-title"><span data-t="gr_circles_title" data-t-html>Alege cercul<br><em>tău.</em></span></h2>
+  <p class="section-sub" data-t="gr_circles_sub">Fiecare cerc e facilitat de un specialist certificat. O dată pe săptămână, 60 de minute, maximum 12 persoane.</p>
+  <div class="groups-grid" id="groupsGrid"></div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section sep reveal">
+  <p class="section-label" data-t="gr_principles_label">Principii</p>
+  <h2 class="section-title"><span data-t="gr_principles_title" data-t-html>Cum funcționează<br><em>un cerc Voxen.</em></span></h2>
+  <div class="principles">
+    <div class="principle reveal">
+      <div class="principle-icon">🎭</div>
+      <div class="principle-title" data-t="gr_p1_title">Anonimat total</div>
+      <div class="principle-desc" data-t="gr_p1_desc">Numele real nu e niciodată afișat. Alegi un pseudonim la intrare. Nu există profil public.</div>
+    </div>
+    <div class="principle reveal">
+      <div class="principle-icon">🧑‍🏫</div>
+      <div class="principle-title" data-t="gr_p2_title">Moderator certificat</div>
+      <div class="principle-desc" data-t="gr_p2_desc">Fiecare cerc e ghidat de un psiholog sau consilier certificat în terapia de grup.</div>
+    </div>
+    <div class="principle reveal">
+      <div class="principle-icon">🔒</div>
+      <div class="principle-title" data-t="gr_p3_title">Ceea ce se spune rămâne</div>
+      <div class="principle-desc" data-t="gr_p3_desc">Nu există înregistrări. Mesajele sunt criptate end-to-end și șterse la finalul sesiunii.</div>
+    </div>
+    <div class="principle reveal">
+      <div class="principle-icon">👥</div>
+      <div class="principle-title" data-t="gr_p4_title">Max 12 persoane</div>
+      <div class="principle-desc" data-t="gr_p4_desc">Cercuri mici pentru conexiuni reale. Nu audiențe. Fiecare voce contează.</div>
+    </div>
+    <div class="principle reveal">
+      <div class="principle-icon">⌚</div>
+      <div class="principle-title" data-t="gr_p5_title">Biometrice opționale</div>
+      <div class="principle-desc" data-t="gr_p5_desc">Dacă porți un wearable, moderatorul vede agregate anonimizate ale stresului grupului — nu date individuale.</div>
+    </div>
+    <div class="principle reveal">
+      <div class="principle-icon">🌱</div>
+      <div class="principle-title" data-t="gr_p6_title">Progres vizibil</div>
+      <div class="principle-desc" data-t="gr_p6_desc">Milestones împărtășite în grup. Când cineva atinge 30 de zile, întregul cerc celebrează.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SESSION TIMELINE -->
+<section class="section sep reveal">
+  <p class="section-label"><span data-t="gr_timeline_label">O sesiune tipică</span></p>
+  <h2 class="section-title"><span data-t="gr_timeline_title" data-t-html>60 de minute.<br><em>Ce se întâmplă.</em></span></h2>
+  <div class="session-timeline">
+    <div class="st-item reveal">
+      <div class="st-time">0 min</div>
+      <div class="st-body"><div class="st-title" data-t="gr_t1_title">Check-in</div><div class="st-desc" data-t="gr_t1_desc">Fiecare participant spune un singur cuvânt care descrie cum se simte azi. Fără judecată, fără comentarii.</div></div>
+    </div>
+    <div class="st-item reveal">
+      <div class="st-time">10 min</div>
+      <div class="st-body"><div class="st-title" data-t="gr_t2_title">Recap săptămânal</div><div class="st-desc" data-t="gr_t2_desc">Moderatorul prezintă (anonim) pattern-urile biometrice agregate ale grupului din ultima săptămână.</div></div>
+    </div>
+    <div class="st-item reveal">
+      <div class="st-time">20 min</div>
+      <div class="st-body"><div class="st-title" data-t="gr_t3_title">Spațiu de împărtășire</div><div class="st-desc" data-t="gr_t3_desc">Cine vrea, vorbește. Ceilalți ascultă fără să întrerupă. Moderatorul menține spațiul sigur.</div></div>
+    </div>
+    <div class="st-item reveal">
+      <div class="st-time">40 min</div>
+      <div class="st-body"><div class="st-title" data-t="gr_t4_title">Instrument săptămânal</div><div class="st-desc" data-t="gr_t4_desc">Moderatorul ghidează grupul prin unul din cele 18 instrumente Voxen — de ex. Urge Surfing sau Box Breathing în grup.</div></div>
+    </div>
+    <div class="st-item reveal">
+      <div class="st-time">55 min</div>
+      <div class="st-body"><div class="st-title" data-t="gr_t5_title">Intenția pentru săptămâna viitoare</div><div class="st-desc" data-t="gr_t5_desc">Fiecare participant setează un micro-obiectiv pentru 7 zile. Săptămâna viitoare — raportare voluntară.</div></div>
+    </div>
+    <div class="st-item reveal">
+      <div class="st-time">60 min</div>
+      <div class="st-body"><div class="st-title" data-t="gr_t6_title">Check-out</div><div class="st-desc" data-t="gr_t6_desc">Un cuvânt din nou. Înainte și după — adesea diferite. Sesiunea se încheie. Mesajele se șterg.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fbrand">voxen · <span data-t="footer_brand">grupuri de sprijin</span></div>
+  <div class="fcopy">© 2026 Voxen SRL · your voice. your memory.</div>
+</footer>
+
+<script>
+// Canvas
+const cvs=document.getElementById('cvs'),ctx=cvs.getContext('2d');
+let W,H,dots;
+function initC(){W=cvs.width=window.innerWidth;H=cvs.height=window.innerHeight;dots=Array.from({length:30},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.3,dx:(Math.random()-.5)*.17,dy:(Math.random()-.5)*.17,a:Math.random()*Math.PI*2}));}
+function draw(){ctx.clearRect(0,0,W,H);dots.forEach(d=>{d.a+=.005;ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);ctx.fillStyle=`rgba(212,83,126,${.05+.04*Math.sin(d.a)})`;ctx.fill();d.x+=d.dx;d.y+=d.dy;if(d.x<0||d.x>W)d.dx*=-1;if(d.y<0||d.y>H)d.dy*=-1;});requestAnimationFrame(draw);}
+initC();draw();window.addEventListener('resize',initC);
+
+// Reveal
+document.querySelectorAll('.reveal').forEach(el=>{
+  new IntersectionObserver(([e])=>{if(e.isIntersecting)el.classList.add('visible');},{threshold:.1}).observe(el);
+});
+
+// Circle data
+const CIRCLES_DATA = {
+  alcohol:{
+    titles:{ro:'Cerc Recuperare Alcool',en:'Alcohol Recovery Circle',fr:'Cercle Récupération Alcool',de:'Alkohol-Genesungskreis',zh:'戒酒康复圈',ja:'アルコール回復サークル',ru:'Кружок восстановления от алкоголя'},
+    schedules:{ro:'Joi 20:00',en:'Thursday 8pm',fr:'Jeudi 20h',de:'Donnerstag 20:00',zh:'周四 20:00',ja:'木曜 20:00',ru:'Четверг 20:00'},
+    members:7, capacity:12,
+    avatars:['🧑','👩','🧔','👱','👨','🙍','👴'],
+    msgs:{
+      ro:[
+        {type:'system',text:'Sesiunea a început · 7 participanți · Joi 20:00'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Bun venit tuturor. Suntem în siguranță aici. Voi știți câte un cuvânt care descrie cum vă simțiți azi?'},
+        {type:'user',avatar:'🌙',name:'Participant A',text:'Recunoscător. Azi a fost greu, dar am rezistat.'},
+        {type:'user',avatar:'🌊',name:'Participant B',text:'Obosit. Dar prezent. Asta contează.'},
+        {type:'user',avatar:'⭐',name:'Participant C',text:'Am 30 de zile azi! Prima dată când ajung până aici.'},
+        {type:'system',text:'🎉 Participant C — 30 de zile · Întregul cerc celebrează'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'30 de zile înseamnă că ai trecut prin cel mai greu moment. Felicitări. Grupul este cu tine.'},
+      ],
+      en:[
+        {type:'system',text:'Session started · 7 participants · Thursday 8pm'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Welcome everyone. We are safe here. What one word describes how you feel today?'},
+        {type:'user',avatar:'🌙',name:'Participant A',text:'Grateful. Today was hard, but I held on.'},
+        {type:'user',avatar:'🌊',name:'Participant B',text:'Tired. But present. That matters.'},
+        {type:'user',avatar:'⭐',name:'Participant C',text:'30 days today! First time I get this far.'},
+        {type:'system',text:'🎉 Participant C — 30 days · The whole circle celebrates'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'30 days means you made it through the hardest part. Congratulations. The group is with you.'},
+      ],
+      fr:[
+        {type:'system',text:'Session commencée · 7 participants · Jeudi 20h'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'Bienvenue à tous. Nous sommes en sécurité ici. Un mot pour décrire comment vous vous sentez?'},
+        {type:'user',avatar:'🌙',name:'Participant A',text:'Reconnaissant. Aujourd’hui c’était difficile, mais j’ai tenu.'},
+        {type:'user',avatar:'🌊',name:'Participant B',text:'Fatigué. Mais présent. C’est ce qui compte.'},
+        {type:'user',avatar:'⭐',name:'Participant C',text:'30 jours aujourd’hui! Première fois que j’y arrive.'},
+        {type:'system',text:'🎉 Participant C — 30 jours · Tout le cercle célèbre'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'30 jours signifient que vous avez traversé le moment le plus difficile. Félicitations.'},
+      ],
+      de:[
+        {type:'system',text:'Sitzung gestartet · 7 Teilnehmer · Donnerstag 20:00'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Willkommen alle. Wir sind hier sicher. Ein Wort, das beschreibt, wie du dich heute fühlst?'},
+        {type:'user',avatar:'🌙',name:'Teilnehmer A',text:'Dankbar. Heute war es schwer, aber ich hab durchgehalten.'},
+        {type:'user',avatar:'🌊',name:'Teilnehmer B',text:'Müde. Aber präsent. Das zählt.'},
+        {type:'user',avatar:'⭐',name:'Teilnehmer C',text:'30 Tage heute! Das erste Mal, dass ich so weit komme.'},
+        {type:'system',text:'🎉 Teilnehmer C — 30 Tage · Der ganze Kreis feiert'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'30 Tage bedeuten, du hast den schwersten Moment überstanden. Glückwunsch.'},
+      ],
+      zh:[
+        {type:'system',text:'会话已开始 · 7名参与者 · 周四 20:00'},
+        {type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'欢迎大家。我们在这里是安全的。用一个词描述你今天的感受？'},
+        {type:'user',avatar:'🌙',name:'参与者 A',text:'感激。今天很难，但我坚持住了。'},
+        {type:'user',avatar:'🌊',name:'参与者 B',text:'疲惫。但我在场。这很重要。'},
+        {type:'user',avatar:'⭐',name:'参与者 C',text:'今天30天！第一次走到这一步。'},
+        {type:'system',text:'🎉 参与者 C — 30天 · 整个圈子庆祝'},
+        {type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'30天意味着你度过了最艰难的时刻。恭喜你。整个群体与你同在。'},
+      ],
+      ja:[
+        {type:'system',text:'セッション開始 · 7名参加 · 木曜 20:00'},
+        {type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'皆さんようこそ。ここは安全です。今日の気持ちを一言で表すと？'},
+        {type:'user',avatar:'🌙',name:'参加者 A',text:'感謝。今日は辛かったけど、持ちこたえた。'},
+        {type:'user',avatar:'🌊',name:'参加者 B',text:'疲れてる。でも今ここにいる。それで十分。'},
+        {type:'user',avatar:'⭐',name:'参加者 C',text:'今日で30日！ここまで来たのは初めて。'},
+        {type:'system',text:'🎉 参加者 C — 30日達成 · サークル全体でお祝い'},
+        {type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'30日はあなたが最も辛い時期を乗り越えたことを意味します。おめでとうございます。'},
+      ],
+      ru:[
+        {type:'system',text:'Сессия начата · 7 участников · Четверг 20:00'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Добро пожаловать всем. Здесь мы в безопасности. Одно слово, описывающее как ты себя чувствуешь?'},
+        {type:'user',avatar:'🌙',name:'Участник А',text:'Благодарен. Сегодня было трудно, но я держался.'},
+        {type:'user',avatar:'🌊',name:'Участник Б',text:'Устал. Но здесь. Это важно.'},
+        {type:'user',avatar:'⭐',name:'Участник В',text:'30 дней сегодня! Первый раз дошёл до этого.'},
+        {type:'system',text:'🎉 Участник В — 30 дней · Весь кружок празднует'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'30 дней означает, что ты прошёл через самый трудный момент. Поздравляю. Группа с тобой.'},
+      ],
+    }
+  },
+  gambling:{
+    titles:{ro:'Cerc Recuperare Gambling',en:'Gambling Recovery Circle',fr:'Cercle Récupération Jeu',de:'Glücksspiel-Genesungskreis',zh:'戒赌康复圈',ja:'ギャンブル回復サークル',ru:'Кружок восстановления от азарта'},
+    schedules:{ro:'Marți 19:00',en:'Tuesday 7pm',fr:'Mardi 19h',de:'Dienstag 19:00',zh:'周二 19:00',ja:'火曜 19:00',ru:'Вторник 19:00'},
+    members:5, capacity:12,
+    avatars:['👨','👩','🧔','👱','🙍'],
+    msgs:{
+      ro:[
+        {type:'system',text:'Sesiunea a început · 5 participanți · Marți 19:00'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Seara bună. Săptămâna asta am vrut să vorbim despre triggeri. Ce situații au fost dificile?'},
+        {type:'user',avatar:'🎯',name:'Participant D',text:'Vineri seara. Toată lumea ieșea, eu stăteam acasă. Senzația de gol.'},
+        {type:'user',avatar:'🌿',name:'Participant E',text:'Am folosit HALT și mi-am dat seama că eram flămând și singur. M-am dus la o cafenea în schimb.'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Exact asta înseamnă HALT în practică. Participant E, ai transformat un risc într-un succes.'},
+      ],
+      en:[
+        {type:'system',text:'Session started · 5 participants · Tuesday 7pm'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Good evening. This week I wanted to talk about triggers. What situations were difficult?'},
+        {type:'user',avatar:'🎯',name:'Participant D',text:'Friday evening. Everyone was going out, I stayed home. That empty feeling.'},
+        {type:'user',avatar:'🌿',name:'Participant E',text:'I used HALT and realized I was hungry and lonely. I went to a café instead.'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'That is exactly what HALT means in practice. Participant E, you turned a risk into a success.'},
+      ],
+      fr:[{type:'system',text:'Session commencée · 5 participants · Mardi 19h'},{type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'Bonsoir. Cette semaine, parlons des déclencheurs. Quelles situations ont été difficiles?'},{type:'user',avatar:'🎯',name:'Participant D',text:'Vendredi soir. Tout le monde sortait, je restais chez moi. Ce sentiment de vide.'},{type:'user',avatar:'🌿',name:'Participant E',text:'J’ai utilisé HALT et réalisé que j’avais faim et me sentais seul. Je suis allé dans un café.'},{type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'C’est exactement ce que HALT signifie en pratique. Participant E, vous avez transformé un risque en succès.'},],
+      de:[{type:'system',text:'Sitzung gestartet · 5 Teilnehmer · Dienstag 19:00'},{type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Guten Abend. Diese Woche möchte ich über Trigger sprechen. Welche Situationen waren schwierig?'},{type:'user',avatar:'🎯',name:'Teilnehmer D',text:'Freitagabend. Alle gingen aus, ich blieb zuhause. Dieses leere Gefühl.'},{type:'user',avatar:'🌿',name:'Teilnehmer E',text:'Ich nutzte HALT und merkte, dass ich hungrig und einsam war. Ich ging stattdessen in ein Café.'},{type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Genau das bedeutet HALT in der Praxis. Teilnehmer E, du hast ein Risiko in einen Erfolg verwandelt.'},],
+      zh:[{type:'system',text:'会话已开始 · 5名参与者 · 周二 19:00'},{type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'晚上好。本周我想谈谈触发因素。哪些情况很困难？'},{type:'user',avatar:'🎯',name:'参与者 D',text:'周五晚上。所有人都出去了，我待在家里。那种空虚感。'},{type:'user',avatar:'🌿',name:'参与者 E',text:'我使用了HALT，意识到自己又饿又孤独。我去了咖啡馆。'},{type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'这正是HALT在实践中的意义。参与者E，你把风险变成了成功。'},],
+      ja:[{type:'system',text:'セッション開始 · 5名参加 · 火曜 19:00'},{type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'こんばんは。今週はトリガーについて話したいと思います。どんな状況が難しかったですか？'},{type:'user',avatar:'🎯',name:'参加者 D',text:'金曜の夜。みんな出かけて、私は家にいた。あの虚無感。'},{type:'user',avatar:'🌿',name:'参加者 E',text:'HALTを使ったら、お腹が空いて孤独だと気づいた。代わりにカフェに行った。'},{type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'それがHALTの実践的な意味です。参加者E、リスクを成功に変えました。'},],
+      ru:[{type:'system',text:'Сессия начата · 5 участников · Вторник 19:00'},{type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Добрый вечер. На этой неделе хочу поговорить о триггерах. Какие ситуации были трудными?'},{type:'user',avatar:'🎯',name:'Участник Г',text:'Пятница вечером. Все уходили, я оставался дома. Это чувство пустоты.'},{type:'user',avatar:'🌿',name:'Участник Д',text:'Я использовал HALT и понял, что был голоден и одинок. Вместо этого пошёл в кафе.'},{type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Именно это и означает HALT на практике. Участник Д, ты превратил риск в успех.'},],
+    }
+  },
+  substances:{
+    titles:{ro:'Cerc Recuperare Substanțe',en:'Substance Recovery Circle',fr:'Cercle Récupération Substances',de:'Substanz-Genesungskreis',zh:'戒毒康复圈',ja:'薬物回復サークル',ru:'Кружок восстановления от веществ'},
+    schedules:{ro:'Sâmbătă 10:00',en:'Saturday 10am',fr:'Samedi 10h',de:'Samstag 10:00',zh:'周六 10:00',ja:'土曜 10:00',ru:'Суббота 10:00'},
+    members:8, capacity:12,
+    avatars:['👩','🧔','👱','👨','🙍','👴','🧑','👧'],
+    msgs:{
+      ro:[
+        {type:'system',text:'Sesiunea a început · 8 participanți · Sâmbătă 10:00'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Dimineața bună. Astăzi facem o scanare corporală împreună — 5 minute. Găsiți o poziție confortabilă.'},
+        {type:'user',avatar:'🌸',name:'Participant F',text:'M-a ajutat mult săptămâna asta. Când simțeam nevoia, închideam ochii și scaneam.'},
+        {type:'user',avatar:'💫',name:'Participant G',text:'Sunt 90 de zile. Nu mi-a venit să cred că ajung până aici.'},
+        {type:'system',text:'🏆 Participant G — 90 de zile! Milestone major'},
+      ],
+      en:[
+        {type:'system',text:'Session started · 8 participants · Saturday 10am'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Good morning. Today we do a body scan together — 5 minutes. Find a comfortable position.'},
+        {type:'user',avatar:'🌸',name:'Participant F',text:'It helped me a lot this week. When I felt the urge, I closed my eyes and scanned.'},
+        {type:'user',avatar:'💫',name:'Participant G',text:'90 days. I couldn’t believe I would get here.'},
+        {type:'system',text:'🏆 Participant G — 90 days! Major milestone'},
+      ],
+      fr:[{type:'system',text:'Session commencée · 8 participants · Samedi 10h'},{type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'Bonjour. Aujourd’hui nous faisons un scan corporel ensemble — 5 minutes. Trouvez une position confortable.'},{type:'user',avatar:'🌸',name:'Participant F',text:'Ça m’a beaucoup aidé cette semaine. Quand je ressentais l’envie, je fermais les yeux et scannais.'},{type:'user',avatar:'💫',name:'Participant G',text:'90 jours. Je ne pouvais pas croire que j’y arriverais.'},{type:'system',text:'🏆 Participant G — 90 jours! Étape majeure'},],
+      de:[{type:'system',text:'Sitzung gestartet · 8 Teilnehmer · Samstag 10:00'},{type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Guten Morgen. Heute machen wir zusammen einen Körperscan — 5 Minuten. Findet eine bequeme Position.'},{type:'user',avatar:'🌸',name:'Teilnehmer F',text:'Es hat mir diese Woche sehr geholfen. Wenn ich das Verlangen spürte, schloss ich die Augen.'},{type:'user',avatar:'💫',name:'Teilnehmer G',text:'90 Tage. Ich konnte nicht glauben, dass ich das schaffe.'},{type:'system',text:'🏆 Teilnehmer G — 90 Tage! Großer Meilenstein'},],
+      zh:[{type:'system',text:'会话已开始 · 8名参与者 · 周六 10:00'},{type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'早上好。今天我们一起做身体扫描——5分钟。找一个舒适的姿势。'},{type:'user',avatar:'🌸',name:'参与者 F',text:'本周对我很有帮助。当我感到冲动时，我闭上眼睛扫描身体。'},{type:'user',avatar:'💫',name:'参与者 G',text:'90天了。我无法相信自己能走到这一步。'},{type:'system',text:'🏆 参与者 G — 90天！重要里程碑'},],
+      ja:[{type:'system',text:'セッション開始 · 8名参加 · 土曜 10:00'},{type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'おはようございます。今日は一緒にボディスキャンをします——5分間。楽な姿勢を見つけてください。'},{type:'user',avatar:'🌸',name:'参加者 F',text:'今週とても役に立ちました。衝動を感じたとき、目を閉じてスキャンしました。'},{type:'user',avatar:'💫',name:'参加者 G',text:'90日達成。ここまで来られると思わなかった。'},{type:'system',text:'🏆 参加者 G — 90日！大きなマイルストーン'},],
+      ru:[{type:'system',text:'Сессия начата · 8 участников · Суббота 10:00'},{type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Доброе утро. Сегодня делаем сканирование тела вместе — 5 минут. Найди удобное положение.'},{type:'user',avatar:'🌸',name:'Участник Е',text:'Мне это очень помогло на этой неделе. Когда чувствовал тягу, закрывал глаза и сканировал.'},{type:'user',avatar:'💫',name:'Участник Ж',text:'90 дней. Я не мог поверить, что доберусь сюда.'},{type:'system',text:'🏆 Участник Ж — 90 дней! Важная веха'},],
+    }
+  },
+  stress:{
+    titles:{ro:'Cerc Stres & Burnout',en:'Stress & Burnout Circle',fr:'Cercle Stress & Épuisement',de:'Stress & Burnout-Kreis',zh:'压力与倦怠圈',ja:'ストレス＆バーンアウトサークル',ru:'Кружок стресса и выгорания'},
+    schedules:{ro:'Luni 19:30',en:'Monday 7:30pm',fr:'Lundi 19h30',de:'Montag 19:30',zh:'周一 19:30',ja:'月曜 19:30',ru:'Понедельник 19:30'},
+    members:9, capacity:12,
+    avatars:['👩','🧔','👱','👨','🙍','👴','🧑','👧','🙎'],
+    msgs:{
+      ro:[
+        {type:'system',text:'Sesiunea a început · 9 participanți · Luni 19:30'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Cum a fost lunea voastră? Cine vrea să deschidă?'},
+        {type:'user',avatar:'🌻',name:'Participant H',text:'Am avut o prezentare importantă. Am folosit tehnica STOP înainte. A funcționat.'},
+        {type:'user',avatar:'🍃',name:'Participant I',text:'Eu tot încerc limitele. Am zis nu de 2 ori săptămâna asta.'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Două "nu"-uri într-o săptămână. Asta e un progres real. Cum v-ați simțit după?'},
+      ],
+      en:[
+        {type:'system',text:'Session started · 9 participants · Monday 7:30pm'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'How was your Monday? Who wants to open?'},
+        {type:'user',avatar:'🌻',name:'Participant H',text:'I had an important presentation. I used the STOP technique beforehand. It worked.'},
+        {type:'user',avatar:'🍃',name:'Participant I',text:'I keep pushing my limits. I said no twice this week.'},
+        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Two "no"s in one week. That is real progress. How did you feel afterwards?'},
+      ],
+      fr:[{type:'system',text:'Session commencée · 9 participants · Lundi 19h30'},{type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'Comment s’est passé votre lundi? Qui veut commencer?'},{type:'user',avatar:'🌻',name:'Participant H',text:'J’avais une présentation importante. J’ai utilisé la technique STOP avant. Ça a marché.'},{type:'user',avatar:'🍃',name:'Participant I',text:'Je continue à tester mes limites. J’ai dit non deux fois cette semaine.'},{type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'Deux "non" en une semaine. C’est un vrai progrès. Comment vous êtes-vous senti après?'},],
+      de:[{type:'system',text:'Sitzung gestartet · 9 Teilnehmer · Montag 19:30'},{type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Wie war euer Montag? Wer möchte anfangen?'},{type:'user',avatar:'🌻',name:'Teilnehmer H',text:'Ich hatte eine wichtige Präsentation. Ich nutzte die STOPP-Technik vorher. Es hat funktioniert.'},{type:'user',avatar:'🍃',name:'Teilnehmer I',text:'Ich teste immer meine Grenzen. Diese Woche habe ich zweimal Nein gesagt.'},{type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Zweimal Nein in einer Woche. Das ist echter Fortschritt. Wie habt ihr euch danach gefühlt?'},],
+      zh:[{type:'system',text:'会话已开始 · 9名参与者 · 周一 19:30'},{type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'你们的周一怎么样？谁想先开始？'},{type:'user',avatar:'🌻',name:'参与者 H',text:'我有一个重要的演示。我事先使用了STOP技术。它起效了。'},{type:'user',avatar:'🍃',name:'参与者 I',text:'我一直在测试自己的界限。这周我说了两次不。'},{type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'一周内两次说不。这是真正的进步。之后你们感觉如何？'},],
+      ja:[{type:'system',text:'セッション開始 · 9名参加 · 月曜 19:30'},{type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'月曜日はどうでしたか？誰か始めたい人は？'},{type:'user',avatar:'🌻',name:'参加者 H',text:'重要なプレゼンがありました。前にSTOPテクニックを使いました。うまくいきました。'},{type:'user',avatar:'🍃',name:'参加者 I',text:'限界を試し続けています。今週は2回断りました。'},{type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'1週間で2回の「ノー」。それは本当の進歩です。その後どう感じましたか？'},],
+      ru:[{type:'system',text:'Сессия начата · 9 участников · Понедельник 19:30'},{type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Как прошёл ваш понедельник? Кто хочет начать?'},{type:'user',avatar:'🌻',name:'Участник З',text:'У меня была важная презентация. Я использовал технику СТОП заранее. Это сработало.'},{type:'user',avatar:'🍃',name:'Участник И',text:'Я продолжаю проверять свои границы. На этой неделе сказал нет дважды.'},{type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Два «нет» за неделю. Это настоящий прогресс. Как вы себя чувствовали после?'},],
+    }
+  },
+};
+
+// Get circle data for current language
+function getCircleData(type) {
+  const L = window.voxenLang ? window.voxenLang() : 'ro';
+  const d = CIRCLES_DATA[type];
+  if (!d) return null;
+  return {
+    title: d.titles[L] || d.titles.en,
+    schedule: d.schedules[L] || d.schedules.en,
+    members: d.members,
+    capacity: d.capacity,
+    avatars: d.avatars,
+    msgs: d.msgs[L] || d.msgs.en,
+  };
+}
+
+let activeCircle = 'alcohol';
+
+function loadCircle(type, el) {
+  activeCircle = type;
+  document.querySelectorAll('.circle-tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const c = getCircleData(type);
+  if(!c) return;
+  const L = window.voxenLang ? window.voxenLang() : 'ro';
+  const membersLabel = {ro:'participanți',en:'participants',fr:'participants',de:'Teilnehmer',zh:'名参与者',ja:'名参加',ru:'участников'}[L]||'participants';
+  document.getElementById('circleTitle').textContent = c.title;
+  document.getElementById('circleMembers').textContent = c.members + ' ' + membersLabel + ' · ' + c.schedule;
+  renderChat(c.msgs);
+}
+
+function renderChat(msgs) {
+  const area = document.getElementById('chatArea');
+  area.innerHTML = '';
+  msgs.forEach((m,i)=>{
+    setTimeout(()=>{
+      const d = document.createElement('div');
+      if(m.type==='system'){
+        d.className = 'msg system';
+        d.innerHTML = `<div class="msg-text">${m.text}</div>`;
+      } else {
+        d.className = `msg ${m.type==='mod'?'mod':''} ${m.name==='Tu'?'me':''}`;
+        d.innerHTML = `<div class="msg-avatar">${m.avatar}</div><div class="msg-body"><div class="msg-name">${m.name}</div><div class="msg-text">${m.text}</div></div>`;
+      }
+      area.appendChild(d);
+      area.scrollTop = area.scrollHeight;
+    }, i * 300);
+  });
+}
+
+loadCircle('alcohol', null);
+
+function sendMsg() {
+  const inp = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if(!text) return;
+  const area = document.getElementById('chatArea');
+  const d = document.createElement('div');
+  d.className = 'msg me';
+  d.innerHTML = `<div class="msg-body"><div class="msg-name" style="text-align:right">Tu</div><div class="msg-text">${text}</div></div><div class="msg-avatar">🌟</div>`;
+  area.appendChild(d);
+  area.scrollTop = area.scrollHeight;
+  inp.value = '';
+
+  // Auto-reply from moderator after 1.5s
+  setTimeout(()=>{
+    const L = window.voxenLang ? window.voxenLang() : 'ro';
+    const allReplies = {
+      ro:['Mulțumesc că ai împărtășit asta. Ceilalți din cerc te aud.','Asta ia curaj. Cum te simți acum?','Observ că ai găsit cuvintele potrivite. Asta e progres.','Grupul este cu tine. Nu ești singur în asta.'],
+      en:['Thank you for sharing that. Others in the circle hear you.','That takes courage. How do you feel now?','I notice you found the right words. That itself is progress.','The group is with you. You are not alone in this.'],
+      fr:['Merci de partager ça. Les autres du cercle vous entendent.','Ça demande du courage. Comment vous sentez-vous maintenant?','Je remarque que vous avez trouvé les bons mots. C’est déjà un progrès.','Le groupe est avec vous. Vous n’êtes pas seul dans ça.'],
+      de:['Danke, dass du das teilst. Andere im Kreis hören dich.','Das braucht Mut. Wie fühlst du dich jetzt?','Ich bemerke, dass du die richtigen Worte gefunden hast. Das ist Fortschritt.','Die Gruppe ist bei dir. Du bist damit nicht allein.'],
+      zh:['感谢您分享这些。圈子里的其他人都在听。','这需要勇气。你现在感觉如何？','我注意到你找到了合适的语言。这本身就是进步。','群体与你同在。你并不孤单。'],
+      ja:['シェアしてくれてありがとう。サークルの他の人たちも聞いています。','それには勇気が要ります。今どう感じていますか？','適切な言葉を見つけたと気づきます。それ自体が進歩です。','グループはあなたと共にあります。一人ではありません。'],
+      ru:['Спасибо, что поделился. Другие в кружке слышат тебя.','Это требует смелости. Как ты себя чувствуешь сейчас?','Я замечаю, что ты нашёл правильные слова. Это само по себе прогресс.','Группа с тобой. Ты не один в этом.'],
+    };
+    const replies = allReplies[L] || allReplies.en;
+    const d2 = document.createElement('div');
+    d2.className = 'msg mod';
+    d2.innerHTML = `<div class="msg-avatar">🧑‍🏫</div><div class="msg-body"><div class="msg-name">Moderator</div><div class="msg-text">${replies[Math.floor(Math.random()*replies.length)]}</div></div>`;
+    area.appendChild(d2);
+    area.scrollTop = area.scrollHeight;
+  }, 1500);
+}
+
+// Groups grid
+const GROUPS_DATA = [
+  {icon:'🍷', color:'var(--warm)',  type:'alcohol',    spots:5, members:['🧑','👩','🧔','👱','👨','🙍','👴'],
+   title:{ro:'Recuperare din alcool',en:'Alcohol recovery',fr:'Récupération alcool',de:'Alkohol-Genesung',zh:'戒酒康复',ja:'アルコール回復',ru:'Восстановление от алкоголя'},
+   schedule:{ro:'Joi, 20:00',en:'Thursday, 8pm',fr:'Jeudi, 20h',de:'Donnerstag, 20:00',zh:'周四 20:00',ja:'木曜 20:00',ru:'Четверг, 20:00'},
+   day:{ro:'Joi',en:'Thursday',fr:'Jeudi',de:'Donnerstag',zh:'周四',ja:'木曜',ru:'Четверг'},
+   desc:{ro:'Grup anonim săptămânal. Împărtășire deschisă, sprijin mutual, moderator specializat în dependențe.',en:'Anonymous weekly group. Open sharing, mutual support, addiction specialist moderator.',fr:'Groupe anonyme hebdomadaire. Partage ouvert, soutien mutuel, modérateur spécialisé.',de:'Anonyme wöchentliche Gruppe. Offener Austausch, gegenseitige Unterstützung, Suchtspezialist.',zh:'匿名每周小组。开放分享、互助、成瘾问题专家主持人。',ja:'匿名の週次グループ。オープンな共有、相互サポート、依存症専門モデレーター。',ru:'Анонимная еженедельная группа. Открытое общение, взаимная поддержка, специалист по зависимостям.'}},
+  {icon:'🎰', color:'var(--amber)', type:'gambling',   spots:7, members:['👩','🧔','👱','👨','🙍'],
+   title:{ro:'Recuperare din gambling',en:'Gambling recovery',fr:'Récupération jeu',de:'Glücksspiel-Genesung',zh:'戒赌康复',ja:'ギャンブル回復',ru:'Восстановление от азарта'},
+   schedule:{ro:'Marți, 19:00',en:'Tuesday, 7pm',fr:'Mardi, 19h',de:'Dienstag, 19:00',zh:'周二 19:00',ja:'火曜 19:00',ru:'Вторник, 19:00'},
+   day:{ro:'Marți',en:'Tuesday',fr:'Mardi',de:'Dienstag',zh:'周二',ja:'火曜',ru:'Вторник'},
+   desc:{ro:'Program structurat. Analiza triggerilor, plan de criză personalizat, celebrare milestones împreună.',en:'Structured program. Trigger analysis, personalized crisis plan, milestone celebrations.',fr:'Programme structuré. Analyse des déclencheurs, plan de crise personnalisé.',de:'Strukturiertes Programm. Trigger-Analyse, personalisierter Krisenplan.',zh:'结构化项目。触发因素分析、个性化危机计划、共同庆祝里程碑。',ja:'構造化されたプログラム。トリガー分析、パーソナライズされた危機計画。',ru:'Структурированная программа. Анализ триггеров, персональный план кризиса.'}},
+  {icon:'💊', color:'#7F77DD',      type:'substances', spots:4, members:['👩','🧔','👱','👨','🙍','👴','🧑','👧'],
+   title:{ro:'Recuperare din substanțe',en:'Substance recovery',fr:'Récupération substances',de:'Substanz-Genesung',zh:'戒毒康复',ja:'薬物回復',ru:'Восстановление от веществ'},
+   schedule:{ro:'Sâmbătă, 10:00',en:'Saturday, 10am',fr:'Samedi, 10h',de:'Samstag, 10:00',zh:'周六 10:00',ja:'土曜 10:00',ru:'Суббота, 10:00'},
+   day:{ro:'Sâmbătă',en:'Saturday',fr:'Samedi',de:'Samstag',zh:'周六',ja:'土曜',ru:'Суббота'},
+   desc:{ro:'Grup cu structură 12 pași adaptată digital. Scanare corporală colectivă la fiecare sesiune.',en:'12-step group adapted digitally. Collective body scan at each session.',fr:'Groupe en 12 étapes adapté numériquement. Scan corporel collectif à chaque session.',de:'12-Schritte-Gruppe digital angepasst. Kollektiver Körperscan bei jeder Sitzung.',zh:'数字化适应的12步小组。每次会话集体身体扫描。',ja:'デジタル適応された12ステップグループ。各セッションで集団ボディスキャン。',ru:'Группа 12 шагов цифровая. Коллективное сканирование тела на каждой сессии.'}},
+  {icon:'🧠', color:'var(--teal)',  type:'stress',     spots:3, members:['👩','🧔','👱','👨','🙍','👴','🧑','👧','🙎'],
+   title:{ro:'Stres & Burnout',en:'Stress & Burnout',fr:'Stress & Épuisement',de:'Stress & Burnout',zh:'压力与倦怠',ja:'ストレス＆バーンアウト',ru:'Стресс и выгорание'},
+   schedule:{ro:'Luni, 19:30',en:'Monday, 7:30pm',fr:'Lundi, 19h30',de:'Montag, 19:30',zh:'周一 19:30',ja:'月曜 19:30',ru:'Понедельник, 19:30'},
+   day:{ro:'Luni',en:'Monday',fr:'Lundi',de:'Montag',zh:'周一',ja:'月曜',ru:'Понедельник'},
+   desc:{ro:'Tehnici MBSR și CBT în grup. Focus pe limite sănătoase, managementul energiei, prevenția epuizării.',en:'MBSR and CBT techniques in group. Focus on healthy limits, energy management, burnout prevention.',fr:'Techniques MBSR et TCC en groupe. Focus sur les limites saines, gestion de l’énergie.',de:'MBSR und KBT-Techniken in der Gruppe. Fokus auf gesunde Grenzen, Energiemanagement.',zh:'团体中的MBSR和CBT技术。专注于健康界限、能量管理、预防倦怠。',ja:'グループでのMBSRとCBT技法。健康的な限界、エネルギー管理、バーンアウト予防に焦点。',ru:'Техники MBSR и КПТ в группе. Фокус на здоровых границах, управлении энергией.'}},
+];
+
+// Get groups for current language
+function getGroups() {
+  const L = window.voxenLang ? window.voxenLang() : 'ro';
+  return GROUPS_DATA.map(g => ({
+    icon:g.icon, color:g.color, type:g.type, spots:g.spots, members:g.members,
+    title: g.title[L] || g.title.en,
+    schedule: g.schedule[L] || g.schedule.en,
+    day: g.day[L] || g.day.en,
+    desc: g.desc[L] || g.desc.en,
+  }));
+}
+
+const GROUPS = getGroups();
+
+const gg = document.getElementById('groupsGrid');
+function buildGroupsGrid() {
+  gg.innerHTML = '';
+  const L = window.voxenLang ? window.voxenLang() : 'ro';
+  const labels = {
+    next:{ro:'Următor',en:'Next',fr:'Suivant',de:'Nächste',zh:'下次',ja:'次回',ru:'Следующий'},
+    weekly:{ro:'Săptămânal',en:'Weekly',fr:'Hebdomadaire',de:'Wöchentlich',zh:'每周',ja:'毎週',ru:'Еженедельно'},
+    duration:{ro:'60 minute',en:'60 minutes',fr:'60 minutes',de:'60 Minuten',zh:'60分钟',ja:'60分',ru:'60 минут'},
+    anon:{ro:'100% anonim · Mesaje criptate',en:'100% anonymous · Encrypted',fr:'100% anonyme · Messages chiffrés',de:'100% anonym · Verschlüsselt',zh:'100%匿名 · 消息加密',ja:'100%匿名 · 暗号化メッセージ',ru:'100% анонимно · Зашифровано'},
+    spots:{ro:'locuri libere',en:'spots left',fr:'places libres',de:'Plätze frei',zh:'个空位',ja:'空席',ru:'мест свободно'},
+    join:{ro:'Alătură-te cercului →',en:'Join the circle →',fr:'Rejoindre →',de:'Beitreten →',zh:'加入圈子 →',ja:'参加 →',ru:'Присоединиться →'},
+  };
+  const lbl = k => labels[k]?.[L] || labels[k]?.en || k;
+  const items = getGroups();
+  items.forEach(g=>{
+  const spotsColor = g.spots <= 3 ? '#E24B4A' : g.spots <= 5 ? 'var(--amber)' : 'var(--teal)';
+  const d = document.createElement('div');
+  d.className = 'gr-card reveal';
+  d.innerHTML = `
+    <div class="gr-icon-row">
+      <span class="gr-icon">${g.icon}</span>
+      <span class="gr-next-badge">${lbl('next')}: ${g.day}</span>
+    </div>
+    <div class="gr-title">${g.title}</div>
+    <div class="gr-desc">${g.desc}</div>
+    <div class="gr-meta">
+      <div class="gr-meta-row">📅 ${g.schedule} · ${lbl('weekly')}</div>
+      <div class="gr-meta-row">⏱ ${lbl('duration')}</div>
+      <div class="gr-meta-row">🔒 ${lbl('anon')}</div>
+    </div>
+    <div class="members-row">
+      ${g.members.map(m=>`<div class="member-dot" style="background:var(--surface)">${m}</div>`).join('')}
+      <span class="spots-left" style="color:${spotsColor}">+${g.spots} ${lbl('spots')}</span>
+    </div>
+    <button class="gr-join-btn" style="border-color:${g.color};color:${g.color}" onclick="joinGroup('${g.type}')">${lbl('join')}</button>`;
+  d.onclick = (e)=>{ if(!e.target.classList.contains('gr-join-btn')) loadCircle(g.type, null); };
+  gg.appendChild(d);
+    new IntersectionObserver(([e])=>{if(e.isIntersecting)d.classList.add('visible');},{threshold:.1}).observe(d);
+  });
+}
+buildGroupsGrid();
+
+// Register hooks for language changes
+window.voxenHooks = window.voxenHooks || [];
+window.voxenHooks.push(function(lang){
+  if (typeof buildGroupsGrid === 'function') buildGroupsGrid();
+  if (typeof activeCircle !== 'undefined' && typeof loadCircle === 'function') {
+    loadCircle(activeCircle, null);
+  }
+});
+
+function joinGroup(type) {
+  // Show join modal simulation
+  const names = {alcohol:'Recuperare Alcool',gambling:'Recuperare Gambling',substances:'Recuperare Substanțe',stress:'Stres & Burnout'};
+  const pseudonyms = ['🌙 Luna','⭐ Stea','🌊 Val','🌸 Floare','🌿 Ierba','💫 Licurici','🍃 Frunza'];
+  const pseudonym = pseudonyms[Math.floor(Math.random()*pseudonyms.length)];
+  alert(`✓ ${window.voxenT?window.voxenT('gr_join_btn'):'Te-ai alăturat'} -  "${names[type]}"\n\nPseudonimul tău anonim: ${pseudonym}\n\nVei primi o notificare înainte de sesiune.\n\n(Funcție completă disponibilă la lansare V2)`);
+}
+</script>
+<script>
+// ── Optimizare baterie: oprește animațiile când pagina nu e vizibilă ──
+(function(){
+  document.addEventListener('visibilitychange', function(){
+    document.body.style.animationPlayState = document.hidden ? 'paused' : 'running';
+    // Oprește toate animațiile CSS prin clasă pe body
+    if(document.hidden) document.documentElement.classList.add('vx-paused');
+    else document.documentElement.classList.remove('vx-paused');
+  });
+})();
+</script>
+</body>
+</html>

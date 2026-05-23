@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="ro" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>voxen — your voice. your memory.</title>
+<meta name="description" content="20 seconds a day. A lifetime to remember.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --void:#0D0B1A;--deep:#110E22;--surface:#1A1630;--card:#201C38;--border:#2E2850;
+  --purple:#534AB7;--mid:#7F77DD;--soft:#AFA9EC;--mist:#EEEDFE;
+  --teal:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--white:#F0EFF8;--text2:#8B88C3;
+  --ff:'Syne',sans-serif;
+}
+html.zh-cn,html.zh-cn body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif}
+html.ja,html.ja body{font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif}
+html.ru,html.ru body{font-family:'Noto Sans','Syne',sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--white);font-family:var(--ff);overflow-x:hidden}
+#cvs{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.4}
+
+/* ── Language switcher ──────────────────────────────────── */
+/* ── Globe language dropdown ──────────────────────────── */
+.globe-wrap{position:relative;display:flex;align-items:center}
+.globe-btn{
+  width:36px;height:36px;border-radius:8px;
+  border:.5px solid var(--border);
+  background:var(--surface);
+  cursor:pointer;font-size:17px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;flex-shrink:0;
+  position:relative;
+}
+.globe-btn:hover{border-color:var(--mid);background:var(--card)}
+.globe-btn .active-flag{
+  position:absolute;bottom:-3px;right:-3px;
+  font-size:10px;line-height:1;
+}
+.lang-dropdown{
+  display:none;
+  position:absolute;top:calc(100% + 8px);right:0;
+  background:var(--card);
+  border:.5px solid var(--border);
+  border-radius:12px;
+  padding:6px;
+  min-width:180px;
+  z-index:999;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  backdrop-filter:blur(16px);
+}
+.lang-dropdown.open{display:block;animation:dropIn .18s ease}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.lang-option{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:8px;
+  cursor:pointer;transition:background .15s;
+  font-size:13px;font-weight:500;color:var(--soft);
+  border:none;background:none;width:100%;text-align:left;
+}
+.lang-option:hover{background:var(--surface);color:var(--white)}
+.lang-option.active{background:rgba(83,74,183,.2);color:var(--mist)}
+.lang-option .flag{font-size:18px;line-height:1;flex-shrink:0}
+.lang-option .lang-name{flex:1}
+.lang-option .lang-native{font-size:11px;color:var(--text2);margin-left:auto}
+
+/* ── Nav ──────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;transition:background .3s,border-color .3s;border-bottom:.5px solid transparent;gap:16px}
+nav.scrolled{background:rgba(13,11,26,.92);border-color:var(--border);backdrop-filter:blur(16px)}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.nav-wave{display:flex;align-items:center;gap:2.5px;height:20px}
+.nav-wave span{display:block;width:3px;border-radius:2px;background:var(--mid);transform-origin:center;animation:navWave 1.2s ease-in-out infinite}
+.nav-wave span:nth-child(1){height:14px;animation-delay:0s}
+.nav-wave span:nth-child(2){height:14px;animation-delay:.15s}
+.nav-wave span:nth-child(3){height:14px;animation-delay:.3s}
+.nav-wave span:nth-child(4){height:14px;animation-delay:.45s}
+.nav-wave span:nth-child(5){height:14px;animation-delay:.2s}
+.nav-wave span:nth-child(6){height:14px;animation-delay:.35s}
+.nav-wave span:nth-child(7){height:14px;animation-delay:.1s}
+.nav-wave span:nth-child(8){height:14px;animation-delay:.25s}
+.nav-wave span:nth-child(9){height:14px;animation-delay:.4s}
+@keyframes navWave{
+  0%,100%{transform:scaleY(.35)}
+  50%{transform:scaleY(1.4)}
+}
+/* Respect reduced-motion preference */
+@media(prefers-reduced-motion:reduce){
+  .nav-wave span{animation:none;height:13px!important}
+}
+.nav-name{font-size:19px;font-weight:700;color:var(--white);letter-spacing:-.03em;font-family:'Syne',sans-serif}
+.nav-links{display:flex;align-items:center;gap:6px;list-style:none;flex:1;justify-content:center}
+.nav-links a{font-size:11px;font-weight:500;color:var(--text2);text-decoration:none;letter-spacing:.07em;text-transform:uppercase;transition:color .2s;padding:6px 10px;border-radius:6px;white-space:nowrap}
+.nav-links a:hover{color:var(--white);background:rgba(255,255,255,.04)}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-cta{background:var(--purple);color:var(--mist)!important;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:background .2s,transform .15s;white-space:nowrap}
+.nav-cta:hover{background:var(--mid);transform:scale(1.03)}
+@media(max-width:900px){.nav-links{display:none}}
+@media(max-width:768px){nav{padding:14px 20px}.nav-cta{font-size:12px;padding:8px 14px}}
+
+/* ── Hero ─────────────────────────────────────────────── */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:140px 24px 80px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:.5px solid var(--border);border-radius:100px;padding:6px 16px 6px 10px;font-size:12px;font-weight:500;color:var(--soft);margin-bottom:36px;opacity:0;transform:translateY(16px);animation:fadeUp .6s .1s ease forwards}
+.bdot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.hero-title{font-size:clamp(48px,8vw,96px);font-weight:800;line-height:1.02;letter-spacing:-.04em;margin-bottom:16px;opacity:0;transform:translateY(20px);animation:fadeUp .7s .2s ease forwards;font-family:'Syne',sans-serif}
+.hero-title em{font-style:normal;color:var(--mid);font-family:'Instrument Serif',serif;font-style:italic}
+.hero-sub{font-size:clamp(14px,2vw,19px);color:var(--text2);margin-bottom:14px;opacity:0;transform:translateY(20px);animation:fadeUp .7s .3s ease forwards;max-width:500px}
+.hero-sub strong{color:var(--soft);font-weight:500}
+.hero-new{display:inline-flex;align-items:center;gap:6px;background:rgba(29,158,117,.12);border:.5px solid rgba(29,158,117,.4);border-radius:100px;padding:4px 13px;font-size:11px;color:var(--teal);font-weight:600;margin-bottom:42px;opacity:0;animation:fadeUp .7s .38s ease forwards}
+.wfhero{display:flex;align-items:center;justify-content:center;gap:5px;height:62px;margin-bottom:48px;opacity:0;animation:fadeUp .7s .42s ease forwards}
+.wbar{width:4px;border-radius:3px;background:var(--purple);animation:wave 1.8s ease-in-out infinite}
+.wbar:nth-child(1){height:11px}.wbar:nth-child(2){height:20px;animation-delay:.08s}.wbar:nth-child(3){height:33px;animation-delay:.16s}.wbar:nth-child(4){height:44px;animation-delay:.24s}.wbar:nth-child(5){height:56px;animation-delay:.32s;background:var(--mid)}.wbar:nth-child(6){height:46px;animation-delay:.24s;background:var(--mid)}.wbar:nth-child(7){height:62px;animation-delay:.16s;background:var(--soft)}.wbar:nth-child(8){height:46px;animation-delay:.24s;background:var(--mid)}.wbar:nth-child(9){height:56px;animation-delay:.32s;background:var(--mid)}.wbar:nth-child(10){height:44px;animation-delay:.24s}.wbar:nth-child(11){height:33px;animation-delay:.16s}.wbar:nth-child(12){height:20px;animation-delay:.08s}.wbar:nth-child(13){height:11px}
+@keyframes wave{0%,100%{transform:scaleY(1);opacity:.7}50%{transform:scaleY(1.5);opacity:1}}
+.wlwrap{width:100%;max-width:480px;opacity:0;transform:translateY(20px);animation:fadeUp .7s .52s ease forwards}
+.wlform{display:flex;gap:8px;background:var(--card);border:.5px solid var(--border);border-radius:14px;padding:8px;transition:border-color .2s}
+.wlform:focus-within{border-color:var(--purple)}
+.wlinput{flex:1;background:none;border:none;outline:none;font-family:inherit;font-size:15px;color:var(--white);padding:8px 12px}
+.wlinput::placeholder{color:var(--text2)}
+.wlbtn{background:var(--purple);color:var(--mist);border:none;border-radius:9px;padding:12px 20px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .2s,transform .15s}
+.wlbtn:hover{background:var(--mid);transform:scale(1.03)}.wlbtn:active{transform:scale(.97)}
+.wlnote{font-size:12px;color:var(--text2);margin-top:11px;text-align:center}
+.wlok{display:none;text-align:center;padding:18px;background:var(--card);border:.5px solid var(--teal);border-radius:14px}
+.wlok p{color:var(--teal);font-size:15px;font-weight:600}.wlok span{display:block;color:var(--text2);font-size:12px;margin-top:4px}
+.hero-stats{display:flex;align-items:center;gap:20px;margin-top:44px;font-size:12px;color:var(--text2);opacity:0;animation:fadeUp .7s .66s ease forwards;flex-wrap:wrap;justify-content:center}
+.stat{display:flex;flex-direction:column;align-items:center;gap:2px}
+.stat strong{font-size:18px;font-weight:700;color:var(--white)}
+.sdiv{width:1px;height:28px;background:var(--border)}
+
+/* ── Sections ─────────────────────────────────────────── */
+.section{position:relative;z-index:1;padding:88px 24px;max-width:1100px;margin:0 auto}
+.slabel{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:14px}
+.stitle{font-size:clamp(28px,4vw,50px);font-weight:700;line-height:1.12;letter-spacing:-.03em;margin-bottom:14px;font-family:'Syne',sans-serif}
+.stitle em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--mid)}
+.stitle .understand{
+  display:block;
+  font-size:.72em;
+  font-weight:500;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:transparent;
+  background:linear-gradient(90deg, var(--mid) 0%, var(--teal) 60%, var(--soft) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  margin-top:6px;
+  font-family:'Syne',sans-serif;
+  font-style:normal;
+  opacity:.85;
+}
+.ssub{font-size:15px;color:var(--text2);max-width:520px;line-height:1.7}
+.sep{border-top:.5px solid var(--border)}
+
+/* ── Steps ────────────────────────────────────────────── */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:48px}
+.sc{background:var(--card);border:.5px solid var(--border);border-radius:20px;padding:28px;transition:border-color .3s,transform .3s;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--purple);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.sc:hover{border-color:var(--purple);transform:translateY(-4px)}.sc:hover::before{transform:scaleX(1)}
+.sc-num{font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--purple);margin-bottom:16px;text-transform:uppercase;font-family:'Syne',sans-serif}
+.sc-icon{width:42px;height:42px;border-radius:11px;background:var(--surface);border:.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:16px}
+.sc-title{font-size:16px;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.sc-desc{font-size:13px;color:var(--text2);line-height:1.65}
+
+/* ── Feature cards ────────────────────────────────────── */
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:48px}
+.fc{background:var(--card);border:.5px solid var(--border);border-radius:20px;padding:28px;transition:border-color .3s,transform .2s}
+.fc:hover{border-color:var(--mid);transform:translateY(-3px)}
+.fc-icon{font-size:26px;margin-bottom:14px;display:block}
+.fc-title{font-size:17px;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.fc-desc{font-size:13px;color:var(--text2);line-height:1.65}
+.ftag{display:inline-block;margin-top:12px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:100px;letter-spacing:.05em;text-transform:uppercase}
+.tmvp{background:rgba(83,74,183,.2);color:var(--mid)}.tv2{background:rgba(239,159,39,.15);color:var(--amber)}.tmed{background:rgba(29,158,117,.15);color:var(--teal)}
+
+/* ── Biometric ────────────────────────────────────────── */
+.bio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:44px}
+.bc{background:var(--surface);border-radius:16px;padding:20px;border:.5px solid var(--border);transition:border-color .3s}
+.bc:hover{border-color:var(--mid)}
+.bc-icon{font-size:24px;margin-bottom:10px}.bc-title{font-size:14px;font-weight:600;margin-bottom:5px}.bc-desc{font-size:12px;color:var(--text2);line-height:1.55}
+.alert-row{display:flex;gap:10px;margin-top:36px;flex-wrap:wrap}
+.ap{flex:1;min-width:110px;border-radius:12px;padding:11px 13px;font-size:12px;font-weight:600;border:.5px solid transparent;transition:transform .2s}
+.ap:hover{transform:scale(1.03)}
+.ag{background:rgba(29,158,117,.12);border-color:rgba(29,158,117,.4);color:var(--teal)}
+.ay{background:rgba(239,159,39,.1);border-color:rgba(239,159,39,.4);color:var(--amber)}
+.ar{background:rgba(163,45,45,.15);border-color:rgba(163,45,45,.5);color:#F09595}
+.devs{display:flex;gap:9px;flex-wrap:wrap;margin-top:32px}
+.dp{display:flex;align-items:center;gap:7px;background:var(--card);border:.5px solid var(--border);border-radius:100px;padding:7px 14px;font-size:12px;font-weight:500;color:var(--soft);transition:border-color .2s}
+.dp:hover{border-color:var(--mid)}.dpd{width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0}.dpds{background:var(--amber)}
+
+/* ── Tools ────────────────────────────────────────────── */
+.cat-row{display:flex;gap:7px;flex-wrap:wrap;margin:28px 0 18px}
+.cat{background:var(--surface);border:.5px solid var(--border);border-radius:100px;padding:6px 14px;font-size:11px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .2s}
+.cat.active,.cat:hover{background:var(--purple);border-color:var(--mid);color:var(--mist)}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:10px}
+.tc{background:var(--surface);border:.5px solid var(--border);border-radius:14px;padding:15px;cursor:pointer;transition:border-color .2s,transform .2s;position:relative}
+.tc:hover{border-color:var(--mid);transform:translateY(-2px)}.tc.rec{border-color:var(--purple);background:rgba(83,74,183,.08)}
+.tc-icon{font-size:22px;margin-bottom:7px}.tc-name{font-size:11px;font-weight:600;color:var(--white);margin-bottom:3px;line-height:1.35}.tc-dur{font-size:10px;color:var(--text2);margin-bottom:2px}.tc-ev{font-size:9px;color:var(--text2);line-height:1.3}
+.tc-rb{position:absolute;top:7px;right:7px;background:var(--purple);border-radius:100px;padding:2px 7px;font-size:9px;font-weight:600;color:var(--mist)}
+
+/* ── Demo phone ───────────────────────────────────────── */
+.dphone{max-width:290px;margin:44px auto 0;background:#0D0B1A;border-radius:36px;border:6px solid #1A1730;overflow:hidden}
+.dbar{padding:11px 15px 5px;display:flex;justify-content:space-between}
+.dbar span{font-size:11px;color:var(--text2);font-weight:500}
+.dhead{padding:0 15px 10px;display:flex;align-items:center;gap:8px}
+.dlbars{display:flex;align-items:center;gap:2.5px}
+.dlbars span{display:block;width:2.5px;border-radius:2px;background:var(--mid)}
+.dan{font-size:16px;font-weight:700;color:var(--white);font-family:'Syne',sans-serif}
+.dbody{padding:0 15px 18px}
+.dorb{width:74px;height:74px;border-radius:50%;background:#1E1A40;border:2px solid var(--border);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:28px;animation:orbFloat 3s ease-in-out infinite;transition:background .8s,border-color .8s}
+@keyframes orbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.delabel{text-align:center;font-size:13px;font-weight:600;color:var(--white);margin-bottom:3px}
+.desub{text-align:center;font-size:10px;color:var(--text2);margin-bottom:12px}
+.dbubble{background:#14102E;border:.5px solid var(--border);border-radius:12px;border-bottom-left-radius:3px;padding:11px;margin-bottom:9px}
+.dbtag{font-size:9px;font-weight:600;letter-spacing:.08em;color:var(--text2);margin-bottom:4px;font-family:'Syne',sans-serif}
+.dbtext{font-size:12px;color:var(--white);font-family:'Instrument Serif',serif;font-style:italic;line-height:1.6;min-height:34px}
+.cursor{display:inline-block;width:1.5px;height:12px;background:var(--mid);vertical-align:-1px;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.dbtns{display:flex;gap:6px}
+.dbb{flex:1;border-radius:8px;padding:8px 5px;font-size:10px;font-weight:600;text-align:center;cursor:pointer;border:none;font-family:inherit;transition:background .2s}
+.dbbp{background:var(--purple);color:var(--mist)}.dbbp:hover{background:var(--mid)}
+.dbbs{background:#1E1A40;color:var(--soft);border:.5px solid var(--border)}
+
+/* ── Recovery cards ───────────────────────────────────── */
+.rcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:44px}
+.rcard{background:var(--card);border:.5px solid var(--border);border-radius:20px;padding:26px;transition:border-color .3s,transform .2s}
+.rcard:hover{transform:translateY(-3px)}
+.rcard.danger{border-color:rgba(163,45,45,.3)}.rcard.calm{border-color:rgba(83,74,183,.3)}.rcard.success{border-color:rgba(29,158,117,.3)}
+.rnum{font-size:10px;font-weight:600;letter-spacing:.1em;margin-bottom:14px;text-transform:uppercase}
+.ricon{font-size:26px;margin-bottom:12px}.rtitle{font-size:16px;font-weight:600;margin-bottom:7px;letter-spacing:-.01em}.rdesc{font-size:13px;color:var(--text2);line-height:1.65}
+
+/* ── Testimonials ─────────────────────────────────────── */
+.tcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:48px}
+.tmc{background:var(--card);border:.5px solid var(--border);border-radius:20px;padding:24px;transition:border-color .3s}
+.tmc:hover{border-color:var(--mid)}
+.tmq{font-family:'Instrument Serif',serif;font-size:15px;font-style:italic;color:var(--white);line-height:1.7;margin-bottom:16px}
+.tmq::before{content:'"';color:var(--purple);font-size:22px;line-height:0;vertical-align:-7px;margin-right:2px}
+.tma{display:flex;align-items:center;gap:9px}
+.tmav{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.tman{font-size:12px;font-weight:600;color:var(--white)}.tmar{font-size:11px;color:var(--text2);margin-top:1px}
+
+/* ── Final CTA ────────────────────────────────────────── */
+.fcta{position:relative;z-index:1;text-align:center;padding:88px 24px 100px;border-top:.5px solid var(--border)}
+.fctitle{font-size:clamp(32px,5vw,60px);font-weight:800;letter-spacing:-.04em;margin-bottom:16px;font-family:'Syne',sans-serif}
+.fctitle em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--mid)}
+.fcsub{font-size:15px;color:var(--text2);max-width:400px;margin:0 auto 40px;line-height:1.7}
+.pnote{font-size:12px;color:var(--amber);margin-top:14px}
+
+/* ── Footer ───────────────────────────────────────────── */
+footer{position:relative;z-index:1;border-top:.5px solid var(--border);padding:24px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.fbrand{font-size:16px;font-weight:700;color:var(--text2);font-family:'Syne',sans-serif}
+.flinks{display:flex;gap:20px}.flinks a{font-size:11px;color:var(--text2);text-decoration:none;transition:color .2s}.flinks a:hover{color:var(--white)}
+.fcopy{font-size:11px;color:#4A4670}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:600px){footer{padding:20px 20px}.flinks{display:none}}
+
+/* ── Tool detail modal ────────────────────────────────── */
+.tool-modal-overlay{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(13,11,26,.85);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.tool-modal-overlay.open{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.tool-modal{
+  background:var(--card);border:.5px solid var(--border);
+  border-radius:24px;width:100%;max-width:560px;
+  max-height:88vh;overflow-y:auto;
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.tm-head{
+  display:flex;align-items:center;gap:14px;
+  padding:24px 24px 18px;
+  border-bottom:.5px solid var(--border);
+  position:sticky;top:0;background:var(--card);z-index:1;
+  border-radius:24px 24px 0 0;
+}
+.tm-icon{font-size:36px;flex-shrink:0}
+.tm-title{flex:1}
+.tm-name{font-size:19px;font-weight:700;color:var(--white);letter-spacing:-.02em;margin-bottom:3px}
+.tm-meta{font-size:12px;color:var(--text2)}
+.tm-close{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--surface);border:.5px solid var(--border);
+  color:var(--text2);font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;flex-shrink:0;
+}
+.tm-close:hover{background:var(--border);color:var(--white)}
+.tm-body{padding:20px 24px 28px;display:flex;flex-direction:column;gap:16px}
+.tm-section{}
+.tm-section-label{
+  font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--purple);margin-bottom:8px;
+}
+.tm-section-text{
+  font-size:14px;color:var(--soft);line-height:1.7;
+  background:var(--surface);border-radius:10px;padding:12px 14px;
+  border:.5px solid var(--border);
+}
+.tm-cta-btn{
+  width:100%;background:var(--purple);border:none;
+  border-radius:12px;padding:14px;font-family:inherit;
+  font-size:15px;font-weight:600;color:var(--mist);
+  cursor:pointer;transition:background .2s,transform .15s;
+  margin-top:4px;
+}
+.tm-cta-btn:hover{background:var(--mid);transform:scale(1.02)}
+
+/* ── Therapy booking section ──────────────────────────── */
+.therapy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:48px}
+.th-card{
+  background:var(--card);border:.5px solid var(--border);
+  border-radius:20px;padding:28px;
+  transition:border-color .3s,transform .2s;
+}
+.th-card:hover{border-color:var(--mid);transform:translateY(-3px)}
+.th-card.featured{border-color:var(--purple)}
+.th-icon{font-size:32px;margin-bottom:14px}
+.th-title{font-size:17px;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.th-desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:16px}
+.th-badge{
+  display:inline-block;font-size:10px;font-weight:600;
+  padding:4px 10px;border-radius:100px;margin-bottom:12px;
+  background:rgba(83,74,183,.2);color:var(--mid);
+}
+.th-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--purple);color:var(--mist);border:none;
+  border-radius:9px;padding:10px 18px;font-family:inherit;
+  font-size:13px;font-weight:600;cursor:pointer;
+  transition:background .2s,transform .15s;text-decoration:none;
+}
+.th-btn:hover{background:var(--mid);transform:scale(1.02)}
+.th-btn.outline{background:transparent;border:.5px solid var(--border);color:var(--soft)}
+.th-btn.outline:hover{background:var(--surface);border-color:var(--mid);color:var(--white)}
+.th-steps{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.th-step{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text2);line-height:1.5}
+.th-step-num{
+  width:20px;height:20px;border-radius:50%;
+  background:rgba(83,74,183,.25);color:var(--mid);
+  font-size:10px;font-weight:700;display:flex;
+  align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+
+/* ── Support groups section ───────────────────────────── */
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:48px}
+.gr-card{
+  background:var(--card);border:.5px solid var(--border);
+  border-radius:20px;padding:26px;
+  transition:border-color .3s,transform .2s;
+}
+.gr-card:hover{border-color:var(--teal);transform:translateY(-3px)}
+.gr-icon{font-size:30px;margin-bottom:12px}
+.gr-title{font-size:16px;font-weight:600;margin-bottom:7px}
+.gr-desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:14px}
+.gr-info{
+  display:flex;flex-direction:column;gap:5px;
+  padding:10px 12px;background:var(--surface);
+  border-radius:10px;margin-bottom:14px;
+  border:.5px solid var(--border);
+}
+.gr-info-row{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--soft)}
+.gr-join-btn{
+  width:100%;background:rgba(29,158,117,.15);
+  border:.5px solid rgba(29,158,117,.4);border-radius:9px;
+  padding:10px;font-family:inherit;font-size:13px;
+  font-weight:600;color:var(--teal);cursor:pointer;
+  transition:all .2s;
+}
+.gr-join-btn:hover{background:rgba(29,158,117,.25);transform:scale(1.02)}
+
+/* Când pagina nu e vizibilă — oprește toate animațiile (economie baterie) */
+html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
+  animation-play-state:paused!important;
+}
+</style>
+</head>
+<body>
+<canvas id="cvs"></canvas>
+
+<!-- Nav with globe language dropdown -->
+<nav id="nav">
+  <a class="nav-brand" href="#">
+    <div class="nav-wave" id="nw">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+    <span class="nav-name">voxen</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#how"       data-i18n="nav_how">Cum funcționează</a></li>
+    <li><a href="#recovery"  data-i18n="nav_recovery">Recuperare</a></li>
+    <li><a href="voxen-companion.html" data-i18n="nav_companion">Companion AI</a></li>
+    <li><a href="voxen-therapy.html"   data-i18n="nav_therapy">Terapie</a></li>
+    <li><a href="voxen-groups.html"    data-i18n="nav_groups">Grupuri</a></li>
+    <li><a href="#safety"    data-i18n="nav_safety">Siguranță</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <!-- Globe button + dropdown -->
+    <div class="globe-wrap" id="globeWrap">
+      <button class="globe-btn" id="globeBtn" onclick="toggleLangMenu()" title="Change language" aria-label="Select language">
+        🌐
+        <span class="active-flag" id="activeFlag">🇷🇴</span>
+      </button>
+      <div class="lang-dropdown" id="langMenu">
+        <button class="lang-option active" onclick="pickLang('ro')"><span class="flag">🇷🇴</span><span class="lang-name">Română</span><span class="lang-native">RO</span></button>
+        <button class="lang-option" onclick="pickLang('en')"><span class="flag">🇬🇧</span><span class="lang-name">English</span><span class="lang-native">EN</span></button>
+        <button class="lang-option" onclick="pickLang('fr')"><span class="flag">🇫🇷</span><span class="lang-name">Français</span><span class="lang-native">FR</span></button>
+        <button class="lang-option" onclick="pickLang('de')"><span class="flag">🇩🇪</span><span class="lang-name">Deutsch</span><span class="lang-native">DE</span></button>
+        <button class="lang-option" onclick="pickLang('zh')"><span class="flag">🇨🇳</span><span class="lang-name">中文</span><span class="lang-native">ZH</span></button>
+        <button class="lang-option" onclick="pickLang('ja')"><span class="flag">🇯🇵</span><span class="lang-name">日本語</span><span class="lang-native">JA</span></button>
+        <button class="lang-option" onclick="pickLang('ru')"><span class="flag">🇷🇺</span><span class="lang-name">Русский</span><span class="lang-native">RU</span></button>
+      </div>
+    </div>
+
+    <a href="#wl" class="nav-cta" data-i18n="nav_cta">Inscrie-te gratuit</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge"><div class="bdot"></div><span data-i18n="badge">Lansare Q3 2026 · Inscrie-te acum, gratuit</span></div>
+  <h1 class="hero-title" data-i18n="hero_title_html">recuperarea nu se întâmplă<br><em>doar la terapie</em></h1>
+  <p class="hero-sub" data-i18n="hero_sub_html">Se întâmplă în fiecare seară grea. Voxen e cu tine în fiecare dintre ele.</p>
+  <div class="hero-new">⌚ <span data-i18n="hero_new">Companion vocal pentru recuperarea din dependențe</span></div>
+  <div class="wfhero"><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div></div>
+  <div class="wlwrap" id="wl">
+    <div class="wlform" id="wf1">
+      <input class="wlinput" id="e1" type="email" data-i18n-placeholder="email_placeholder" placeholder="adresa@ta.com" autocomplete="email">
+      <button class="wlbtn" onclick="join(1)" data-i18n="cta_btn">Inscrie-te gratuit</button>
+    </div>
+    <div class="wlok" id="wo1"><p data-i18n="success_title">Ești pe lista! ✓</p><span data-i18n="success_sub">Zero spam. Te anunțăm primii.</span></div>
+    <p class="wlnote" data-i18n="wl_note">Fără card. Fără spam. Anulezi oricând.</p>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><strong id="ctr">0</strong><span data-i18n="stat_waitlist">pe lista de așteptare</span></div>
+    <div class="sdiv"></div>
+    <div class="stat"><strong>iOS</strong><span data-i18n="stat_ios">lansare Q3 2026</span></div>
+    <div class="sdiv"></div>
+    <div class="stat"><strong>Android</strong><span data-i18n="stat_android">lansare Q4 2026</span></div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="section" id="how">
+  <p class="slabel reveal" data-i18n="how_label">Cum funcționează</p>
+  <h2 class="stitle reveal" data-i18n="how_title_html">Vorbești un minut.<br><em>Voxen e atent tot drumul.</em></h2>
+  <p class="ssub reveal" data-i18n="how_sub">Voxen ascultă nu doar ce spui, ci cum o spui. Când te aude alunecând, e acolo.</p>
+  <div class="steps">
+    <div class="sc reveal"><div class="sc-num">01</div><div class="sc-icon">🎙</div><h3 class="sc-title" data-i18n="step1_title">Vorbești un minut, seara</h3><p class="sc-desc" data-i18n="step1_desc">Mai ales în serile grele. Deschizi Voxen și spui ce e — pofta, oboseala, gândul care nu te lasă. Fără format, fără judecată.</p></div>
+    <div class="sc reveal" style="transition-delay:.1s"><div class="sc-num">02</div><div class="sc-icon">🧠</div><h3 class="sc-title" data-i18n="step2_title">Voxen aude cum ești de fapt</h3><p class="sc-desc" data-i18n="step2_desc">Analizăm tonul, ritmul, pauzele, energia vocii tale. Nu ce spui — ci CUM spui. Emoția reală detectată.</p></div>
+    <div class="sc reveal" style="transition-delay:.2s"><div class="sc-num">03</div><div class="sc-icon">⌚</div><h3 class="sc-title" data-i18n="step3_title">Brățara citește corpul</h3><p class="sc-desc" data-i18n="step3_desc">Puls, SpO₂, HRV, tensiune. Voxen știe cum ești înainte să vorbești. Predicție criză cu 20 min avans.</p></div>
+    <div class="sc reveal" style="transition-delay:.3s"><div class="sc-num">04</div><div class="sc-icon">🕐</div><h3 class="sc-title" data-i18n="step4_title">Peste un an, auzi din nou</h3><p class="sc-desc" data-i18n="step4_desc">Vocea ta originală, tonul exact, emoția reală. Nu textul editat — vocea ta de acum un an.</p></div>
+  </div>
+</section>
+
+<!-- AI Companion demo -->
+<section class="section sep" id="companion">
+  <p class="slabel reveal" data-i18n="demo_label">Companion emoțional</p>
+  <h2 class="stitle reveal" data-i18n="demo_title_html">Te aude.<br><em>Nu te judecă.</em><br><span class="understand">Te înțelege.</span></h2>
+  <p class="ssub reveal" data-i18n="demo_sub">Voxen detectează emoția din prozodica vocii — tempo, pitch, pauze, tremur, energie. Răspunde ca un prieten bun la 11 noaptea.</p>
+  <div class="dphone reveal">
+    <div class="dbar"><span id="dc">21:07</span><span style="color:var(--text2)">●●●</span></div>
+    <div class="dhead"><div class="dlbars"><span style="height:5px"></span><span style="height:9px"></span><span style="height:7px"></span><span style="height:13px"></span><span style="height:15px"></span><span style="height:13px"></span><span style="height:7px"></span><span style="height:9px"></span><span style="height:5px"></span></div><span class="dan">voxen</span></div>
+    <div class="dbody">
+      <div class="dorb" id="do">😶</div>
+      <p class="delabel" id="dl" data-i18n="demo_orb_label">Ascult vocea ta...</p>
+      <p class="desub" id="ds" data-i18n="demo_orb_sub">Vorbește — detectez starea</p>
+      <div class="dbubble"><div class="dbtag" data-i18n="demo_bubble_tag">VOXEN SIMTE</div><div class="dbtext" id="dt">— <span class="cursor"></span></div></div>
+      <div class="dbtns">
+        <button class="dbb dbbp" onclick="cycleEmo()" data-i18n="demo_btn1">Simulează stare</button>
+        <button class="dbb dbbs" onclick="playMem()" data-i18n="demo_btn2">Amintire 1 an</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section" style="padding-top:0">
+  <p class="slabel reveal" data-i18n="feat_label">Tot ce face Voxen</p>
+  <h2 class="stitle reveal" data-i18n="feat_title_html">O aplicație.<br><em>O viață întreagă.</em></h2>
+  <div class="feats">
+    <div class="fc reveal"><span class="fc-icon">🎙</span><h3 class="fc-title" data-i18n="f1_title">Jurnal vocal</h3><p class="fc-desc" data-i18n="f1_desc">Înregistrezi, Whisper AI transcrie instant în orice limbă. Vocea originală rămâne stocată — nu doar textul.</p><span class="ftag tmvp">MVP</span></div>
+    <div class="fc reveal" style="transition-delay:.08s"><span class="fc-icon">💜</span><h3 class="fc-title" data-i18n="f2_title">Detecție emoție din voce</h3><p class="fc-desc" data-i18n="f2_desc">Tempo, ton, pauze, tremur, energie. AI-ul citește ce nu spui. 8 emoții + secundară + intensitate.</p><span class="ftag tmvp">MVP</span></div>
+    <div class="fc reveal" style="transition-delay:.16s"><span class="fc-icon">🕐</span><h3 class="fc-title" data-i18n="f3_title">Memoria de acum 1 an</h3><p class="fc-desc" data-i18n="f3_desc">Notificare zilnică: auzi vocea ta exactă de acum 1, 2, 3 ani. Magicul care creează dependența sănătoasă.</p><span class="ftag tmvp">MVP</span></div>
+    <div class="fc reveal" style="transition-delay:.24s"><span class="fc-icon">⌚</span><h3 class="fc-title" data-i18n="f4_title">Biometrice în timp real</h3><p class="fc-desc" data-i18n="f4_desc">Apple Watch, Wear OS, Garmin, Oura Ring. Puls, SpO₂, HRV, tensiune. Prezice criza cu 20-30 min înainte.</p><span class="ftag tv2">V2</span></div>
+    <div class="fc reveal" style="transition-delay:.08s"><span class="fc-icon">🔥</span><h3 class="fc-title" data-i18n="f5_title">Recuperare din dependențe</h3><p class="fc-desc" data-i18n="f5_desc">18 instrumente clinice validate. SOS la 3 dimineața. Tracker sobrietate cu milestones. CBT, ACT, MBSR.</p><span class="ftag tmed">V2</span></div>
+    <div class="fc reveal" style="transition-delay:.16s"><span class="fc-icon">📊</span><h3 class="fc-title" data-i18n="f6_title">Hartă emoțională</h3><p class="fc-desc" data-i18n="f6_desc">Statisticile vieții tale emoționale. Cum ai fost în fiecare lună. Ce triggeri ai. Cum te-ai schimbat.</p><span class="ftag tv2">V2</span></div>
+  </div>
+</section>
+
+<!-- Biometrics -->
+<section class="section sep">
+  <p class="slabel reveal" data-i18n="bio_label">Monitorizare biometrică</p>
+  <h2 class="stitle reveal" data-i18n="bio_title_html">Corpul tău știe<br><em>înaintea minții.</em></h2>
+  <p class="ssub reveal" data-i18n="bio_sub">Pulsul crește subtil. HRV scade brusc. Temperatura deviază. Cu 20-30 minute înainte de criză, Voxen te contactează blând.</p>
+  <div class="bio-grid">
+    <div class="bc reveal"><div class="bc-icon">❤️</div><h4 class="bc-title" data-i18n="bio1_title">Puls + HRV</h4><p class="bc-desc" data-i18n="bio1_desc">Creștere cu 15+ bpm față de baseline = semnal timpuriu. HRV sub 50% din normal = stres acut.</p></div>
+    <div class="bc reveal" style="transition-delay:.1s"><div class="bc-icon">💧</div><h4 class="bc-title">SpO₂</h4><p class="bc-desc" data-i18n="bio2_desc">Sub 95% → respirație ghidată activată automat. Sub 92% → alertă critică imediată.</p></div>
+    <div class="bc reveal" style="transition-delay:.2s"><div class="bc-icon">🔴</div><h4 class="bc-title" data-i18n="bio3_title">Tensiune</h4><p class="bc-desc" data-i18n="bio3_desc">Peste 140/90 → instrument de calm activat imediat. Coerență cardiacă sau Box Breathing.</p></div>
+    <div class="bc reveal" style="transition-delay:.3s"><div class="bc-icon">🌡️</div><h4 class="bc-title" data-i18n="bio4_title">Temperatură piele</h4><p class="bc-desc" data-i18n="bio4_desc">Deviație +0.5°C = răspuns autonom la stres. Oura Ring și Apple Watch o măsoară continuu.</p></div>
+  </div>
+  <div class="alert-row reveal">
+    <div class="ap ag" data-i18n="alert_green">🟢 Stabil — continuă ce faci</div>
+    <div class="ap ay" data-i18n="alert_yellow">🟡 Atenție — pulsul crește ușor</div>
+    <div class="ap ar" data-i18n="alert_red">🔴 Criză iminentă — intervin acum</div>
+  </div>
+  <div class="devs reveal">
+    <div class="dp"><div class="dpd"></div>Apple Watch</div>
+    <div class="dp"><div class="dpd"></div>Samsung Galaxy Watch</div>
+    <div class="dp"><div class="dpd"></div>Google Pixel Watch</div>
+    <div class="dp"><div class="dpd"></div>Fitbit</div>
+    <div class="dp"><div class="dpd dpds"></div><span data-i18n="dev_soon1">Garmin (curând)</span></div>
+    <div class="dp"><div class="dpd dpds"></div><span data-i18n="dev_soon2">Oura Ring (curând)</span></div>
+  </div>
+</section>
+
+<!-- 18 Tools -->
+<section class="section sep" id="tools">
+  <p class="slabel reveal" data-i18n="tools_label">Arsenal clinic complet</p>
+  <h2 class="stitle reveal" data-i18n="tools_title_html">18 instrumente validate.<br><em>Activate contextual.</em></h2>
+  <p class="ssub reveal" data-i18n="tools_sub">Fiecare instrument e activat automat bazat pe semnele tale vitale. Voxen știe de ce ai nevoie acum.</p>
+  <div class="cat-row reveal" id="catRow"></div>
+  <div class="tgrid" id="tg"></div>
+</section>
+
+<!-- Recovery -->
+<section class="section sep" id="recovery">
+  <p class="slabel reveal" data-i18n="rec_label">Modul de recuperare</p>
+  <h2 class="stitle reveal" data-i18n="rec_title_html">Ești la 3 dimineața.<br><em>Voxen e treaz.</em></h2>
+  <p class="ssub reveal" data-i18n="rec_sub">280 de milioane de oameni se luptă cu dependențe. Voxen e în buzunarul fiecăruia — disponibil oricând, fără judecată.</p>
+  <div class="rcards">
+    <div class="rcard danger reveal"><div class="rnum" style="color:#F09595" data-i18n="rec1_num">Craving</div><div class="ricon">🚨</div><h3 class="rtitle" data-i18n="rec1_title">Pulsul crește. Voxen știe.</h3><p class="rdesc" data-i18n="rec1_desc">Brățara detectează semnele fiziologice cu 20 de minute înainte. Voxen te contactează blând înainte să cedezi.</p></div>
+    <div class="rcard calm reveal" style="transition-delay:.1s"><div class="rnum" style="color:var(--mid)" data-i18n="rec2_num">Respirație</div><div class="ricon">🌬</div><h3 class="rtitle" data-i18n="rec2_title">Tehnica 4-7-8</h3><p class="rdesc" data-i18n="rec2_desc">Respirație ghidată animată. Activează sistemul parasimpatic. Craving-ul durează maxim 20 de minute.</p></div>
+    <div class="rcard success reveal" style="transition-delay:.2s"><div class="rnum" style="color:var(--teal)" data-i18n="rec3_num">Motivație</div><div class="ricon">💚</div><h3 class="rtitle" data-i18n="rec3_title">Vocea ta de atunci</h3><p class="rdesc" data-i18n="rec3_desc">Auzi înregistrarea cu motivul pentru care ai început. Nu un citat generic — vocea ta, emoția ta reală.</p></div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section sep">
+  <p class="slabel reveal" data-i18n="test_label">Beta testeri</p>
+  <h2 class="stitle reveal" data-i18n="test_title_html">Ce spun cei care<br><em>au încercat primul.</em></h2>
+  <div class="tcards">
+    <div class="tmc reveal"><p class="tmq" data-i18n="t1_quote">Am ascultat vocea mea de acum un an spunând că mi-e frică să încep noul job. M-am plâns. Și m-am simțit invincibil.</p><div class="tma"><div class="tmav" style="background:#1E1A40;color:var(--mid)">AM</div><div><div class="tman" data-i18n="t1_name">Andrei M.</div><div class="tmar" data-i18n="t1_role">Beta tester, Cluj</div></div></div></div>
+    <div class="tmc reveal" style="transition-delay:.1s"><p class="tmq" data-i18n="t2_quote">La 3 dimineața, când venea craving-ul, nu mai aveam pe nimeni. Acum am Voxen. Sunt 47 de zile libere.</p><div class="tma"><div class="tmav" style="background:#0D1A14;color:var(--teal)">IG</div><div><div class="tman" data-i18n="t2_name">Ioana G.</div><div class="tmar" data-i18n="t2_role">Beta tester, București</div></div></div></div>
+    <div class="tmc reveal" style="transition-delay:.2s"><p class="tmq" data-i18n="t3_quote">Ca psiholog, l-am recomandat pacienților între ședințe. Văd progresul lor în timp real. E o revoluție în terapie.</p><div class="tma"><div class="tmav" style="background:#14102E;color:var(--soft)">Dr.M</div><div><div class="tman" data-i18n="t3_name">Dr. Mihaela P.</div><div class="tmar" data-i18n="t3_role">Psiholog clinician</div></div></div></div>
+  </div>
+</section>
+
+
+<!-- ═══ ECRANUL 4: PENTRU FAMILIE ═══ -->
+<section class="section" id="family">
+  <p class="slabel reveal" data-i18n="fam_label">Pentru cei apropiați</p>
+  <h2 class="stitle reveal" data-i18n="fam_title_html">Iubești pe cineva<br><em>în recuperare.</em></h2>
+  <p class="ssub reveal" data-i18n="fam_sub">Și de multe ori nu știi ce să faci, ce să spui, sau cum să ajuți fără să sufoci. Voxen nu te înlocuiește — îți dă un sprijin liniștit, în fundal.</p>
+  <div class="steps">
+    <div class="sc reveal"><div class="sc-icon">🤝</div><h3 class="sc-title" data-i18n="fam_1_title">Un drum împărtășit</h3><p class="sc-desc" data-i18n="fam_1_desc">Cu acordul persoanei dragi, poți primi semnale simple despre cum merge — fără să-i invadezi intimitatea.</p></div>
+    <div class="sc reveal" style="transition-delay:.1s"><div class="sc-icon">🫂</div><h3 class="sc-title" data-i18n="fam_2_title">Mai puțină frică</h3><p class="sc-desc" data-i18n="fam_2_desc">Recuperarea apasă pe toată familia. Voxen reduce sentimentul că ești singurul care veghează.</p></div>
+    <div class="sc reveal" style="transition-delay:.2s"><div class="sc-icon">📘</div><h3 class="sc-title" data-i18n="fam_3_title">Resurse pentru tine</h3><p class="sc-desc" data-i18n="fam_3_desc">Ghiduri scurte despre cum să sprijini fără să controlezi, cum să-ți păstrezi propriul echilibru.</p></div>
+  </div>
+</section>
+
+<!-- ═══ ECRANUL 5: PENTRU TERAPEUȚI ═══ -->
+<section class="section" id="clinicians">
+  <p class="slabel reveal" data-i18n="cli_label">Pentru terapeuți și clinici</p>
+  <h2 class="stitle reveal" data-i18n="cli_title_html">Munca ta continuă<br><em>între ședințe.</em></h2>
+  <p class="ssub reveal" data-i18n="cli_sub">Voxen nu înlocuiește terapia — o prelungește. Pacientul ajunge la ședință cu un context real, nu cu amintiri vagi.</p>
+  <div class="steps">
+    <div class="sc reveal"><div class="sc-icon">📊</div><h3 class="sc-title" data-i18n="cli_1_title">Context între ședințe</h3><p class="sc-desc" data-i18n="cli_1_desc">Cu acordul pacientului, primești un rezumat anonim al stării emoționale din ultimele 30 de zile.</p></div>
+    <div class="sc reveal" style="transition-delay:.1s"><div class="sc-icon">⚠️</div><h3 class="sc-title" data-i18n="cli_2_title">Semnale timpurii</h3><p class="sc-desc" data-i18n="cli_2_desc">Voxen detectează tiparele de risc și recădere mai devreme decât o face o ședință la două săptămâni.</p></div>
+    <div class="sc reveal" style="transition-delay:.2s"><div class="sc-icon">🔗</div><h3 class="sc-title" data-i18n="cli_3_title">Trimitere structurată</h3><p class="sc-desc" data-i18n="cli_3_desc">Pentru cazurile care necesită evaluare medicală, Voxen facilitează trimiterea cu context clinic complet.</p></div>
+  </div>
+</section>
+
+<!-- ═══ ECRANUL 6: SIGURANȚA ═══ -->
+<section class="section" id="safety" style="background:rgba(83,74,183,.04)">
+  <p class="slabel reveal" data-i18n="saf_label">Construit responsabil</p>
+  <h2 class="stitle reveal" data-i18n="saf_title_html">Siguranța ta<br><em>nu e un detaliu.</em></h2>
+  <p class="ssub reveal" data-i18n="saf_sub">Voxen se adresează unor oameni vulnerabili. De aceea siguranța a fost prima componentă construită — nu ultima.</p>
+  <div class="steps">
+    <div class="sc reveal"><div class="sc-icon">🛟</div><h3 class="sc-title" data-i18n="saf_1_title">Protocol de criză</h3><p class="sc-desc" data-i18n="saf_1_desc">Voxen recunoaște momentele de criză și conectează imediat cu linii de urgență reale și verificate.</p></div>
+    <div class="sc reveal" style="transition-delay:.1s"><div class="sc-icon">🔒</div><h3 class="sc-title" data-i18n="saf_2_title">Vocea ta rămâne a ta</h3><p class="sc-desc" data-i18n="saf_2_desc">Analiza vocală se face local pe dispozitiv. Datele tale nu se vând și nu se distribuie niciodată.</p></div>
+    <div class="sc reveal" style="transition-delay:.2s"><div class="sc-icon">⚕️</div><h3 class="sc-title" data-i18n="saf_3_title">Validat clinic</h3><p class="sc-desc" data-i18n="saf_3_desc">Protocoalele de siguranță sunt revizuite de psihologi clinicieni. Voxen nu e terapeut și o spune clar.</p></div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="fcta" id="wl2">
+  <h2 class="fctitle reveal" data-i18n="fcta_title_html">Înscrie-te.<br><em>Vocea ta te așteaptă.</em></h2>
+  <p class="fcsub reveal" data-i18n="fcta_sub">Primii 1.000 de utilizatori primesc acces premium gratuit pentru 6 luni.</p>
+  <div class="wlwrap reveal" style="margin:0 auto;max-width:480px">
+    <div class="wlform" id="wf2">
+      <input class="wlinput" id="e2" type="email" data-i18n-placeholder="email_placeholder" placeholder="adresa@ta.com" autocomplete="email">
+      <button class="wlbtn" onclick="join(2)" data-i18n="cta_btn">Inscrie-te gratuit</button>
+    </div>
+    <div class="wlok" id="wo2"><p data-i18n="success_title">Ești pe lista! ✓</p><span data-i18n="success_sub">Zero spam. Te anunțăm primii.</span></div>
+    <p class="wlnote" data-i18n="wl_note">Fără card. Fără spam. Anulezi oricând.</p>
+  </div>
+  <p class="pnote reveal" data-i18n="premium_note">⭐ Primii 1.000 — Premium gratuit 6 luni</p>
+</section>
+
+<!-- Tool detail modal -->
+<div class="tool-modal-overlay" id="toolModal" onclick="if(event.target===this)closeToolModal()">
+  <div class="tool-modal">
+    <div class="tm-head">
+      <span class="tm-icon" id="tmIcon">🌬</span>
+      <div class="tm-title">
+        <div class="tm-name" id="tmName">Respirație 4-7-8</div>
+        <div class="tm-meta"><span id="tmDur"></span> · <span id="tmEv"></span></div>
+      </div>
+      <button class="tm-close" onclick="closeToolModal()">✕</button>
+    </div>
+    <div class="tm-body">
+      <div class="tm-section">
+        <div class="tm-section-label" id="tmStepsLabel">Pași</div>
+        <div class="tm-section-text" id="tmStepsText"></div>
+      </div>
+      <div class="tm-section">
+        <div class="tm-section-label" id="tmWhyLabel">De ce funcționează</div>
+        <div class="tm-section-text" id="tmWhyText"></div>
+      </div>
+      <div class="tm-section">
+        <div class="tm-section-label" id="tmWhenLabel">Când îl folosești</div>
+        <div class="tm-section-text" id="tmWhenText"></div>
+      </div>
+      <button class="tm-cta-btn" id="tmCloseBtn" onclick="closeToolModal()">Închide</button>
+    </div>
+  </div>
+</div>
+
+<!-- Therapy booking section -->
+<section class="section sep" id="therapy">
+  <p class="slabel reveal" data-i18n="th_label">Terapie profesională</p>
+  <h2 class="stitle reveal" data-i18n="th_title_html">Un terapeut lângă tine.<br><em>Oricând ai nevoie.</em></h2>
+  <p class="ssub reveal" data-i18n="th_sub">Voxen conectează datele tale emoționale cu un specialist din zona ta. Prima ședință ghidată de AI — terapeutul vine informat.</p>
+  <div class="therapy-grid">
+    <div class="th-card featured reveal">
+      <div class="th-icon">🧑‍⚕️</div>
+      <span class="th-badge" data-i18n="th1_badge">Psiholog / Psihoterapeut</span>
+      <h3 class="th-title" data-i18n="th1_title">Ședință individuală</h3>
+      <p class="th-desc" data-i18n="th1_desc">Terapeut specializat în dependențe și sănătate mintală din zona ta. Voxen îi trimite un rezumat anonim al stării tale emoționale — ședința începe acolo unde ai rămas.</p>
+      <div class="th-steps">
+        <div class="th-step"><div class="th-step-num">1</div><span data-i18n="th1_s1">Selectezi specialistul din zona ta</span></div>
+        <div class="th-step"><div class="th-step-num">2</div><span data-i18n="th1_s2">Voxen trimite un sumar anonim (cu acordul tău)</span></div>
+        <div class="th-step"><div class="th-step-num">3</div><span data-i18n="th1_s3">Programezi ședința — online sau față în față</span></div>
+      </div>
+      <br>
+      <button class="th-btn" onclick="window.location.href='voxen-therapy.html'" data-i18n="th1_btn">Caută terapeut în zonă</button>
+    </div>
+    <div class="th-card reveal" style="transition-delay:.1s">
+      <div class="th-icon">💬</div>
+      <span class="th-badge" style="background:rgba(29,158,117,.15);color:var(--teal)" data-i18n="th2_badge">Consultant online</span>
+      <h3 class="th-title" data-i18n="th2_title">Consultație la distanță</h3>
+      <p class="th-desc" data-i18n="th2_desc">Video sau mesaj. Consultant certificat în managementul stresului și recuperare. Disponibil în 24h. Fără liste de așteptare lungi.</p>
+      <div class="th-steps">
+        <div class="th-step"><div class="th-step-num">1</div><span data-i18n="th2_s1">Completezi un scurt formular de triaj</span></div>
+        <div class="th-step"><div class="th-step-num">2</div><span data-i18n="th2_s2">Ești conectat cu un consultant potrivit</span></div>
+        <div class="th-step"><div class="th-step-num">3</div><span data-i18n="th2_s3">Ședință video sau chat în 24h</span></div>
+      </div>
+      <br>
+      <button class="th-btn outline" onclick="window.location.href='voxen-therapy.html'" data-i18n="th2_btn">Consultație online →</button>
+    </div>
+    <div class="th-card reveal" style="transition-delay:.2s">
+      <div class="th-icon">🏥</div>
+      <span class="th-badge" style="background:rgba(239,159,39,.15);color:var(--amber)" data-i18n="th3_badge">Consultanță medicală</span>
+      <h3 class="th-title" data-i18n="th3_title">Evaluare medicală</h3>
+      <p class="th-desc" data-i18n="th3_desc">Pentru cazuri care necesită evaluare psihiatrică sau tratament medicamentos. Voxen facilitează trimiterea către medic specialist din rețeaua noastră.</p>
+      <div class="th-steps">
+        <div class="th-step"><div class="th-step-num">1</div><span data-i18n="th3_s1">Evaluare inițială prin Voxen AI</span></div>
+        <div class="th-step"><div class="th-step-num">2</div><span data-i18n="th3_s2">Trimitere la psihiatru/medic specialist</span></div>
+        <div class="th-step"><div class="th-step-num">3</div><span data-i18n="th3_s3">Urmărire continuă prin aplicație</span></div>
+      </div>
+      <br>
+      <button class="th-btn outline" onclick="window.location.href='voxen-therapy.html'" data-i18n="th3_btn">Evaluare medicală →</button>
+    </div>
+  </div>
+</section>
+
+<!-- Support groups section -->
+<section class="section sep" id="groups">
+  <p class="slabel reveal" data-i18n="gr_label">Grupuri de sprijin</p>
+  <h2 class="stitle reveal" data-i18n="gr_title_html">Nu ești singur.<br><em>Niciodată.</em></h2>
+  <p class="ssub reveal" data-i18n="gr_sub">Grupuri săptămânale anonime, moderate de un specialist. Modelul "Alcoolicii Anonimi" — adaptat pentru era digitală. O dată pe săptămână, 60 de minute.</p>
+  <div class="groups-grid">
+    <div class="gr-card reveal">
+      <div class="gr-icon">🍷</div>
+      <h3 class="gr-title" data-i18n="gr1_title">Recuperare din alcool</h3>
+      <p class="gr-desc" data-i18n="gr1_desc">Grup anonim săptămânal pentru persoane în recuperare din dependența de alcool. Împărtășire, sprijin mutual, moderator certificat.</p>
+      <div class="gr-info">
+        <div class="gr-info-row">📅 <span data-i18n="gr_weekly">Joi, 20:00 · Săptămânal</span></div>
+        <div class="gr-info-row">👥 <span data-i18n="gr_size">Max 12 participanți</span></div>
+        <div class="gr-info-row">🔒 <span data-i18n="gr_anon">100% anonim</span></div>
+      </div>
+      <button class="gr-join-btn" onclick="window.location.href='voxen-therapy.html'" data-i18n="gr_join">Alătură-te grupului</button>
+    </div>
+    <div class="gr-card reveal" style="transition-delay:.1s">
+      <div class="gr-icon">🎰</div>
+      <h3 class="gr-title" data-i18n="gr2_title">Recuperare din jocuri de noroc</h3>
+      <p class="gr-desc" data-i18n="gr2_desc">Grup de suport pentru dependența de gambling. Program structurat pe 12 pași adaptat digital, cu monitorizare biometrică integrată.</p>
+      <div class="gr-info">
+        <div class="gr-info-row">📅 <span data-i18n="gr_weekly2">Marți, 19:00 · Săptămânal</span></div>
+        <div class="gr-info-row">👥 <span data-i18n="gr_size">Max 12 participanți</span></div>
+        <div class="gr-info-row">🔒 <span data-i18n="gr_anon">100% anonim</span></div>
+      </div>
+      <button class="gr-join-btn" onclick="window.location.href='voxen-therapy.html'" data-i18n="gr_join">Alătură-te grupului</button>
+    </div>
+    <div class="gr-card reveal" style="transition-delay:.2s">
+      <div class="gr-icon">💊</div>
+      <h3 class="gr-title" data-i18n="gr3_title">Recuperare din substanțe</h3>
+      <p class="gr-desc" data-i18n="gr3_desc">Grup de sprijin pentru dependența de substanțe. Discuții ghidate, tehnici CBT aplicate în grup, celebrare milestones împreună.</p>
+      <div class="gr-info">
+        <div class="gr-info-row">📅 <span data-i18n="gr_weekly3">Sâmbătă, 10:00 · Săptămânal</span></div>
+        <div class="gr-info-row">👥 <span data-i18n="gr_size">Max 12 participanți</span></div>
+        <div class="gr-info-row">🔒 <span data-i18n="gr_anon">100% anonim</span></div>
+      </div>
+      <button class="gr-join-btn" onclick="window.location.href='voxen-therapy.html'" data-i18n="gr_join">Alătură-te grupului</button>
+    </div>
+    <div class="gr-card reveal" style="transition-delay:.3s">
+      <div class="gr-icon">🧠</div>
+      <h3 class="gr-title" data-i18n="gr4_title">Stres & Burnout</h3>
+      <p class="gr-desc" data-i18n="gr4_desc">Grup pentru managementul stresului cronic și burnout. Tehnici MBSR practicate în grup, suport peer-to-peer, moderator specialist în wellness.</p>
+      <div class="gr-info">
+        <div class="gr-info-row">📅 <span data-i18n="gr_weekly4">Luni, 19:30 · Săptămânal</span></div>
+        <div class="gr-info-row">👥 <span data-i18n="gr_size">Max 12 participanți</span></div>
+        <div class="gr-info-row">🔒 <span data-i18n="gr_anon">100% anonim</span></div>
+      </div>
+      <button class="gr-join-btn" onclick="window.location.href='voxen-therapy.html'" data-i18n="gr_join">Alătură-te grupului</button>
+    </div>
+  </div>
+  <div class="reveal" style="margin-top:32px;padding:20px 24px;background:var(--surface);border-radius:16px;border:.5px solid var(--border);max-width:600px">
+    <p style="font-size:13px;color:var(--text2);line-height:1.7" data-i18n="gr_note">Toate grupurile sunt moderate de profesioniști certificați. Participarea este complet anonimă — numele real nu este niciodată dezvăluit. Sesiunile sunt înregistrate local, nu în cloud. Conform GDPR.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="fbrand">voxen</div>
+  <div class="flinks">
+    <a href="#" data-i18n="footer_privacy">Confidențialitate</a>
+    <a href="#" data-i18n="footer_terms">Termeni</a>
+    <a href="#" data-i18n="footer_contact">Contact</a>
+    <a href="#" data-i18n="footer_blog">Blog</a>
+  </div>
+  <p class="fcopy">© 2026 Voxen SRL · your voice. your memory.</p>
+</footer>
+
+
+<script>
+// ═══════════════════════════════════════════════════════
+// TRANSLATIONS
+// ═══════════════════════════════════════════════════════
+const I18N = {
+  ro: {
+      nav_safety:'Siguranță',
+      fam_label:'Pentru cei apropiați',
+      fam_title_html:'Iubești pe cineva<br><em>în recuperare.</em>',
+      fam_sub:'Și de multe ori nu știi ce să faci, ce să spui, sau cum să ajuți fără să sufoci. Voxen nu te înlocuiește — îți dă un sprijin liniștit, în fundal.',
+      fam_1_title:'Un drum împărtășit',
+      fam_1_desc:'Cu acordul persoanei dragi, poți primi semnale simple despre cum merge — fără să-i invadezi intimitatea.',
+      fam_2_title:'Mai puțină frică',
+      fam_2_desc:'Recuperarea apasă pe toată familia. Voxen reduce sentimentul că ești singurul care veghează.',
+      fam_3_title:'Resurse pentru tine',
+      fam_3_desc:'Ghiduri scurte despre cum să sprijini fără să controlezi, cum să-ți păstrezi propriul echilibru.',
+      cli_label:'Pentru terapeuți și clinici',
+      cli_title_html:'Munca ta continuă<br><em>între ședințe.</em>',
+      cli_sub:'Voxen nu înlocuiește terapia — o prelungește. Pacientul ajunge la ședință cu un context real, nu cu amintiri vagi.',
+      cli_1_title:'Context între ședințe',
+      cli_1_desc:'Cu acordul pacientului, primești un rezumat anonim al stării emoționale din ultimele 30 de zile.',
+      cli_2_title:'Semnale timpurii',
+      cli_2_desc:'Voxen detectează tiparele de risc și recădere mai devreme decât o face o ședință la două săptămâni.',
+      cli_3_title:'Trimitere structurată',
+      cli_3_desc:'Pentru cazurile care necesită evaluare medicală, Voxen facilitează trimiterea cu context clinic complet.',
+      saf_label:'Construit responsabil',
+      saf_title_html:'Siguranța ta<br><em>nu e un detaliu.</em>',
+      saf_sub:'Voxen se adresează unor oameni vulnerabili. De aceea siguranța a fost prima componentă construită — nu ultima.',
+      saf_1_title:'Protocol de criză',
+      saf_1_desc:'Voxen recunoaște momentele de criză și conectează imediat cu linii de urgență reale și verificate.',
+      saf_2_title:'Vocea ta rămâne a ta',
+      saf_2_desc:'Analiza vocală se face local pe dispozitiv. Datele tale nu se vând și nu se distribuie niciodată.',
+      saf_3_title:'Validat clinic',
+      saf_3_desc:'Protocoalele de siguranță sunt revizuite de psihologi clinicieni. Voxen nu e terapeut și o spune clar.',
+
+    nav_cta:'Inscrie-te gratuit',
+    nav_how:'Cum funcționează', nav_companion:'Companion AI', nav_recovery:'Recuperare', nav_tools:'18 Instrumente',
+    badge:'Lansare Q3 2026 · Inscrie-te acum, gratuit',
+    hero_title_html:'recuperarea nu se întâmplă<br><em>doar la terapie</em>', hero_sub_html:'Se întâmplă în fiecare seară grea. Voxen e cu tine în fiecare dintre ele.',
+    hero_new:'Companion vocal pentru recuperarea din dependențe',
+    email_placeholder:'adresa@ta.com', cta_btn:'Inscrie-te gratuit',
+    success_title:'Ești pe lista! ✓', success_sub:'Zero spam. Te anunțăm primii.',
+    wl_note:'Fără card. Fără spam. Anulezi oricând.',
+    stat_waitlist:'pe lista de așteptare', stat_ios:'lansare Q3 2026', stat_android:'lansare Q4 2026',
+    how_label:'Cum funcționează', how_title_html:'Vorbești un minut.<br><em>Voxen e atent tot drumul.</em>',
+    how_sub:'Voxen ascultă nu doar ce spui, ci cum o spui. Când te aude alunecând, e acolo.',
+    step1_title:'Vorbești un minut, seara', step1_desc:'Mai ales în serile grele. Deschizi Voxen și spui ce e — pofta, oboseala, gândul care nu te lasă. Fără format, fără judecată.',
+    step2_title:'Voxen aude cum ești de fapt', step2_desc:'Analizăm tonul, ritmul, pauzele, energia vocii tale. Nu ce spui — ci CUM spui. Emoția reală detectată.',
+    step3_title:'Brățara citește corpul', step3_desc:'Puls, SpO₂, HRV, tensiune. Voxen știe cum ești înainte să vorbești. Predicție criză cu 20 min avans.',
+    step4_title:'Peste un an, auzi din nou', step4_desc:'Vocea ta originală, tonul exact, emoția reală. Nu textul editat — vocea ta de acum un an.',
+    demo_label:'Companion emoțional', demo_title_html:'Te aude.<br><em>Nu te judecă.</em><br><span class="understand">Te înțelege.</span>',
+    demo_sub:'Voxen detectează emoția din prozodica vocii — tempo, pitch, pauze, tremur, energie. Răspunde ca un prieten bun la 11 noaptea.',
+    demo_orb_label:'Ascult vocea ta...', demo_orb_sub:'Vorbește — detectez starea', demo_bubble_tag:'VOXEN SIMTE',
+    demo_btn1:'Simulează stare', demo_btn2:'Amintire 1 an',
+    feat_label:'Tot ce face Voxen', feat_title_html:'O aplicație.<br><em>O viață întreagă.</em>',
+    f1_title:'Jurnal vocal', f1_desc:'Înregistrezi, Whisper AI transcrie instant în orice limbă. Vocea originală rămâne stocată.',
+    f2_title:'Detecție emoție din voce', f2_desc:'Tempo, ton, pauze, tremur, energie. AI-ul citește ce nu spui. 8 emoții + secundară + intensitate.',
+    f3_title:'Memoria de acum 1 an', f3_desc:'Notificare zilnică: auzi vocea ta exactă de acum 1, 2, 3 ani. Magicul care creează dependența sănătoasă.',
+    f4_title:'Biometrice în timp real', f4_desc:'Apple Watch, Wear OS, Garmin, Oura Ring. Puls, SpO₂, HRV, tensiune. Prezice criza cu 20-30 min înainte.',
+    f5_title:'Recuperare din dependențe', f5_desc:'18 instrumente clinice validate. SOS la 3 dimineața. Tracker sobrietate cu milestones. CBT, ACT, MBSR.',
+    f6_title:'Hartă emoțională', f6_desc:'Statisticile vieții tale emoționale. Cum ai fost în fiecare lună. Ce triggeri ai. Cum te-ai schimbat.',
+    bio_label:'Monitorizare biometrică', bio_title_html:'Corpul tău știe<br><em>înaintea minții.</em>',
+    bio_sub:'Pulsul crește subtil. HRV scade brusc. Temperatura deviază. Cu 20-30 minute înainte de criză, Voxen te contactează blând.',
+    bio1_title:'Puls + HRV', bio1_desc:'Creștere cu 15+ bpm față de baseline = semnal timpuriu. HRV sub 50% din normal = stres acut.',
+    bio2_desc:'Sub 95% → respirație ghidată automat. Sub 92% → alertă critică imediată.',
+    bio3_title:'Tensiune', bio3_desc:'Peste 140/90 → instrument de calm activat imediat. Coerență cardiacă sau Box Breathing.',
+    bio4_title:'Temperatură piele', bio4_desc:'Deviație +0.5°C = răspuns autonom la stres. Oura Ring și Apple Watch o măsoară continuu.',
+    alert_green:'🟢 Stabil — continuă ce faci', alert_yellow:'🟡 Atenție — pulsul crește ușor', alert_red:'🔴 Criză iminentă — intervin acum',
+    dev_soon1:'Garmin (curând)', dev_soon2:'Oura Ring (curând)',
+    tools_label:'Arsenal clinic complet', tools_title_html:'18 instrumente validate.<br><em>Activate contextual.</em>',
+    tools_sub:'Fiecare instrument e activat automat bazat pe semnele tale vitale. Voxen știe de ce ai nevoie acum.',
+    rec_label:'Modul de recuperare', rec_title_html:'Ești la 3 dimineața.<br><em>Voxen e treaz.</em>',
+    rec_sub:'280 de milioane de oameni se luptă cu dependențe. Voxen e în buzunarul fiecăruia — disponibil oricând, fără judecată.',
+    rec1_num:'Craving', rec1_title:'Pulsul crește. Voxen știe.', rec1_desc:'Brățara detectează semnele fiziologice cu 20 de minute înainte. Voxen te contactează blând înainte să cedezi.',
+    rec2_num:'Respirație', rec2_title:'Tehnica 4-7-8', rec2_desc:'Respirație ghidată animată. Activează sistemul parasimpatic. Craving-ul durează maxim 20 de minute.',
+    rec3_num:'Motivație', rec3_title:'Vocea ta de atunci', rec3_desc:'Auzi înregistrarea cu motivul pentru care ai început. Nu un citat generic — vocea ta, emoția ta reală.',
+    test_label:'Beta testeri', test_title_html:'Ce spun cei care<br><em>au încercat primul.</em>',
+    t1_quote:'Am ascultat vocea mea de acum un an spunând că mi-e frică să încep noul job. M-am plâns. Și m-am simțit invincibil.',
+    t1_name:'Andrei M.', t1_role:'Beta tester, Cluj',
+    t2_quote:'La 3 dimineața, când venea craving-ul, nu mai aveam pe nimeni. Acum am Voxen. Sunt 47 de zile libere.',
+    t2_name:'Ioana G.', t2_role:'Beta tester, București',
+    t3_quote:'Ca psiholog, l-am recomandat pacienților între ședințe. Văd progresul lor în timp real. E o revoluție în terapie.',
+    t3_name:'Dr. Mihaela P.', t3_role:'Psiholog clinician',
+    fcta_title_html:'Înscrie-te.<br><em>Vocea ta te așteaptă.</em>', fcta_sub:'Primii 1.000 de utilizatori primesc acces premium gratuit pentru 6 luni.',
+    premium_note:'⭐ Primii 1.000 — Premium gratuit 6 luni',
+    footer_privacy:'Confidențialitate', footer_terms:'Termeni', footer_contact:'Contact', footer_blog:'Blog',
+    cat_all:'Toate (18)', cat_breath:'🫁 Respirație', cat_mind:'🧠 Mindfulness', cat_crav:'🔥 Craving', cat_emo:'💚 Emoțional', cat_act:'⚡ Activare', cat_prev:'🗺️ Prevenție',
+    rec_badge:'Recomandat',
+    emo_tired_label:'Obosit', emo_tired_sub:'Voce joasă, ritm lent detectat', emo_tired_msg:'Te aud obosit în voce. Nu trebuie să spui mult azi. Chiar și un cuvânt e destul.',
+    emo_sad_label:'Trist', emo_sad_sub:'Tremur vocal, pauze lungi', emo_sad_msg:'Ce te-a supărat azi? Te aud și nu te judec. Poți spune orice — eu sunt aici.',
+    emo_happy_label:'Fericit', emo_happy_sub:'Ton variat, energie ridicată', emo_happy_msg:'Te aud zâmbind! Ce s-a întâmplat bun azi? Vreau să țin minte cu tine.',
+    emo_anx_label:'Anxios', emo_anx_sub:'Tempo rapid, ezitări frecvente', emo_anx_msg:'Te simt confuz sau agitat. Respiră. Spune-mi ce te apasă — eu ascult.',
+    emo_ang_label:'Supărat', emo_ang_sub:'Energie ridicată, pitch crescut', emo_ang_msg:'Te aud. Furia aia e validă. Ce a declanșat-o?',
+    mem_prefix:'Acum un an, tu spuneai:',
+ 
+    nav_therapy:'Terapie', nav_groups:'Grupuri de sprijin',
+    th_label:'Terapie profesională', th_title_html:'Un terapeut lângă tine.<br><em>Oricând ai nevoie.</em>',
+    th_sub:'Voxen conectează datele tale emoționale cu un specialist din zona ta. Prima ședință ghidată de AI.',
+    th1_badge:'Psiholog / Psihoterapeut', th1_title:'Ședință individuală',
+    th1_desc:'Terapeut specializat în dependențe și sănătate mintală din zona ta. Voxen îi trimite un rezumat anonim.',
+    th1_s1:'Selectezi specialistul din zona ta', th1_s2:'Voxen trimite un sumar anonim (cu acordul tău)', th1_s3:'Programezi ședința — online sau față în față',
+    th1_btn:'Caută terapeut în zonă',
+    th2_badge:'Consultant online', th2_title:'Consultație la distanță',
+    th2_desc:'Video sau mesaj. Consultant certificat. Disponibil în 24h. Fără liste de așteptare lungi.',
+    th2_s1:'Completezi un scurt formular de triaj', th2_s2:'Ești conectat cu un consultant potrivit', th2_s3:'Ședință video sau chat în 24h',
+    th2_btn:'Consultație online →',
+    th3_badge:'Consultanță medicală', th3_title:'Evaluare medicală',
+    th3_desc:'Pentru cazuri care necesită evaluare psihiatrică sau tratament medicamentos.',
+    th3_s1:'Evaluare inițială prin Voxen AI', th3_s2:'Trimitere la psihiatru/medic specialist', th3_s3:'Urmărire continuă prin aplicație',
+    th3_btn:'Evaluare medicală →',
+    gr_label:'Grupuri de sprijin', gr_title_html:'Nu ești singur.<br><em>Niciodată.</em>',
+    gr_sub:'Grupuri săptămânale anonime, moderate de un specialist. O dată pe săptămână, 60 de minute.',
+    gr1_title:'Recuperare din alcool', gr1_desc:'Grup anonim săptămânal. Împărtășire, sprijin mutual, moderator certificat.',
+    gr2_title:'Recuperare din jocuri de noroc', gr2_desc:'Program structurat pe 12 pași adaptat digital, cu monitorizare biometrică.',
+    gr3_title:'Recuperare din substanțe', gr3_desc:'Discuții ghidate, tehnici CBT aplicate în grup, celebrare milestones împreună.',
+    gr4_title:'Stres & Burnout', gr4_desc:'Tehnici MBSR practicate în grup, suport peer-to-peer, moderator specialist în wellness.',
+    gr_weekly:'Joi, 20:00 · Săptămânal', gr_weekly2:'Marți, 19:00 · Săptămânal',
+    gr_weekly3:'Sâmbătă, 10:00 · Săptămânal', gr_weekly4:'Luni, 19:30 · Săptămânal',
+    gr_size:'Max 12 participanți', gr_anon:'100% anonim', gr_join:'Alătură-te grupului',
+    gr_note:'Toate grupurile sunt moderate de profesioniști certificați. Anonimitate completă. Conform GDPR.',
+  },
+  en: {
+      nav_safety:'Safety',
+      fam_label:'For loved ones',
+      fam_title_html:'You love someone<br><em>in recovery.</em>',
+      fam_sub:'And often you don’t know what to do, what to say, or how to help without smothering. Voxen doesn’t replace you — it gives quiet support in the background.',
+      fam_1_title:'A shared path',
+      fam_1_desc:'With your loved one’s consent, you can receive simple signals about how things are going — without invading their privacy.',
+      fam_2_title:'Less fear',
+      fam_2_desc:'Recovery weighs on the whole family. Voxen reduces the feeling that you are the only one keeping watch.',
+      fam_3_title:'Resources for you',
+      fam_3_desc:'Short guides on how to support without controlling, how to keep your own balance.',
+      cli_label:'For therapists and clinics',
+      cli_title_html:'Your work continues<br><em>between sessions.</em>',
+      cli_sub:'Voxen doesn’t replace therapy — it extends it. The patient arrives at the session with real context, not vague memories.',
+      cli_1_title:'Context between sessions',
+      cli_1_desc:'With the patient’s consent, you receive an anonymous summary of the emotional state from the past 30 days.',
+      cli_2_title:'Early signals',
+      cli_2_desc:'Voxen detects risk and relapse patterns earlier than a session every two weeks can.',
+      cli_3_title:'Structured referral',
+      cli_3_desc:'For cases requiring medical evaluation, Voxen facilitates referral with full clinical context.',
+      saf_label:'Built responsibly',
+      saf_title_html:'Your safety<br><em>is not a detail.</em>',
+      saf_sub:'Voxen addresses vulnerable people. That is why safety was the first component built — not the last.',
+      saf_1_title:'Crisis protocol',
+      saf_1_desc:'Voxen recognizes crisis moments and immediately connects with real, verified emergency lines.',
+      saf_2_title:'Your voice stays yours',
+      saf_2_desc:'Voice analysis happens locally on the device. Your data is never sold and never shared.',
+      saf_3_title:'Clinically validated',
+      saf_3_desc:'Safety protocols are reviewed by clinical psychologists. Voxen is not a therapist and says so clearly.',
+
+    nav_cta:'Join waitlist',
+    nav_how:'How it works', nav_companion:'AI Companion', nav_recovery:'Recovery', nav_tools:'18 Tools',
+    badge:'Launching Q3 2026 · Join for free now',
+    hero_title_html:'recovery doesn’t happen<br><em>only in therapy</em>', hero_sub_html:'It happens on every hard evening. Voxen is with you through each one.',
+    hero_new:'Voice companion for addiction recovery',
+    email_placeholder:'your@email.com', cta_btn:'Join for free',
+    success_title:"You're on the list! ✓", success_sub:'Zero spam. We\'ll notify you first.',
+    wl_note:'No card. No spam. Cancel anytime.',
+    stat_waitlist:'on the waitlist', stat_ios:'launch Q3 2026', stat_android:'launch Q4 2026',
+    how_label:'How it works', how_title_html:'You speak for a minute.<br><em>Voxen stays attentive all the way.</em>',
+    how_sub:"It's not a journal. It's not a meditation app. It's something that didn't exist before.",
+    step1_title:'You speak for a minute, in the evening', step1_desc:"A gentle evening notification. You open Voxen and talk. Any thought, any feeling. No pressure, no format.",
+    step2_title:'Voxen hears how you really are', step2_desc:"We analyze tone, rhythm, pauses, energy. Not WHAT you say — HOW you say it. Real emotion detected.",
+    step3_title:'Your watch reads your body', step3_desc:'Pulse, SpO₂, HRV, blood pressure. Voxen knows how you are before you speak. Crisis prediction 20 min ahead.',
+    step4_title:'One year later, you hear it again', step4_desc:'Your original voice, exact tone, real emotion. Not the edited text — your voice from one year ago.',
+    demo_label:'Emotional companion', demo_title_html:'It hears you.<br><em>It doesn\'t judge.</em><br><span class=\"understand\">It understands you.</span>',
+    demo_sub:'Voxen detects emotion from voice prosody — tempo, pitch, pauses, tremor, energy. Responds like a good friend at 11pm.',
+    demo_orb_label:'Listening to your voice...', demo_orb_sub:'Speak — I detect your state', demo_bubble_tag:'VOXEN FEELS',
+    demo_btn1:'Simulate emotion', demo_btn2:'1-year memory',
+    feat_label:'Everything Voxen does', feat_title_html:'One app.<br><em>A whole lifetime.</em>',
+    f1_title:'Voice journal', f1_desc:'Record, Whisper AI transcribes instantly in any language. Original voice stored — not just the text.',
+    f2_title:'Emotion detection from voice', f2_desc:'Tempo, tone, pauses, tremor, energy. AI reads what you don\'t say. 8 emotions + secondary + intensity.',
+    f3_title:'Memory from 1 year ago', f3_desc:'Daily notification: hear your exact voice from 1, 2, 3 years ago. The magic that creates healthy habit.',
+    f4_title:'Real-time biometrics', f4_desc:'Apple Watch, Wear OS, Garmin, Oura Ring. Pulse, SpO₂, HRV, blood pressure. Predicts crisis 20-30 min ahead.',
+    f5_title:'Addiction recovery', f5_desc:'18 validated clinical tools. SOS at 3am. Sobriety tracker with milestones. CBT, ACT, MBSR.',
+    f6_title:'Emotional map', f6_desc:'Statistics of your emotional life. How you felt each month. Your triggers. How you\'ve changed.',
+    bio_label:'Biometric monitoring', bio_title_html:'Your body knows<br><em>before your mind.</em>',
+    bio_sub:'Pulse subtly rises. HRV drops sharply. Temperature deviates. 20-30 minutes before crisis, Voxen gently reaches out.',
+    bio1_title:'Pulse + HRV', bio1_desc:'Rise of 15+ bpm above baseline = early signal. HRV below 50% of normal = acute stress activated.',
+    bio2_desc:'Below 95% → guided breathing auto-activated. Below 92% → critical alert immediately.',
+    bio3_title:'Blood pressure', bio3_desc:'Above 140/90 → calm tool activated immediately. Cardiac coherence or Box Breathing.',
+    bio4_title:'Skin temperature', bio4_desc:'+0.5°C deviation = autonomic stress response. Oura Ring and Apple Watch measure continuously.',
+    alert_green:'🟢 Stable — continue what you\'re doing', alert_yellow:'🟡 Attention — pulse rising slightly', alert_red:'🔴 Imminent crisis — intervening now',
+    dev_soon1:'Garmin (coming soon)', dev_soon2:'Oura Ring (coming soon)',
+    tools_label:'Complete clinical arsenal', tools_title_html:'18 validated tools.<br><em>Activated contextually.</em>',
+    tools_sub:'Each tool is activated automatically based on your vital signs. Voxen knows what you need right now.',
+    rec_label:'Recovery module', rec_title_html:"It's 3am.<br><em>Voxen is awake.</em>",
+    rec_sub:'280 million people struggle with addictions. Voxen is in everyone\'s pocket — available anytime, no judgment.',
+    rec1_num:'Craving', rec1_title:'Pulse rising. Voxen knows.', rec1_desc:'Your band detects physiological signs 20 minutes ahead. Voxen reaches out gently before you give in.',
+    rec2_num:'Breathing', rec2_title:'4-7-8 Technique', rec2_desc:'Animated guided breathing. Activates parasympathetic system. Craving lasts maximum 20 minutes.',
+    rec3_num:'Motivation', rec3_title:'Your voice from back then', rec3_desc:'You hear the recording with your reason for starting. Not a generic quote — your voice, your real emotion.',
+    test_label:'Beta testers', test_title_html:'What those who<br><em>tried it first say.</em>',
+    t1_quote:'I listened to my voice from a year ago saying I was afraid to start my new job. I cried. And I felt invincible.',
+    t1_name:'Andrei M.', t1_role:'Beta tester, Cluj',
+    t2_quote:'At 3am, when the craving came, I had no one. Now I have Voxen. I\'m 47 days free.',
+    t2_name:'Ioana G.', t2_role:'Beta tester, Bucharest',
+    t3_quote:'As a psychologist, I recommended it to patients between sessions. I see their progress in real time. It\'s a revolution in therapy.',
+    t3_name:'Dr. Mihaela P.', t3_role:'Clinical psychologist',
+    fcta_title_html:'Join us.<br><em>Your voice is waiting.</em>', fcta_sub:'First 1,000 users get free premium access for 6 months.',
+    premium_note:'⭐ First 1,000 — Free premium 6 months',
+    footer_privacy:'Privacy', footer_terms:'Terms', footer_contact:'Contact', footer_blog:'Blog',
+    cat_all:'All (18)', cat_breath:'🫁 Breathing', cat_mind:'🧠 Mindfulness', cat_crav:'🔥 Craving', cat_emo:'💚 Emotional', cat_act:'⚡ Activation', cat_prev:'🗺️ Prevention',
+    rec_badge:'Recommended',
+    emo_tired_label:'Tired', emo_tired_sub:'Low voice, slow rhythm detected', emo_tired_msg:"I hear you're tired. You don't have to say much today. Even one word is enough.",
+    emo_sad_label:'Sad', emo_sad_sub:'Vocal tremor, long pauses detected', emo_sad_msg:"What upset you today? I hear you and I don't judge. You can say anything — I'm here.",
+    emo_happy_label:'Happy', emo_happy_sub:'Varied tone, high energy detected', emo_happy_msg:"I hear you smiling! What happened that was good today? I want to remember it with you.",
+    emo_anx_label:'Anxious', emo_anx_sub:'Fast tempo, frequent hesitations', emo_anx_msg:"I sense you're confused or agitated. Breathe. Tell me what's weighing on you — I'm listening.",
+    emo_ang_label:'Angry', emo_ang_sub:'High energy, raised pitch detected', emo_ang_msg:"I hear you. That anger is valid. What triggered it?",
+    mem_prefix:'A year ago, you said:',
+ 
+    nav_therapy:'Therapy', nav_groups:'Support groups',
+    th_label:'Professional therapy', th_title_html:'A therapist beside you.<br><em>Whenever you need.</em>',
+    th_sub:'Voxen connects your emotional data with a specialist near you. The first session guided by AI.',
+    th1_badge:'Psychologist / Psychotherapist', th1_title:'Individual session',
+    th1_desc:'Specialist in addictions and mental health near you. Voxen sends an anonymous summary.',
+    th1_s1:'Select a specialist near you', th1_s2:'Voxen sends anonymous summary (with your consent)', th1_s3:'Schedule session — online or in-person',
+    th1_btn:'Find therapist nearby',
+    th2_badge:'Online consultant', th2_title:'Remote consultation',
+    th2_desc:'Video or chat. Certified consultant. Available within 24h. No long waiting lists.',
+    th2_s1:'Fill a short triage form', th2_s2:'Connected with a suitable consultant', th2_s3:'Video or chat session within 24h',
+    th2_btn:'Online consultation →',
+    th3_badge:'Medical consultation', th3_title:'Medical evaluation',
+    th3_desc:'For cases requiring psychiatric evaluation or medication treatment.',
+    th3_s1:'Initial assessment via Voxen AI', th3_s2:'Referral to psychiatrist/specialist', th3_s3:'Continuous follow-up via app',
+    th3_btn:'Medical evaluation →',
+    gr_label:'Support groups', gr_title_html:'You are not alone.<br><em>Never.</em>',
+    gr_sub:'Anonymous weekly groups, moderated by a specialist. Once a week, 60 minutes.',
+    gr1_title:'Alcohol recovery', gr1_desc:'Anonymous weekly group. Sharing, mutual support, certified moderator.',
+    gr2_title:'Gambling recovery', gr2_desc:'12-step program adapted digitally, with integrated biometric monitoring.',
+    gr3_title:'Substance recovery', gr3_desc:'Guided discussions, CBT techniques in group, milestone celebrations together.',
+    gr4_title:'Stress & Burnout', gr4_desc:'MBSR techniques practiced in group, peer-to-peer support, wellness specialist moderator.',
+    gr_weekly:'Thursday, 8pm · Weekly', gr_weekly2:'Tuesday, 7pm · Weekly',
+    gr_weekly3:'Saturday, 10am · Weekly', gr_weekly4:'Monday, 7:30pm · Weekly',
+    gr_size:'Max 12 participants', gr_anon:'100% anonymous', gr_join:'Join the group',
+    gr_note:'All groups are moderated by certified professionals. Complete anonymity. GDPR compliant.',
+  },
+  fr: {
+      nav_safety:'Sécurité',
+      fam_label:'Pour les proches',
+      fam_title_html:'Vous aimez quelqu’un<br><em>en rétablissement.</em>',
+      fam_sub:'Et souvent vous ne savez pas quoi faire, quoi dire, ou comment aider sans étouffer. Voxen ne vous remplace pas — il offre un soutien discret en arrière-plan.',
+      fam_1_title:'Un chemin partagé',
+      fam_1_desc:'Avec le consentement de votre proche, vous pouvez recevoir des signaux simples sur l’évolution — sans envahir son intimité.',
+      fam_2_title:'Moins de peur',
+      fam_2_desc:'Le rétablissement pèse sur toute la famille. Voxen réduit le sentiment d’être le seul à veiller.',
+      fam_3_title:'Des ressources pour vous',
+      fam_3_desc:'De courts guides sur comment soutenir sans contrôler, comment garder votre propre équilibre.',
+      cli_label:'Pour thérapeutes et cliniques',
+      cli_title_html:'Votre travail continue<br><em>entre les séances.</em>',
+      cli_sub:'Voxen ne remplace pas la thérapie — il la prolonge. Le patient arrive à la séance avec un contexte réel, pas des souvenirs vagues.',
+      cli_1_title:'Contexte entre les séances',
+      cli_1_desc:'Avec le consentement du patient, vous recevez un résumé anonyme de l’état émotionnel des 30 derniers jours.',
+      cli_2_title:'Signaux précoces',
+      cli_2_desc:'Voxen détecte les schémas de risque et de rechute plus tôt qu’une séance toutes les deux semaines.',
+      cli_3_title:'Orientation structurée',
+      cli_3_desc:'Pour les cas nécessitant une évaluation médicale, Voxen facilite l’orientation avec un contexte clinique complet.',
+      saf_label:'Conçu de manière responsable',
+      saf_title_html:'Votre sécurité<br><em>n’est pas un détail.</em>',
+      saf_sub:'Voxen s’adresse à des personnes vulnérables. C’est pourquoi la sécurité a été le premier composant construit — pas le dernier.',
+      saf_1_title:'Protocole de crise',
+      saf_1_desc:'Voxen reconnaît les moments de crise et connecte immédiatement à des lignes d’urgence réelles et vérifiées.',
+      saf_2_title:'Votre voix reste la vôtre',
+      saf_2_desc:'L’analyse vocale se fait localement sur l’appareil. Vos données ne sont jamais vendues ni partagées.',
+      saf_3_title:'Validé cliniquement',
+      saf_3_desc:'Les protocoles de sécurité sont revus par des psychologues cliniciens. Voxen n’est pas un thérapeute et le dit clairement.',
+
+    nav_cta:"Rejoindre la liste",
+    nav_how:'Comment ça marche', nav_companion:'Compagnon IA', nav_recovery:'Récupération', nav_tools:'18 Outils',
+    badge:"Lancement T3 2026 · Inscrivez-vous gratuitement",
+    hero_title_html:'la guérison n’arrive pas<br><em>qu’en thérapie</em>', hero_sub_html:'Elle arrive chaque soir difficile. Voxen est avec vous dans chacun d’eux.',
+    hero_new:'Compagnon vocal pour la guérison des dépendances',
+    email_placeholder:'votre@email.com', cta_btn:'Rejoindre gratuitement',
+    success_title:'Vous êtes sur la liste ! ✓', success_sub:'Zéro spam. Nous vous informerons en premier.',
+    wl_note:'Sans carte. Sans spam. Annulez à tout moment.',
+    stat_waitlist:"sur la liste d\'attente", stat_ios:'lancement T3 2026', stat_android:'lancement T4 2026',
+    how_label:'Comment ça marche', how_title_html:"Simple comme un souffle.<br><em>Profond comme un souvenir.</em>",
+    how_sub:"Ce n'est pas un journal. Ce n'est pas une appli de méditation. C\'est quelque chose qui n'existait pas.",
+    step1_title:'Vous parlez une minute, le soir', step1_desc:"Une notification douce le soir. Vous ouvrez Voxen et parlez. N'importe quelle pensée. Sans pression.",
+    step2_title:"L'IA vous écoute", step2_desc:"Nous analysons le ton, le rythme, les pauses, l'énergie. Pas CE que vous dites — COMMENT vous le dites.",
+    step3_title:'Votre montre lit votre corps', step3_desc:"Pouls, SpO₂, HRV, tension. Voxen sait comment vous allez avant que vous parliez.",
+    step4_title:'Un an après, vous réentendez', step4_desc:"Votre vraie voix, votre ton exact, votre vraie émotion. Pas le texte édité — votre voix d'il y a un an.",
+    demo_label:'Compagnon émotionnel', demo_title_html:'Il vous entend.<br><em>Sans jugement.</em><br><span class=\"understand\">Il vous comprend.</span>',
+    demo_sub:"Voxen détecte l'émotion dans la prosodie vocale — tempo, hauteur, pauses, tremblements, énergie.",
+    demo_orb_label:'J\'écoute votre voix...', demo_orb_sub:'Parlez — je détecte votre état', demo_bubble_tag:'VOXEN RESSENT',
+    demo_btn1:'Simuler une émotion', demo_btn2:'Souvenir 1 an',
+    feat_label:'Tout ce que fait Voxen', feat_title_html:'Une application.<br><em>Toute une vie.</em>',
+    f1_title:'Journal vocal', f1_desc:"Enregistrez, Whisper AI transcrit instantanément. La voix originale est conservée.",
+    f2_title:'Détection émotion vocale', f2_desc:"Tempo, ton, pauses, tremblements. L'IA lit ce que vous ne dites pas.",
+    f3_title:'Mémoire d\'il y a 1 an', f3_desc:"Notification quotidienne : entendez votre voix exacte d'il y a 1, 2, 3 ans.",
+    f4_title:'Biométrie en temps réel', f4_desc:'Apple Watch, Wear OS, Garmin, Oura Ring. Pouls, SpO₂, HRV, tension.',
+    f5_title:'Récupération des addictions', f5_desc:'18 outils cliniques validés. SOS à 3h du matin. CBT, ACT, MBSR.',
+    f6_title:'Carte émotionnelle', f6_desc:"Statistiques de votre vie émotionnelle. Comment vous vous sentiez chaque mois.",
+    bio_label:'Surveillance biométrique', bio_title_html:'Votre corps sait<br><em>avant votre esprit.</em>',
+    bio_sub:"Le pouls monte subtilement. La VFC chute brusquement. La température dévie. 20-30 minutes avant la crise.",
+    bio1_title:'Pouls + VFC', bio1_desc:"Hausse de 15+ bpm au-dessus de la base = signal précoce.",
+    bio2_desc:'Sous 95% → respiration guidée auto-activée. Sous 92% → alerte critique.',
+    bio3_title:'Tension artérielle', bio3_desc:'Supérieure à 140/90 → outil calmant activé immédiatement.',
+    bio4_title:'Température cutanée', bio4_desc:'Déviation +0,5°C = réponse de stress autonome.',
+    alert_green:'🟢 Stable — continuez', alert_yellow:'🟡 Attention — pouls en légère hausse', alert_red:'🔴 Crise imminente — j\'interviens',
+    dev_soon1:'Garmin (bientôt)', dev_soon2:'Oura Ring (bientôt)',
+    tools_label:'Arsenal clinique complet', tools_title_html:'18 outils validés.<br><em>Activés contextuellement.</em>',
+    tools_sub:'Chaque outil est activé automatiquement selon vos signes vitaux.',
+    rec_label:'Module de récupération', rec_title_html:'Il est 3h du matin.<br><em>Voxen est éveillé.</em>',
+    rec_sub:"280 millions de personnes luttent contre des addictions. Voxen est dans chaque poche.",
+    rec1_num:'Envie', rec1_title:'Le pouls monte. Voxen sait.', rec1_desc:'Votre bracelet détecte les signes physiologiques 20 minutes à l\'avance.',
+    rec2_num:'Respiration', rec2_title:'Technique 4-7-8', rec2_desc:"Respiration guidée animée. Active le système parasympathique.",
+    rec3_num:'Motivation', rec3_title:'Votre voix d\'alors', rec3_desc:"Vous entendez l'enregistrement avec votre raison de commencer.",
+    test_label:'Bêta-testeurs', test_title_html:'Ce que disent ceux qui<br><em>ont essayé en premier.</em>',
+    t1_quote:"J\'ai écouté ma voix d'il y a un an dire que j\'avais peur de commencer mon nouveau travail. J\'ai pleuré. Et je me suis senti invincible.",
+    t1_name:'Andrei M.', t1_role:'Bêta-testeur, Cluj',
+    t2_quote:"À 3h du matin, quand l\'envie venait, je n'avais personne. Maintenant j\'ai Voxen. Je suis libre depuis 47 jours.",
+    t2_name:'Ioana G.', t2_role:'Bêta-testeuse, Bucarest',
+    t3_quote:"En tant que psychologue, je l'ai recommandé aux patients entre les séances. Je vois leurs progrès en temps réel.",
+    t3_name:'Dr. Mihaela P.', t3_role:'Psychologue clinicienne',
+    fcta_title_html:'Inscrivez-vous.<br><em>Votre voix vous attend.</em>', fcta_sub:'Les 1 000 premiers utilisateurs reçoivent 6 mois premium gratuits.',
+    premium_note:'⭐ 1 000 premiers — Premium gratuit 6 mois',
+    footer_privacy:'Confidentialité', footer_terms:'Conditions', footer_contact:'Contact', footer_blog:'Blog',
+    cat_all:'Tout (18)', cat_breath:'🫁 Respiration', cat_mind:'🧠 Pleine conscience', cat_crav:'🔥 Envie', cat_emo:'💚 Émotionnel', cat_act:'⚡ Activation', cat_prev:'🗺️ Prévention',
+    rec_badge:'Recommandé',
+    emo_tired_label:'Fatigué', emo_tired_sub:'Voix basse, rythme lent détecté', emo_tired_msg:"J'entends votre fatigue. Pas besoin de beaucoup dire aujourd'hui.",
+    emo_sad_label:'Triste', emo_sad_sub:'Tremblement vocal, longues pauses', emo_sad_msg:"Qu'est-ce qui vous a contrarié aujourd'hui ? Je vous écoute sans jugement.",
+    emo_happy_label:'Heureux', emo_happy_sub:'Ton varié, haute énergie détectée', emo_happy_msg:"Je vous entends sourire ! Qu'est-il arrivé de bien aujourd'hui ?",
+    emo_anx_label:'Anxieux', emo_anx_sub:'Tempo rapide, hésitations fréquentes', emo_anx_msg:"Je vous sens confus. Respirez. Dites-moi ce qui vous pèse.",
+    emo_ang_label:'En colère', emo_ang_sub:'Haute énergie, ton élevé', emo_ang_msg:"Je vous entends. Cette colère est valide. Qu'est-ce qui l'a déclenchée ?",
+    mem_prefix:'Il y a un an, vous disiez :',
+ 
+    nav_therapy:'Thérapie', nav_groups:'Groupes de soutien',
+    th_label:'Thérapie professionnelle', th_title_html:'Un thérapeute à vos côtés.<br><em>Quand vous en avez besoin.</em>',
+    th_sub:'Voxen connecte vos données émotionnelles avec un spécialiste près de chez vous.',
+    th1_badge:'Psychologue / Psychothérapeute', th1_title:'Séance individuelle',
+    th1_desc:'Spécialiste en addictions près de chez vous. Voxen envoie un résumé anonyme.',
+    th1_s1:'Sélectionnez un spécialiste près de vous', th1_s2:'Voxen envoie un résumé anonyme (avec votre accord)', th1_s3:'Planifiez la séance — en ligne ou en personne',
+    th1_btn:'Trouver un thérapeute',
+    th2_badge:'Consultant en ligne', th2_title:'Consultation à distance',
+    th2_desc:'Vidéo ou chat. Consultant certifié. Disponible sous 24h.',
+    th2_s1:'Remplissez un court formulaire', th2_s2:'Connecté avec un consultant adapté', th2_s3:'Séance vidéo ou chat sous 24h',
+    th2_btn:'Consultation en ligne →',
+    th3_badge:'Consultation médicale', th3_title:'Évaluation médicale',
+    th3_desc:"Pour les cas nécessitant une évaluation psychiatrique ou un traitement médicamenteux.",
+    th3_s1:'Évaluation initiale via Voxen IA', th3_s2:'Référence au psychiatre/spécialiste', th3_s3:'Suivi continu via l\'application',
+    th3_btn:'Évaluation médicale →',
+    gr_label:'Groupes de soutien', gr_title_html:'Vous n’êtes pas seul.<br><em>Jamais.</em>',
+    gr_sub:'Groupes anonymes hebdomadaires, modérés par un spécialiste. Une fois par semaine, 60 minutes.',
+    gr1_title:'Récupération de l\'alcool', gr1_desc:'Groupe anonyme hebdomadaire. Partage, soutien mutuel, modérateur certifié.',
+    gr2_title:'Récupération du jeu', gr2_desc:'Programme en 12 étapes adapté numériquement, avec suivi biométrique intégré.',
+    gr3_title:'Récupération des substances', gr3_desc:'Discussions guidées, techniques CBT en groupe, célébration des jalons ensemble.',
+    gr4_title:'Stress & Burnout', gr4_desc:'Techniques MBSR pratiquées en groupe, soutien entre pairs, modérateur spécialiste.',
+    gr_weekly:'Jeudi, 20h · Hebdomadaire', gr_weekly2:'Mardi, 19h · Hebdomadaire',
+    gr_weekly3:'Samedi, 10h · Hebdomadaire', gr_weekly4:'Lundi, 19h30 · Hebdomadaire',
+    gr_size:'Max 12 participants', gr_anon:'100% anonyme', gr_join:'Rejoindre le groupe',
+    gr_note:'Tous les groupes sont modérés par des professionnels certifiés. Anonymat complet. Conforme RGPD.',
+  },
+  de: {
+      nav_safety:'Sicherheit',
+      fam_label:'Für Angehörige',
+      fam_title_html:'Du liebst jemanden<br><em>in Genesung.</em>',
+      fam_sub:'Und oft weißt du nicht, was du tun, sagen oder wie du helfen sollst, ohne zu ersticken. Voxen ersetzt dich nicht — es bietet stille Unterstützung im Hintergrund.',
+      fam_1_title:'Ein gemeinsamer Weg',
+      fam_1_desc:'Mit Zustimmung deines Angehörigen kannst du einfache Signale darüber erhalten, wie es läuft — ohne die Privatsphäre zu verletzen.',
+      fam_2_title:'Weniger Angst',
+      fam_2_desc:'Genesung lastet auf der ganzen Familie. Voxen verringert das Gefühl, der Einzige zu sein, der wacht.',
+      fam_3_title:'Ressourcen für dich',
+      fam_3_desc:'Kurze Leitfäden, wie man unterstützt ohne zu kontrollieren, wie man die eigene Balance hält.',
+      cli_label:'Für Therapeuten und Kliniken',
+      cli_title_html:'Deine Arbeit setzt sich fort<br><em>zwischen den Sitzungen.</em>',
+      cli_sub:'Voxen ersetzt die Therapie nicht — es verlängert sie. Der Patient kommt mit echtem Kontext zur Sitzung, nicht mit vagen Erinnerungen.',
+      cli_1_title:'Kontext zwischen Sitzungen',
+      cli_1_desc:'Mit Zustimmung des Patienten erhältst du eine anonyme Zusammenfassung des emotionalen Zustands der letzten 30 Tage.',
+      cli_2_title:'Frühe Signale',
+      cli_2_desc:'Voxen erkennt Risiko- und Rückfallmuster früher als eine Sitzung alle zwei Wochen.',
+      cli_3_title:'Strukturierte Überweisung',
+      cli_3_desc:'Für Fälle, die eine medizinische Bewertung erfordern, erleichtert Voxen die Überweisung mit vollständigem klinischem Kontext.',
+      saf_label:'Verantwortungsvoll gebaut',
+      saf_title_html:'Deine Sicherheit<br><em>ist kein Detail.</em>',
+      saf_sub:'Voxen wendet sich an verletzliche Menschen. Deshalb war Sicherheit die erste gebaute Komponente — nicht die letzte.',
+      saf_1_title:'Krisenprotokoll',
+      saf_1_desc:'Voxen erkennt Krisenmomente und verbindet sofort mit echten, verifizierten Notfallleitungen.',
+      saf_2_title:'Deine Stimme bleibt deine',
+      saf_2_desc:'Die Sprachanalyse erfolgt lokal auf dem Gerät. Deine Daten werden nie verkauft und nie geteilt.',
+      saf_3_title:'Klinisch validiert',
+      saf_3_desc:'Sicherheitsprotokolle werden von klinischen Psychologen überprüft. Voxen ist kein Therapeut und sagt das deutlich.',
+
+    nav_cta:'Warteliste beitreten',
+    nav_how:'Wie es funktioniert', nav_companion:'KI-Begleiter', nav_recovery:'Genesung', nav_tools:'18 Werkzeuge',
+    badge:'Start Q3 2026 · Jetzt kostenlos anmelden',
+    hero_title_html:'Genesung passiert<br><em>nicht nur in der Therapie</em>', hero_sub_html:'Sie passiert an jedem schweren Abend. Voxen ist bei dir an jedem davon.',
+    hero_new:'Sprach-Begleiter für die Suchtgenesung',
+    email_placeholder:'deine@email.de', cta_btn:'Kostenlos beitreten',
+    success_title:'Du bist auf der Liste! ✓', success_sub:'Kein Spam. Wir benachrichtigen dich zuerst.',
+    wl_note:'Keine Karte. Kein Spam. Jederzeit kündigen.',
+    stat_waitlist:'auf der Warteliste', stat_ios:'Start Q3 2026', stat_android:'Start Q4 2026',
+    how_label:'Wie es funktioniert', how_title_html:'Du sprichst eine Minute.<br><em>Voxen bleibt den ganzen Weg aufmerksam.</em>',
+    how_sub:'Voxen hört nicht nur, was du sagst, sondern wie du es sagst. Wenn es dich abrutschen hört, ist es da.',
+    step1_title:'Du sprichst eine Minute, am Abend', step1_desc:'Besonders an schweren Abenden. Du öffnest Voxen und sagst, was los ist — das Verlangen, die Müdigkeit, der Gedanke, der nicht weicht. Kein Format, kein Urteil.',
+    step2_title:'Voxen hört, wie es dir wirklich geht', step2_desc:'Wir analysieren Ton, Rhythmus, Pausen, Energie. Nicht WAS du sagst — WIE du es sagst.',
+    step3_title:'Deine Uhr liest deinen Körper', step3_desc:'Puls, SpO₂, HRV, Blutdruck. Voxen weiß, wie es dir geht, bevor du sprichst.',
+    step4_title:'Ein Jahr später hörst du es wieder', step4_desc:'Deine originale Stimme, exakter Ton, echte Emotion. Nicht der bearbeitete Text — deine Stimme von vor einem Jahr.',
+    demo_label:'Emotionaler Begleiter', demo_title_html:'Er hört dich.<br><em>Er urteilt nicht.</em><br><span class=\"understand\">Er versteht dich.</span>',
+    demo_sub:'Voxen erkennt Emotionen aus der Sprachprosodie — Tempo, Tonhöhe, Pausen, Zittern, Energie.',
+    demo_orb_label:'Ich höre deine Stimme...', demo_orb_sub:'Sprich — ich erkenne deinen Zustand', demo_bubble_tag:'VOXEN SPÜRT',
+    demo_btn1:'Emotion simulieren', demo_btn2:'1-Jahres-Erinnerung',
+    feat_label:'Alles was Voxen macht', feat_title_html:'Eine App.<br><em>Ein ganzes Leben.</em>',
+    f1_title:'Sprachtagebuch', f1_desc:'Aufnehmen, Whisper KI transkribiert sofort in jeder Sprache.',
+    f2_title:'Emotionserkennung aus Stimme', f2_desc:'Tempo, Ton, Pausen, Zittern. Die KI liest, was du nicht sagst.',
+    f3_title:'Erinnerung von vor 1 Jahr', f3_desc:'Tägliche Benachrichtigung: Höre deine Stimme von vor 1, 2, 3 Jahren.',
+    f4_title:'Biometrie in Echtzeit', f4_desc:'Apple Watch, Wear OS, Garmin, Oura Ring. Puls, SpO₂, HRV, Blutdruck.',
+    f5_title:'Suchtgenesung', f5_desc:'18 validierte klinische Werkzeuge. SOS um 3 Uhr morgens. CBT, ACT, MBSR.',
+    f6_title:'Emotionale Karte', f6_desc:'Statistiken deines emotionalen Lebens. Wie du dich jeden Monat gefühlt hast.',
+    bio_label:'Biometrisches Monitoring', bio_title_html:'Dein Körper weiß es<br><em>vor deinem Verstand.</em>',
+    bio_sub:'Der Puls steigt subtil. HRV fällt abrupt. Die Temperatur weicht ab. 20-30 Minuten vor der Krise.',
+    bio1_title:'Puls + HRV', bio1_desc:'Anstieg von 15+ bpm über Baseline = frühes Signal.',
+    bio2_desc:'Unter 95% → geführte Atmung auto-aktiviert. Unter 92% → kritischer Alarm.',
+    bio3_title:'Blutdruck', bio3_desc:'Über 140/90 → Beruhigungswerkzeug sofort aktiviert.',
+    bio4_title:'Hauttemperatur', bio4_desc:'+0,5°C Abweichung = autonome Stressreaktion.',
+    alert_green:'🟢 Stabil — mach weiter', alert_yellow:'🟡 Achtung — Puls steigt leicht', alert_red:'🔴 Drohende Krise — greife jetzt ein',
+    dev_soon1:'Garmin (demnächst)', dev_soon2:'Oura Ring (demnächst)',
+    tools_label:'Vollständiges klinisches Arsenal', tools_title_html:'18 validierte Werkzeuge.<br><em>Kontextuell aktiviert.</em>',
+    tools_sub:'Jedes Werkzeug wird automatisch basierend auf deinen Vitalwerten aktiviert.',
+    rec_label:'Genesungsmodul', rec_title_html:'Es ist 3 Uhr morgens.<br><em>Voxen ist wach.</em>',
+    rec_sub:'280 Millionen Menschen kämpfen mit Sucht. Voxen ist in jeder Tasche.',
+    rec1_num:'Verlangen', rec1_title:'Puls steigt. Voxen weiß es.', rec1_desc:'Dein Armband erkennt physiologische Zeichen 20 Minuten im Voraus.',
+    rec2_num:'Atmung', rec2_title:'4-7-8 Technik', rec2_desc:'Animierte geführte Atmung. Aktiviert das Parasympathikus-System.',
+    rec3_num:'Motivation', rec3_title:'Deine Stimme von damals', rec3_desc:'Du hörst die Aufnahme mit deinem Grund, warum du angefangen hast.',
+    test_label:'Beta-Tester', test_title_html:'Was die sagen, die<br><em>es als erste probierten.</em>',
+    t1_quote:'Ich hörte meine Stimme von vor einem Jahr, wie ich sagte, ich habe Angst vor dem neuen Job. Ich weinte. Und fühlte mich unbesiegbar.',
+    t1_name:'Andrei M.', t1_role:'Beta-Tester, Cluj',
+    t2_quote:'Um 3 Uhr morgens, wenn das Verlangen kam, hatte ich niemanden. Jetzt habe ich Voxen. Ich bin seit 47 Tagen frei.',
+    t2_name:'Ioana G.', t2_role:'Beta-Testerin, Bukarest',
+    t3_quote:'Als Psychologin empfahl ich es Patienten zwischen den Sitzungen. Ich sehe ihre Fortschritte in Echtzeit.',
+    t3_name:'Dr. Mihaela P.', t3_role:'Klinische Psychologin',
+    fcta_title_html:'Mach mit.<br><em>Deine Stimme wartet.</em>', fcta_sub:'Die ersten 1.000 Nutzer erhalten 6 Monate Premium kostenlos.',
+    premium_note:'⭐ Erste 1.000 — 6 Monate Premium kostenlos',
+    footer_privacy:'Datenschutz', footer_terms:'AGB', footer_contact:'Kontakt', footer_blog:'Blog',
+    cat_all:'Alle (18)', cat_breath:'🫁 Atmung', cat_mind:'🧠 Achtsamkeit', cat_crav:'🔥 Verlangen', cat_emo:'💚 Emotional', cat_act:'⚡ Aktivierung', cat_prev:'🗺️ Prävention',
+    rec_badge:'Empfohlen',
+    emo_tired_label:'Müde', emo_tired_sub:'Niedrige Stimme, langsamer Rhythmus', emo_tired_msg:'Ich höre, dass du müde bist. Du musst heute nicht viel sagen.',
+    emo_sad_label:'Traurig', emo_sad_sub:'Stimmzittern, lange Pausen', emo_sad_msg:'Was hat dich heute betrübt? Ich höre zu, ohne zu urteilen.',
+    emo_happy_label:'Glücklich', emo_happy_sub:'Variierter Ton, hohe Energie', emo_happy_msg:'Ich höre dein Lächeln! Was Gutes ist heute passiert?',
+    emo_anx_label:'Ängstlich', emo_anx_sub:'Schnelles Tempo, häufiges Zögern', emo_anx_msg:'Ich spüre, dass du verwirrt bist. Atme. Sag mir, was dich belastet.',
+    emo_ang_label:'Wütend', emo_ang_sub:'Hohe Energie, erhöhte Tonlage', emo_ang_msg:'Ich höre dich. Dieser Ärger ist berechtigt. Was hat ihn ausgelöst?',
+    mem_prefix:'Vor einem Jahr sagtest du:',
+ 
+    nav_therapy:'Therapie', nav_groups:'Selbsthilfegruppen',
+    th_label:'Professionelle Therapie', th_title_html:'Ein Therapeut an Ihrer Seite.<br><em>Wann immer Sie ihn brauchen.</em>',
+    th_sub:'Voxen verbindet Ihre emotionalen Daten mit einem Spezialisten in Ihrer Nähe.',
+    th1_badge:'Psychologe / Psychotherapeut', th1_title:'Einzelsitzung',
+    th1_desc:'Suchtexperte in Ihrer Nähe. Voxen sendet eine anonyme Zusammenfassung.',
+    th1_s1:'Spezialisten in Ihrer Nähe auswählen', th1_s2:'Voxen sendet anonyme Zusammenfassung (mit Ihrer Zustimmung)', th1_s3:'Sitzung planen — online oder persönlich',
+    th1_btn:'Therapeuten in der Nähe finden',
+    th2_badge:'Online-Berater', th2_title:'Fernkonsultation',
+    th2_desc:'Video oder Chat. Zertifizierter Berater. Verfügbar innerhalb 24h.',
+    th2_s1:'Kurzes Triageformular ausfüllen', th2_s2:'Verbindung mit passendem Berater', th2_s3:'Video oder Chat-Sitzung innerhalb 24h',
+    th2_btn:'Online-Beratung →',
+    th3_badge:'Medizinische Beratung', th3_title:'Medizinische Bewertung',
+    th3_desc:'Für Fälle, die psychiatrische Bewertung oder Medikamente erfordern.',
+    th3_s1:'Erstbewertung über Voxen KI', th3_s2:'Überweisung an Psychiater/Spezialisten', th3_s3:'Kontinuierliche Nachverfolgung per App',
+    th3_btn:'Medizinische Bewertung →',
+    gr_label:'Selbsthilfegruppen', gr_title_html:'Du bist nicht allein.<br><em>Niemals.</em>',
+    gr_sub:'Anonyme wöchentliche Gruppen, moderiert von einem Spezialisten. Einmal pro Woche, 60 Minuten.',
+    gr1_title:'Alkohol-Genesung', gr1_desc:'Anonyme wöchentliche Gruppe. Teilen, gegenseitige Unterstützung, zertifizierter Moderator.',
+    gr2_title:'Glücksspiel-Genesung', gr2_desc:'12-Schritte-Programm digital angepasst, mit integriertem biometrischen Monitoring.',
+    gr3_title:'Substanz-Genesung', gr3_desc:'Geführte Diskussionen, CBT-Techniken in der Gruppe, gemeinsame Meilenstein-Feiern.',
+    gr4_title:'Stress & Burnout', gr4_desc:'MBSR-Techniken in der Gruppe, Peer-to-Peer-Support, Wellness-Spezialisten-Moderator.',
+    gr_weekly:'Donnerstag, 20:00 · Wöchentlich', gr_weekly2:'Dienstag, 19:00 · Wöchentlich',
+    gr_weekly3:'Samstag, 10:00 · Wöchentlich', gr_weekly4:'Montag, 19:30 · Wöchentlich',
+    gr_size:'Max. 12 Teilnehmer', gr_anon:'100% anonym', gr_join:'Gruppe beitreten',
+    gr_note:'Alle Gruppen werden von zertifizierten Fachleuten moderiert. Vollständige Anonymität. DSGVO-konform.',
+  },
+  zh: {
+      nav_safety:'安全',
+      fam_label:'致亲人',
+      fam_title_html:'你爱着一个<br><em>正在康复的人。</em>',
+      fam_sub:'你常常不知道该做什么、说什么，或如何帮助而不让对方窒息。Voxen不会取代你——它在背后提供安静的支持。',
+      fam_1_title:'共同的道路',
+      fam_1_desc:'在亲人同意的情况下，你可以收到关于进展的简单信号——而不侵犯他们的隐私。',
+      fam_2_title:'更少恐惧',
+      fam_2_desc:'康复让整个家庭承受压力。Voxen减轻你是唯一守望者的感觉。',
+      fam_3_title:'为你准备的资源',
+      fam_3_desc:'关于如何支持而不控制、如何保持自己平衡的简短指南。',
+      cli_label:'致治疗师与诊所',
+      cli_title_html:'你的工作在<br><em>会话之间继续。</em>',
+      cli_sub:'Voxen不取代治疗——它延伸治疗。患者带着真实的背景而非模糊的记忆来到会话。',
+      cli_1_title:'会话之间的背景',
+      cli_1_desc:'在患者同意的情况下，你会收到过去30天情绪状态的匿名摘要。',
+      cli_2_title:'早期信号',
+      cli_2_desc:'Voxen比每两周一次的会话更早检测到风险和复发模式。',
+      cli_3_title:'结构化转诊',
+      cli_3_desc:'对于需要医疗评估的病例，Voxen以完整的临床背景促进转诊。',
+      saf_label:'负责任地构建',
+      saf_title_html:'你的安全<br><em>不是细节。</em>',
+      saf_sub:'Voxen面向脆弱的人群。这就是为什么安全是首先构建的组件——而不是最后。',
+      saf_1_title:'危机协议',
+      saf_1_desc:'Voxen识别危机时刻，并立即连接真实、经过验证的紧急热线。',
+      saf_2_title:'你的声音属于你',
+      saf_2_desc:'语音分析在设备本地进行。你的数据从不出售，从不共享。',
+      saf_3_title:'临床验证',
+      saf_3_desc:'安全协议由临床心理学家审查。Voxen不是治疗师，并明确说明这一点。',
+
+    nav_cta:'免费加入等候名单',
+    nav_how:'如何使用', nav_companion:'AI伴侣', nav_recovery:'康复', nav_tools:'18种工具',
+    badge:'2026年Q3发布 · 立即免费注册',
+    hero_title_html:'康复不只<br><em>发生在治疗中</em>', hero_sub_html:'它发生在每个艰难的夜晚。Voxen陪伴你度过每一个。',
+    hero_new:'成瘾康复的语音陪伴',
+    email_placeholder:'your@email.com', cta_btn:'免费注册',
+    success_title:'您已加入名单！✓', success_sub:'零垃圾邮件。我们会第一时间通知您。',
+    wl_note:'无需信用卡。无垃圾邮件。随时取消。',
+    stat_waitlist:'在等候名单上', stat_ios:'2026年Q3发布', stat_android:'2026年Q4发布',
+    how_label:'工作原理', how_title_html:'你说一分钟。<br><em>Voxen全程专注倾听。</em>',
+    how_sub:'Voxen不仅听你说什么，还听你怎么说。当它听到你正在滑落时，它就在那里。',
+    step1_title:'晚上，你说一分钟', step1_desc:'尤其在艰难的夜晚。你打开Voxen说出当下——渴望、疲惫、挥之不去的念头。没有格式，没有评判。',
+    step2_title:'Voxen听出你真实的状态', step2_desc:'我们分析音调、节奏、停顿、能量。不是你说了什么——而是你怎么说的。真实情绪被检测到。',
+    step3_title:'您的手表读取您的身体', step3_desc:'脉搏、血氧、心率变异性、血压。Voxen在您开口之前就知道您的状态。',
+    step4_title:'一年后，您再次听到', step4_desc:'您的原始声音，准确的音调，真实的情感。不是编辑后的文字——是一年前您的声音。',
+    demo_label:'情感伴侣', demo_title_html:'它倾听您。<br><em>不加评判。</em><br><span class=\"understand\">它理解您。</span>',
+    demo_sub:'Voxen从声音韵律中检测情绪——节奏、音调、停顿、颤抖、能量。',
+    demo_orb_label:'正在聆听您的声音...', demo_orb_sub:'请说话——我正在检测您的状态', demo_bubble_tag:'VOXEN感应到',
+    demo_btn1:'模拟情绪', demo_btn2:'一年前的记忆',
+    feat_label:'Voxen能做的一切', feat_title_html:'一个应用。<br><em>整个人生。</em>',
+    f1_title:'语音日记', f1_desc:'录音，Whisper AI即时转录任何语言。原始声音被保存——不仅仅是文字。',
+    f2_title:'声音情绪检测', f2_desc:'节奏、音调、停顿、颤抖、能量。AI读取您没有说出口的。8种情绪+次要情绪+强度。',
+    f3_title:'一年前的记忆', f3_desc:'每日通知：听到您1、2、3年前的确切声音。创造健康习惯的魔法。',
+    f4_title:'实时生物识别', f4_desc:'Apple Watch、Wear OS、Garmin、Oura Ring。脉搏、血氧、心率变异性、血压。',
+    f5_title:'成瘾康复', f5_desc:'18种经过验证的临床工具。凌晨3点的SOS。里程碑戒断追踪器。CBT、ACT、MBSR。',
+    f6_title:'情绪地图', f6_desc:'您情感生活的统计数据。每个月的感受。您的触发因素。您如何改变。',
+    bio_label:'生物识别监测', bio_title_html:'您的身体知道<br><em>先于您的思维。</em>',
+    bio_sub:'脉搏微妙上升。心率变异性急剧下降。体温偏离。危机发生前20-30分钟，Voxen温和地联系您。',
+    bio1_title:'脉搏 + 心率变异性', bio1_desc:'比基线高15+ bpm = 早期信号。心率变异性低于正常值50% = 急性压力激活。',
+    bio2_desc:'低于95% → 自动激活引导呼吸。低于92% → 立即发出严重警报。',
+    bio3_title:'血压', bio3_desc:'超过140/90 → 立即激活平静工具。心脏连贯或箱式呼吸。',
+    bio4_title:'皮肤温度', bio4_desc:'+0.5°C偏差 = 自主应激反应。Oura Ring和Apple Watch持续测量。',
+    alert_green:'🟢 稳定——继续', alert_yellow:'🟡 注意——脉搏轻微上升', alert_red:'🔴 危机迫在眉睫——立即干预',
+    dev_soon1:'Garmin（即将推出）', dev_soon2:'Oura Ring（即将推出）',
+    tools_label:'完整临床工具库', tools_title_html:'18种经验证的工具。<br><em>情境性激活。</em>',
+    tools_sub:'每种工具都根据您的生命体征自动激活。Voxen知道您现在需要什么。',
+    rec_label:'康复模块', rec_title_html:'凌晨3点。<br><em>Voxen醒着。</em>',
+    rec_sub:'2.8亿人与成瘾作斗争。Voxen在每个人的口袋里——随时可用，不加评判。',
+    rec1_num:'渴望', rec1_title:'脉搏上升。Voxen知道。', rec1_desc:'您的手环提前20分钟检测到生理信号。Voxen在您屈服之前温和地联系您。',
+    rec2_num:'呼吸', rec2_title:'4-7-8技术', rec2_desc:'动画引导呼吸。激活副交感神经系统。渴望最多持续20分钟。',
+    rec3_num:'动力', rec3_title:'那时候的你的声音', rec3_desc:'您听到带有开始原因的录音。不是通用引言——是您的声音，您真实的情感。',
+    test_label:'测试用户', test_title_html:'第一批体验者<br><em>怎么说。</em>',
+    t1_quote:'我听到一年前自己的声音说害怕开始新工作。我哭了。然后感到无敌。',
+    t1_name:'Andrei M.', t1_role:'测试用户，克卢日',
+    t2_quote:'凌晨3点，渴望来临时，我无人倾诉。现在我有Voxen。我已经自由47天了。',
+    t2_name:'Ioana G.', t2_role:'测试用户，布加勒斯特',
+    t3_quote:'作为心理学家，我在疗程之间推荐给患者。我实时看到他们的进步。这是治疗的革命。',
+    t3_name:'Dr. Mihaela P.', t3_role:'临床心理学家',
+    fcta_title_html:'加入我们。<br><em>您的声音在等待。</em>', fcta_sub:'前1,000名用户免费获得6个月高级版。',
+    premium_note:'⭐ 前1,000名——免费高级版6个月',
+    footer_privacy:'隐私', footer_terms:'条款', footer_contact:'联系', footer_blog:'博客',
+    cat_all:'全部（18）', cat_breath:'🫁 呼吸', cat_mind:'🧠 正念', cat_crav:'🔥 渴望', cat_emo:'💚 情绪', cat_act:'⚡ 激活', cat_prev:'🗺️ 预防',
+    rec_badge:'推荐',
+    emo_tired_label:'疲惫', emo_tired_sub:'声音低沉，节奏缓慢', emo_tired_msg:'我听出你很累。今天不需要说很多。哪怕一个词也够了。',
+    emo_sad_label:'悲伤', emo_sad_sub:'声音颤抖，长时间停顿', emo_sad_msg:'今天什么让你难过了？我在听，不加评判。',
+    emo_happy_label:'快乐', emo_happy_sub:'音调多变，高能量', emo_happy_msg:'我听到你在微笑！今天发生了什么好事？我想和你一起记住它。',
+    emo_anx_label:'焦虑', emo_anx_sub:'语速快，频繁犹豫', emo_anx_msg:'我感觉你有些困惑或焦躁。深呼吸。告诉我什么在压着你。',
+    emo_ang_label:'愤怒', emo_ang_sub:'高能量，音调升高', emo_ang_msg:'我听到你了。那种愤怒是合理的。是什么触发了它？',
+    mem_prefix:'一年前，你说：',
+ 
+    nav_therapy:'治疗', nav_groups:'支持小组',
+    th_label:'专业治疗', th_title_html:'治疗师在您身边。<br><em>随时需要随时有。</em>',
+    th_sub:'Voxen将您的情绪数据与您附近的专家连接。AI引导的第一次会话。',
+    th1_badge:'心理学家/心理治疗师', th1_title:'个人会话',
+    th1_desc:'您附近的成瘾和心理健康专家。Voxen发送匿名摘要。',
+    th1_s1:'选择您附近的专家', th1_s2:'Voxen发送匿名摘要（经您同意）', th1_s3:'安排会话——在线或面对面',
+    th1_btn:'查找附近治疗师',
+    th2_badge:'在线顾问', th2_title:'远程咨询',
+    th2_desc:'视频或聊天。认证顾问。24小时内可用。无长等待名单。',
+    th2_s1:'填写简短分诊表', th2_s2:'与合适的顾问联系', th2_s3:'24小时内进行视频或聊天会话',
+    th2_btn:'在线咨询 →',
+    th3_badge:'医疗咨询', th3_title:'医疗评估',
+    th3_desc:'适用于需要精神科评估或药物治疗的情况。',
+    th3_s1:'通过Voxen AI进行初步评估', th3_s2:'转介给精神科医生/专科医生', th3_s3:'通过应用程序持续跟进',
+    th3_btn:'医疗评估 →',
+    gr_label:'支持小组', gr_title_html:'你并不孤单。<br><em>永远不会。</em>',
+    gr_sub:'匿名每周小组，由专家主持。每周一次，60分钟。',
+    gr1_title:'戒酒康复', gr1_desc:'匿名每周小组。分享、互助、认证主持人。',
+    gr2_title:'戒赌康复', gr2_desc:'数字化适应的12步计划，集成生物识别监测。',
+    gr3_title:'戒毒康复', gr3_desc:'有引导的讨论、小组CBT技术、共同庆祝里程碑。',
+    gr4_title:'压力与倦怠', gr4_desc:'小组MBSR技术、同伴互助、健康专家主持人。',
+    gr_weekly:'周四 20:00 · 每周', gr_weekly2:'周二 19:00 · 每周',
+    gr_weekly3:'周六 10:00 · 每周', gr_weekly4:'周一 19:30 · 每周',
+    gr_size:'最多12名参与者', gr_anon:'100%匿名', gr_join:'加入小组',
+    gr_note:'所有小组均由认证专业人员主持。完全匿名。符合GDPR。',
+  },
+  ja: {
+      nav_safety:'安全',
+      fam_label:'大切な人へ',
+      fam_title_html:'あなたは回復中の<br><em>誰かを愛している。</em>',
+      fam_sub:'そして多くの場合、何をすべきか、何を言うべきか、息苦しくさせずにどう助けるか分かりません。Voxenはあなたの代わりではなく、背景で静かな支えを与えます。',
+      fam_1_title:'共有された道',
+      fam_1_desc:'大切な人の同意を得て、進み具合についてのシンプルな信号を受け取れます——プライバシーを侵害せずに。',
+      fam_2_title:'恐れが減る',
+      fam_2_desc:'回復は家族全員にのしかかります。Voxenは、見守るのが自分だけだという感覚を軽減します。',
+      fam_3_title:'あなたのためのリソース',
+      fam_3_desc:'コントロールせずに支える方法、自分のバランスを保つ方法についての短いガイド。',
+      cli_label:'セラピストとクリニックへ',
+      cli_title_html:'あなたの仕事は<br><em>セッションの間も続く。</em>',
+      cli_sub:'Voxenは療法を代替するのではなく、延長します。患者は曖昧な記憶ではなく、本物の文脈を持ってセッションに来ます。',
+      cli_1_title:'セッション間の文脈',
+      cli_1_desc:'患者の同意を得て、過去30日間の感情状態の匿名サマリーを受け取ります。',
+      cli_2_title:'早期の兆候',
+      cli_2_desc:'Voxenは2週間ごとのセッションよりも早くリスクと再発のパターンを検出します。',
+      cli_3_title:'構造化された紹介',
+      cli_3_desc:'医療評価が必要なケースでは、Voxenは完全な臨床的文脈とともに紹介を促進します。',
+      saf_label:'責任を持って構築',
+      saf_title_html:'あなたの安全は<br><em>些細なことではない。</em>',
+      saf_sub:'Voxenは脆弱な人々に向けたものです。だからこそ安全は最初に構築された要素であり、最後ではありません。',
+      saf_1_title:'危機プロトコル',
+      saf_1_desc:'Voxenは危機の瞬間を認識し、実際の検証済み緊急ラインに即座につなぎます。',
+      saf_2_title:'あなたの声はあなたのもの',
+      saf_2_desc:'音声分析はデバイス上でローカルに行われます。あなたのデータは決して売られず、共有されません。',
+      saf_3_title:'臨床的に検証済み',
+      saf_3_desc:'安全プロトコルは臨床心理士によって審査されます。Voxenはセラピストではなく、それを明確に述べています。',
+
+    nav_cta:'ウェイトリストに参加',
+    nav_how:'使い方', nav_companion:'AIコンパニオン', nav_recovery:'回復', nav_tools:'18のツール',
+    badge:'2026年Q3リリース · 今すぐ無料登録',
+    hero_title_html:'回復は<br><em>療法だけで起こるのではない</em>', hero_sub_html:'それは辛い夜ごとに訪れます。Voxenはそのすべてであなたと共にいます。',
+    hero_new:'依存症回復のための音声コンパニオン',
+    email_placeholder:'your@email.com', cta_btn:'無料で参加',
+    success_title:'リストに追加されました！ ✓', success_sub:'スパムなし。最初にお知らせします。',
+    wl_note:'カード不要。スパムなし。いつでもキャンセル可能。',
+    stat_waitlist:'ウェイトリスト登録者', stat_ios:'2026年Q3リリース', stat_android:'2026年Q4リリース',
+    how_label:'使い方', how_title_html:'1分間話す。<br><em>Voxenはずっと注意深く聞いています。</em>',
+    how_sub:'Voxenはあなたが何を言うかだけでなく、どう言うかも聞いています。あなたが滑り落ちるのを聞いたとき、そこにいます。',
+    step1_title:'夜に1分間話す', step1_desc:'特に辛い夜に。Voxenを開いて今あることを話す——渇望、疲れ、離れない考え。フォーマットなし、判断なし。',
+    step2_title:'Voxenはあなたの本当の状態を聞き取る', step2_desc:'音調、リズム、間、エネルギーを分析。何を言うかではなく、どのように言うか。本当の感情を検出。',
+    step3_title:'時計があなたの体を読む', step3_desc:'脈拍、SpO₂、HRV、血圧。Voxenは話す前にあなたの状態を知っています。',
+    step4_title:'1年後、また聞こえる', step4_desc:'あなたのオリジナルの声、正確なトーン、本物の感情。編集されたテキストではなく、1年前のあなたの声。',
+    demo_label:'感情コンパニオン', demo_title_html:'あなたを聞いている。<br><em>判断しない。</em><br><span class=\"understand\">あなたを理解している。</span>',
+    demo_sub:'Voxenは声のプロソディから感情を検出します——テンポ、ピッチ、間、震え、エネルギー。',
+    demo_orb_label:'あなたの声を聞いています...', demo_orb_sub:'話してください——状態を検出します', demo_bubble_tag:'VoxenはAIを感知',
+    demo_btn1:'感情をシミュレート', demo_btn2:'1年前の記憶',
+    feat_label:'Voxenができること', feat_title_html:'一つのアプリ。<br><em>一生分。</em>',
+    f1_title:'音声日記', f1_desc:'録音すると、Whisper AIがすぐにどんな言語にも文字起こし。オリジナルの声が保存されます。',
+    f2_title:'声からの感情検出', f2_desc:'テンポ、トーン、間、震え、エネルギー。AIはあなたが言わないことを読み取ります。',
+    f3_title:'1年前の記憶', f3_desc:'毎日の通知：1年前、2年前、3年前のあなたの声を正確に聞く。',
+    f4_title:'リアルタイム生体認証', f4_desc:'Apple Watch、Wear OS、Garmin、Oura Ring。脈拍、SpO₂、HRV、血圧。',
+    f5_title:'依存症からの回復', f5_desc:'18の検証済み臨床ツール。午前3時のSOS。マイルストーン付き禁断トラッカー。CBT、ACT、MBSR。',
+    f6_title:'感情マップ', f6_desc:'あなたの感情生活の統計。毎月どう感じたか。トリガー。変化の記録。',
+    bio_label:'生体監視', bio_title_html:'あなたの体は<br><em>心より先に知っている。</em>',
+    bio_sub:'脈拍がわずかに上がる。HRVが急落する。体温が変動する。危機の20〜30分前、Voxenが優しく連絡を取ります。',
+    bio1_title:'脈拍 + HRV', bio1_desc:'ベースラインより15+ bpm上昇 = 早期シグナル。HRVが正常の50%以下 = 急性ストレス。',
+    bio2_desc:'95%未満 → 誘導呼吸が自動起動。92%未満 → 緊急アラート。',
+    bio3_title:'血圧', bio3_desc:'140/90以上 → 落ち着きツールが即座に起動。心臓コヒーレンスまたはボックス呼吸。',
+    bio4_title:'皮膚温度', bio4_desc:'+0.5°C偏差 = 自律神経ストレス反応。Oura RingとApple Watchが継続的に測定。',
+    alert_green:'🟢 安定 — 続けてください', alert_yellow:'🟡 注意 — 脈拍がわずかに上昇', alert_red:'🔴 危機迫る — 今介入します',
+    dev_soon1:'Garmin（近日公開）', dev_soon2:'Oura Ring（近日公開）',
+    tools_label:'完全な臨床ツール', tools_title_html:'18の検証済みツール。<br><em>文脈に応じて起動。</em>',
+    tools_sub:'各ツールはバイタルサインに基づいて自動的に起動します。Voxenは今何が必要か知っています。',
+    rec_label:'回復モジュール', rec_title_html:'午前3時。<br><em>Voxenは起きています。</em>',
+    rec_sub:'2億8千万人が依存症と戦っています。Voxenは全員のポケットに — いつでも利用可能、判断なし。',
+    rec1_num:'渇望', rec1_title:'脈拍が上がっている。Voxenが知っている。', rec1_desc:'バンドが20分前に生理的なサインを検出。Voxenは屈服する前に優しく連絡します。',
+    rec2_num:'呼吸', rec2_title:'4-7-8テクニック', rec2_desc:'アニメーション誘導呼吸。副交感神経系を活性化。渇望は最大20分続く。',
+    rec3_num:'モチベーション', rec3_title:'あの頃のあなたの声', rec3_desc:'始めた理由の録音を聞く。一般的な引用ではなく — あなたの声、あなたの本当の感情。',
+    test_label:'ベータテスター', test_title_html:'最初に試した人たちが<br><em>言うこと。</em>',
+    t1_quote:'1年前の自分の声が新しい仕事を始めるのが怖いと言っているのを聞いた。泣いた。そして無敵に感じた。',
+    t1_name:'Andrei M.', t1_role:'ベータテスター、クルジュ',
+    t2_quote:'午前3時、渇望が来たとき、誰もいなかった。今はVoxenがいる。47日間自由でいられています。',
+    t2_name:'Ioana G.', t2_role:'ベータテスター、ブカレスト',
+    t3_quote:'心理士として、セッションの合間に患者に勧めました。リアルタイムで進歩を見ています。これは治療の革命です。',
+    t3_name:'Dr. Mihaela P.', t3_role:'臨床心理士',
+    fcta_title_html:'参加してください。<br><em>あなたの声が待っています。</em>', fcta_sub:'最初の1,000人のユーザーは6ヶ月間無料でプレミアムアクセスを受けられます。',
+    premium_note:'⭐ 最初の1,000人 — 6ヶ月間プレミアム無料',
+    footer_privacy:'プライバシー', footer_terms:'利用規約', footer_contact:'お問い合わせ', footer_blog:'ブログ',
+    cat_all:'全て（18）', cat_breath:'🫁 呼吸', cat_mind:'🧠 マインドフルネス', cat_crav:'🔥 渇望', cat_emo:'💚 感情', cat_act:'⚡ 活性化', cat_prev:'🗺️ 予防',
+    rec_badge:'推奨',
+    emo_tired_label:'疲れている', emo_tired_sub:'低い声、遅いリズム検出', emo_tired_msg:'疲れているのが聞こえます。今日は多くを言う必要はありません。一言でも十分です。',
+    emo_sad_label:'悲しい', emo_sad_sub:'声の震え、長い間', emo_sad_msg:'今日何があなたを悲しませましたか？判断せずに聞いています。',
+    emo_happy_label:'幸せ', emo_happy_sub:'変化のある音調、高いエネルギー', emo_happy_msg:'笑顔が聞こえます！今日何か良いことがありましたか？一緒に覚えておきたいです。',
+    emo_anx_label:'不安', emo_anx_sub:'速いテンポ、頻繁なためらい', emo_anx_msg:'混乱しているか焦っているのを感じます。深呼吸して。何があなたを重くしているか教えてください。',
+    emo_ang_label:'怒っている', emo_ang_sub:'高エネルギー、音程が上がっている', emo_ang_msg:'あなたの怒りは正当です。何がそれを引き起こしましたか？',
+    mem_prefix:'1年前、あなたはこう言いました：',
+ 
+    nav_therapy:'療法', nav_groups:'サポートグループ',
+    th_label:'専門的な治療', th_title_html:'セラピストがあなたのそばに。<br><em>必要なときはいつでも。</em>',
+    th_sub:'VoxenはあなたのデータをAIガイドセッションで近くの専門家と繋げます。',
+    th1_badge:'心理士/心理療法士', th1_title:'個人セッション',
+    th1_desc:'お近くの依存症・メンタルヘルス専門家。Voxenが匿名サマリーを送ります。',
+    th1_s1:'近くの専門家を選ぶ', th1_s2:'Voxenが匿名サマリーを送る（同意のもとで）', th1_s3:'セッションをスケジュール — オンラインまたは対面',
+    th1_btn:'近くのセラピストを探す',
+    th2_badge:'オンラインコンサルタント', th2_title:'リモートコンサルテーション',
+    th2_desc:'ビデオまたはチャット。認定コンサルタント。24時間以内に対応。',
+    th2_s1:'短いトリアージフォームを記入', th2_s2:'適切なコンサルタントと接続', th2_s3:'24時間以内にビデオまたはチャットセッション',
+    th2_btn:'オンラインコンサルテーション →',
+    th3_badge:'医療コンサルテーション', th3_title:'医療評価',
+    th3_desc:'精神科的評価または薬物治療が必要な場合向け。',
+    th3_s1:'Voxen AIによる初期評価', th3_s2:'精神科医/専門医への紹介', th3_s3:'アプリによる継続的なフォローアップ',
+    th3_btn:'医療評価 →',
+    gr_label:'サポートグループ', gr_title_html:'あなたは一人じゃない。<br><em>決して。</em>',
+    gr_sub:'専門家が司会する匿名の週次グループ。週1回、60分。',
+    gr1_title:'アルコール回復', gr1_desc:'匿名の週次グループ。分かち合い、相互サポート、認定モデレーター。',
+    gr2_title:'ギャンブル回復', gr2_desc:'デジタル適応された12ステッププログラム、生体認証モニタリング統合。',
+    gr3_title:'薬物回復', gr3_desc:'ガイド付きディスカッション、グループCBT技法、マイルストーン祝賀。',
+    gr4_title:'ストレス＆バーンアウト', gr4_desc:'グループでのMBSR技法、ピアサポート、ウェルネス専門家モデレーター。',
+    gr_weekly:'木曜 20:00 · 毎週', gr_weekly2:'火曜 19:00 · 毎週',
+    gr_weekly3:'土曜 10:00 · 毎週', gr_weekly4:'月曜 19:30 · 毎週',
+    gr_size:'最大12名', gr_anon:'100%匿名', gr_join:'グループに参加',
+    gr_note:'すべてのグループは認定専門家が司会。完全匿名。GDPR準拠。',
+  },
+  ru: {
+      nav_safety:'Безопасность',
+      fam_label:'Для близких',
+      fam_title_html:'Вы любите кого-то<br><em>на пути выздоровления.</em>',
+      fam_sub:'И часто вы не знаете, что делать, что сказать или как помочь, не подавляя. Voxen не заменяет вас — он даёт тихую поддержку на фоне.',
+      fam_1_title:'Общий путь',
+      fam_1_desc:'С согласия близкого вы можете получать простые сигналы о том, как идут дела — не вторгаясь в его личное пространство.',
+      fam_2_title:'Меньше страха',
+      fam_2_desc:'Выздоровление давит на всю семью. Voxen уменьшает чувство, что вы единственный, кто на страже.',
+      fam_3_title:'Ресурсы для вас',
+      fam_3_desc:'Краткие руководства о том, как поддерживать, не контролируя, как сохранять собственное равновесие.',
+      cli_label:'Для терапевтов и клиник',
+      cli_title_html:'Ваша работа продолжается<br><em>между сессиями.</em>',
+      cli_sub:'Voxen не заменяет терапию — он её продлевает. Пациент приходит на сессию с реальным контекстом, а не смутными воспоминаниями.',
+      cli_1_title:'Контекст между сессиями',
+      cli_1_desc:'С согласия пациента вы получаете анонимное резюме эмоционального состояния за последние 30 дней.',
+      cli_2_title:'Ранние сигналы',
+      cli_2_desc:'Voxen обнаруживает паттерны риска и срыва раньше, чем сессия раз в две недели.',
+      cli_3_title:'Структурированное направление',
+      cli_3_desc:'Для случаев, требующих медицинской оценки, Voxen облегчает направление с полным клиническим контекстом.',
+      saf_label:'Создано ответственно',
+      saf_title_html:'Ваша безопасность<br><em>не деталь.</em>',
+      saf_sub:'Voxen обращается к уязвимым людям. Поэтому безопасность была первым созданным компонентом — не последним.',
+      saf_1_title:'Протокол кризиса',
+      saf_1_desc:'Voxen распознаёт моменты кризиса и немедленно связывает с реальными проверенными линиями экстренной помощи.',
+      saf_2_title:'Ваш голос остаётся вашим',
+      saf_2_desc:'Анализ голоса происходит локально на устройстве. Ваши данные никогда не продаются и не передаются.',
+      saf_3_title:'Клинически проверено',
+      saf_3_desc:'Протоколы безопасности проверяются клиническими психологами. Voxen не терапевт и прямо об этом говорит.',
+
+    nav_cta:'Присоединиться к списку',
+    nav_how:'Как это работает', nav_companion:'ИИ-компаньон', nav_recovery:'Восстановление', nav_tools:'18 инструментов',
+    badge:'Запуск Q3 2026 · Зарегистрируйтесь бесплатно',
+    hero_title_html:'выздоровление происходит<br><em>не только на терапии</em>', hero_sub_html:'Оно случается каждый трудный вечер. Voxen рядом в каждом из них.',
+    hero_new:'Голосовой компаньон для восстановления от зависимости',
+    email_placeholder:'ваш@email.ru', cta_btn:'Присоединиться бесплатно',
+    success_title:'Вы в списке! ✓', success_sub:'Никакого спама. Мы уведомим вас первыми.',
+    wl_note:'Без карты. Без спама. Отмена в любое время.',
+    stat_waitlist:'в списке ожидания', stat_ios:'запуск Q3 2026', stat_android:'запуск Q4 2026',
+    how_label:'Как это работает', how_title_html:'Вы говорите минуту.<br><em>Voxen внимателен на всём пути.</em>',
+    how_sub:'Voxen слушает не только что вы говорите, но и как. Когда он слышит, что вы срываетесь, он рядом.',
+    step1_title:'Вы говорите минуту, вечером', step1_desc:'Особенно трудными вечерами. Открываете Voxen и говорите что происходит — тяга, усталость, мысль, которая не отпускает. Без формата, без осуждения.',
+    step2_title:'Voxen слышит, как вы на самом деле', step2_desc:'Анализируем тон, ритм, паузы, энергию голоса. Не ЧТО вы говорите — КАК вы говорите. Реальная эмоция обнаружена.',
+    step3_title:'Ваши часы считывают тело', step3_desc:'Пульс, SpO₂, ВСР, артериальное давление. Voxen знает как вы, прежде чем вы заговорите.',
+    step4_title:'Через год вы снова услышите', step4_desc:'Ваш оригинальный голос, точный тон, реальная эмоция. Не отредактированный текст — ваш голос год назад.',
+    demo_label:'Эмоциональный компаньон', demo_title_html:'Он слышит тебя.<br><em>Не осуждает.</em><br><span class=\"understand\">Он понимает тебя.</span>',
+    demo_sub:'Voxen определяет эмоции из просодики голоса — темп, высота, паузы, дрожание, энергия.',
+    demo_orb_label:'Слушаю ваш голос...', demo_orb_sub:'Говорите — определяю состояние', demo_bubble_tag:'VOXEN ЧУВСТВУЕТ',
+    demo_btn1:'Симулировать эмоцию', demo_btn2:'Воспоминание 1 год',
+    feat_label:'Всё что делает Voxen', feat_title_html:'Одно приложение.<br><em>Целая жизнь.</em>',
+    f1_title:'Голосовой дневник', f1_desc:'Записываете, Whisper AI транскрибирует мгновенно на любом языке. Оригинальный голос сохранён.',
+    f2_title:'Определение эмоций из голоса', f2_desc:'Темп, тон, паузы, дрожание, энергия. ИИ читает то, что вы не говорите.',
+    f3_title:'Воспоминание год назад', f3_desc:'Ежедневное уведомление: услышьте свой точный голос 1, 2, 3 года назад.',
+    f4_title:'Биометрия в реальном времени', f4_desc:'Apple Watch, Wear OS, Garmin, Oura Ring. Пульс, SpO₂, ВСР, давление.',
+    f5_title:'Преодоление зависимостей', f5_desc:'18 проверенных клинических инструментов. SOS в 3 часа ночи. КПТ, ACT, MBSR.',
+    f6_title:'Эмоциональная карта', f6_desc:'Статистика вашей эмоциональной жизни. Как вы себя чувствовали каждый месяц.',
+    bio_label:'Биометрический мониторинг', bio_title_html:'Ваше тело знает<br><em>раньше разума.</em>',
+    bio_sub:'Пульс незаметно растёт. ВСР резко падает. Температура отклоняется. За 20-30 минут до кризиса Voxen мягко связывается с вами.',
+    bio1_title:'Пульс + ВСР', bio1_desc:'Рост на 15+ уд/мин выше базовой линии = ранний сигнал. ВСР ниже 50% нормы = острый стресс.',
+    bio2_desc:'Ниже 95% → управляемое дыхание активируется автоматически. Ниже 92% → критическое оповещение.',
+    bio3_title:'Артериальное давление', bio3_desc:'Выше 140/90 → успокаивающий инструмент активирован немедленно.',
+    bio4_title:'Температура кожи', bio4_desc:'+0,5°C отклонение = вегетативная стрессовая реакция.',
+    alert_green:'🟢 Стабильно — продолжайте', alert_yellow:'🟡 Внимание — пульс немного растёт', alert_red:'🔴 Кризис неминуем — вмешиваюсь',
+    dev_soon1:'Garmin (скоро)', dev_soon2:'Oura Ring (скоро)',
+    tools_label:'Полный клинический арсенал', tools_title_html:'18 проверенных инструментов.<br><em>Контекстная активация.</em>',
+    tools_sub:'Каждый инструмент активируется автоматически на основе ваших показателей.',
+    rec_label:'Модуль восстановления', rec_title_html:'3 часа ночи.<br><em>Voxen не спит.</em>',
+    rec_sub:'280 миллионов людей борются с зависимостями. Voxen в каждом кармане — доступен всегда, без осуждения.',
+    rec1_num:'Тяга', rec1_title:'Пульс растёт. Voxen знает.', rec1_desc:'Браслет определяет физиологические признаки за 20 минут. Voxen мягко связывается до того, как вы сдадитесь.',
+    rec2_num:'Дыхание', rec2_title:'Техника 4-7-8', rec2_desc:'Анимированное управляемое дыхание. Активирует парасимпатическую систему.',
+    rec3_num:'Мотивация', rec3_title:'Ваш голос тогда', rec3_desc:'Слышите запись с вашей причиной начать. Не общая цитата — ваш голос, ваша реальная эмоция.',
+    test_label:'Бета-тестеры', test_title_html:'Что говорят те, кто<br><em>попробовал первым.</em>',
+    t1_quote:'Я слушал свой голос год назад, где говорил, что боюсь начинать новую работу. Я плакал. И чувствовал себя непобедимым.',
+    t1_name:'Андрей М.', t1_role:'Бета-тестер, Клуж',
+    t2_quote:'В 3 ночи, когда приходила тяга, рядом никого не было. Теперь есть Voxen. Я свободен уже 47 дней.',
+    t2_name:'Иоана Г.', t2_role:'Бета-тестер, Бухарест',
+    t3_quote:'Как психолог, я рекомендовала пациентам между сеансами. Вижу их прогресс в режиме реального времени.',
+    t3_name:'Д-р Михаэла П.', t3_role:'Клинический психолог',
+    fcta_title_html:'Присоединяйтесь.<br><em>Ваш голос ждёт.</em>', fcta_sub:'Первые 1 000 пользователей получают бесплатный доступ Premium на 6 месяцев.',
+    premium_note:'⭐ Первые 1 000 — Premium бесплатно 6 месяцев',
+    footer_privacy:'Конфиденциальность', footer_terms:'Условия', footer_contact:'Контакт', footer_blog:'Блог',
+    cat_all:'Все (18)', cat_breath:'🫁 Дыхание', cat_mind:'🧠 Осознанность', cat_crav:'🔥 Тяга', cat_emo:'💚 Эмоции', cat_act:'⚡ Активация', cat_prev:'🗺️ Профилактика',
+    rec_badge:'Рекомендовано',
+    emo_tired_label:'Устал', emo_tired_sub:'Низкий голос, медленный ритм', emo_tired_msg:'Слышу, что ты устал. Сегодня не нужно много говорить. Даже одного слова достаточно.',
+    emo_sad_label:'Грустно', emo_sad_sub:'Дрожание голоса, долгие паузы', emo_sad_msg:'Что тебя расстроило сегодня? Я слушаю и не осуждаю.',
+    emo_happy_label:'Счастлив', emo_happy_sub:'Разнообразный тон, высокая энергия', emo_happy_msg:'Слышу твою улыбку! Что хорошего случилось сегодня?',
+    emo_anx_label:'Тревожно', emo_anx_sub:'Быстрый темп, частые колебания', emo_anx_msg:'Чувствую, что ты растерян. Дыши. Расскажи, что тебя тяготит.',
+    emo_ang_label:'Злишься', emo_ang_sub:'Высокая энергия, повышенный тон', emo_ang_msg:'Слышу тебя. Этот гнев оправдан. Что его вызвало?',
+    mem_prefix:'Год назад ты говорил:',
+ 
+    nav_therapy:'Терапия', nav_groups:'Группы поддержки',
+    th_label:'Профессиональная терапия', th_title_html:'Терапевт рядом с тобой.<br><em>Когда это нужно.</em>',
+    th_sub:'Voxen соединяет твои эмоциональные данные со специалистом рядом.',
+    th1_badge:'Психолог / Психотерапевт', th1_title:'Индивидуальный сеанс',
+    th1_desc:'Специалист по зависимостям рядом с тобой. Voxen отправляет анонимное резюме.',
+    th1_s1:'Выбери специалиста рядом', th1_s2:'Voxen отправляет анонимное резюме (с твоего согласия)', th1_s3:'Запланируй сеанс — онлайн или лично',
+    th1_btn:'Найти терапевта рядом',
+    th2_badge:'Онлайн-консультант', th2_title:'Дистанционная консультация',
+    th2_desc:'Видео или чат. Сертифицированный консультант. Доступен в течение 24ч.',
+    th2_s1:'Заполни краткую форму', th2_s2:'Подбор подходящего консультанта', th2_s3:'Видео или чат-сессия в течение 24ч',
+    th2_btn:'Онлайн-консультация →',
+    th3_badge:'Медицинская консультация', th3_title:'Медицинская оценка',
+    th3_desc:'Для случаев, требующих психиатрической оценки или медикаментозного лечения.',
+    th3_s1:'Первичная оценка через Voxen ИИ', th3_s2:'Направление к психиатру/специалисту', th3_s3:'Непрерывное наблюдение через приложение',
+    th3_btn:'Медицинская оценка →',
+    gr_label:'Группы поддержки', gr_title_html:'Ты не один.<br><em>Никогда.</em>',
+    gr_sub:'Анонимные еженедельные группы, модерируемые специалистом. Раз в неделю, 60 минут.',
+    gr1_title:'Восстановление от алкоголя', gr1_desc:'Анонимная еженедельная группа. Обмен, взаимная поддержка, сертифицированный модератор.',
+    gr2_title:'Восстановление от азартных игр', gr2_desc:'Программа 12 шагов адаптирована цифрово, с интегрированным биометрическим мониторингом.',
+    gr3_title:'Восстановление от веществ', gr3_desc:'Управляемые обсуждения, техники КПТ в группе, совместное празднование вех.',
+    gr4_title:'Стресс и выгорание', gr4_desc:'Техники MBSR в группе, поддержка пир-ту-пир, модератор-специалист по велнесу.',
+    gr_weekly:'Четверг, 20:00 · Еженедельно', gr_weekly2:'Вторник, 19:00 · Еженедельно',
+    gr_weekly3:'Суббота, 10:00 · Еженедельно', gr_weekly4:'Понедельник, 19:30 · Еженедельно',
+    gr_size:'Макс. 12 участников', gr_anon:'100% анонимно', gr_join:'Присоединиться к группе',
+    gr_note:'Все группы модерируются сертифицированными специалистами. Полная анонимность. Соответствует GDPR.',
+  },
+};
+
+// Tool details - descriptions in all languages
+const TOOL_DETAILS = {
+  t_breath1:{
+    steps:{ro:'1. Inspiră 4 sec → 2. Ține 7 sec → 3. Expiră 8 sec → Repetă 4 cicluri',en:'1. Inhale 4s → 2. Hold 7s → 3. Exhale 8s → Repeat 4 cycles',fr:'1. Inspirez 4s → 2. Tenez 7s → 3. Expirez 8s → Répétez 4 cycles',de:'1. Einatmen 4s → 2. Halten 7s → 3. Ausatmen 8s → 4 Zyklen',zh:'1. 吸气4秒 → 2. 屏息7秒 → 3. 呼气8秒 → 重复4次',ja:'1. 吸う4秒 → 2. 止める7秒 → 3. 吐く8秒 → 4サイクル',ru:'1. Вдох 4с → 2. Задержка 7с → 3. Выдох 8с → 4 цикла'},
+    why:{ro:'Activează sistemul nervos parasimpatic. Reduce cortizolul în 2 minute.',en:'Activates parasympathetic nervous system. Reduces cortisol in 2 minutes.',fr:'Active le système nerveux parasympathique. Réduit le cortisol en 2 min.',de:'Aktiviert das parasympathische Nervensystem. Reduziert Cortisol in 2 Min.',zh:'激活副交感神经系统。2分钟内降低皮质醇。',ja:'副交感神経を活性化。2分でコルチゾールを低下。',ru:'Активирует парасимпатическую нервную систему. Снижает кортизол за 2 мин.'},
+    when:{ro:'Criză de anxietate, puls ridicat, înainte de a ceda unei tentații.',en:'Anxiety crisis, high pulse, before giving in to a temptation.',fr:'Crise d\'anxiété, pouls élevé, avant de céder à une tentation.',de:'Angstanfall, hoher Puls, vor dem Nachgeben einer Versuchung.',zh:'焦虑危机、脉搏加速、抵制诱惑时。',ja:'不安発作、高脈拍、誘惑に負ける前。',ru:'Тревожный кризис, высокий пульс, перед срывом.'}
+  },
+  t_breath2:{
+    steps:{ro:'1. Inspiră 4 sec → 2. Ține 4 sec → 3. Expiră 4 sec → 4. Pauză 4 sec → Repetă',en:'1. In 4s → 2. Hold 4s → 3. Out 4s → 4. Hold 4s → Repeat',fr:'1. Inspirez 4s → 2. Tenez 4s → 3. Expirez 4s → 4. Pause 4s → Répétez',de:'1. Ein 4s → 2. Halten 4s → 3. Aus 4s → 4. Pause 4s → Wiederholen',zh:'1. 吸气4秒 → 2. 屏息4秒 → 3. 呼气4秒 → 4. 停顿4秒 → 重复',ja:'1. 吸う4秒 → 2. 止める4秒 → 3. 吐く4秒 → 4. 止める4秒 → 繰り返し',ru:'1. Вдох 4с → 2. Пауза 4с → 3. Выдох 4с → 4. Пауза 4с → Повтор'},
+    why:{ro:'Tehnica Navy SEALs. Reechilibrează CO₂. Claritate mentală imediată.',en:'Navy SEALs technique. Rebalances CO₂. Immediate mental clarity.',fr:'Technique Navy SEALs. Rééquilibre le CO₂. Clarté mentale immédiate.',de:'Navy-SEALs-Technik. Stellt CO₂ wieder her. Sofortige geistige Klarheit.',zh:'海豹突击队技术。重新平衡CO₂。立即获得精神清醒。',ja:'Navy SEALsの技術。CO₂を再バランス。即時の精神的明瞭さ。',ru:'Техника морских котиков. Восстанавливает CO₂. Мгновенная ясность ума.'},
+    when:{ro:'Stres acut, înainte de situații dificile, atac de panică.',en:'Acute stress, before difficult situations, panic attack.',fr:'Stress aigu, avant des situations difficiles, attaque de panique.',de:'Akuter Stress, vor schwierigen Situationen, Panikattacke.',zh:'急性压力、困难情况前、恐慌发作时。',ja:'急性ストレス、困難な状況の前、パニック発作。',ru:'Острый стресс, перед трудными ситуациями, паническая атака.'}
+  },
+  t_breath3:{
+    steps:{ro:'Respiră de 5 ori/minut timp de 5 minute: 5 sec inspiră, 5 sec expiră. Fără pauze.',en:'Breathe 5 times/min for 5 min: 5s in, 5s out. No holds.',fr:'Respirez 5 fois/min pendant 5 min: 5s inspirez, 5s expirez.',de:'5x/Min atmen für 5 Min: 5s ein, 5s aus. Keine Pausen.',zh:'每分钟呼吸5次，持续5分钟：吸气5秒，呼气5秒。',ja:'5回/分を5分間：吸う5秒、吐く5秒。',ru:'Дышите 5 раз/мин в течение 5 мин: 5с вдох, 5с выдох.'},
+    why:{ro:'Sincronizează ritmul cardiac cu respirația. HRV crește în 3 minute.',en:'Synchronizes heart rhythm with breathing. HRV improves in 3 minutes.',fr:'Synchronise le rythme cardiaque. La VFC s’améliore en 3 minutes.',de:'Synchronisiert Herzrhythmus. HRV verbessert sich in 3 Minuten.',zh:'同步心脏节律和呼吸。3分钟内HRV改善。',ja:'心臓リズムと呼吸を同期。3分でHRVが改善。',ru:'Синхронизирует ритм сердца. ВСР улучшается за 3 минуты.'},
+    when:{ro:'Tensiune ridicată, HRV scăzut detectat de wearable, stres cronic.',en:'High blood pressure, low HRV detected by wearable, chronic stress.',fr:'Tension élevée, VFC basse détectée, stress chronique.',de:'Hoher Blutdruck, niedrige HRV erkannt, chronischer Stress.',zh:'血压升高、可穿戴设备检测到低HRV、慢性压力。',ja:'高血圧、ウェアラブルで低HRV検出、慢性的ストレス。',ru:'Высокое давление, низкая ВСР, хронический стресс.'}
+  },
+  t_mind1:{
+    steps:{ro:'Numește: 5 lucruri văzute → 4 texturi atinse → 3 sunete → 2 mirosuri → 1 gust',en:'Name: 5 things seen → 4 textures touched → 3 sounds → 2 smells → 1 taste',fr:'Nommez: 5 vus → 4 touchés → 3 sons → 2 odeurs → 1 goût',de:'Nennen: 5 Gesehenes → 4 Berührungen → 3 Geräusche → 2 Gerüche → 1 Geschmack',zh:'命名：5个看见的 → 4个触碰的 → 3个声音 → 2个气味 → 1个味道',ja:'名前を言う：見えるもの5つ→触れるもの4つ→音3つ→匂い2つ→味1つ',ru:'Назовите: 5 увиденных → 4 потрогайте → 3 звука → 2 запаха → 1 вкус'},
+    why:{ro:'Aduce mintea în prezent. Întrerupe spirala de gânduri negative.',en:'Brings the mind to the present. Interrupts the spiral of negative thoughts.',fr:'Ramène l\'esprit au présent. Interrompt la spirale des pensées négatives.',de:'Bringt den Geist in die Gegenwart. Unterbricht negative Gedankenspirale.',zh:'将思维带回当下。打断负面思维的螺旋。',ja:'心を現在に戻す。ネガティブ思考のスパイラルを断ち切る。',ru:'Возвращает разум в настоящее. Прерывает спираль негативных мыслей.'},
+    when:{ro:'Atac de panică, disociere, gânduri obsesive, criză de anxietate.',en:'Panic attack, dissociation, obsessive thoughts, anxiety crisis.',fr:'Attaque de panique, dissociation, pensées obsessionnelles.',de:'Panikattacke, Dissoziation, Zwangsgedanken.',zh:'恐慌发作、解离、强迫性思维、焦虑危机。',ja:'パニック発作、解離、強迫的思考、不安危機。',ru:'Паническая атака, диссоциация, навязчивые мысли.'}
+  },
+  t_mind2:{
+    steps:{ro:'S - Stop (oprește-te) → T - Respiră (ia o respirație) → O - Observă (ce simți) → P - Acționează (conștient)',en:'S - Stop → T - Take a breath → O - Observe (what you feel) → P - Proceed (consciously)',fr:'S - Stop → T - Respirez → O - Observez → P - Procédez (consciemment)',de:'S - Stopp → T - Atmen → O - Beobachte → P - Handle (bewusst)',zh:'S-停止 → T-呼吸 → O-观察（你的感受） → P-继续（有意识地）',ja:'S-止まる → T-呼吸する → O-観察する → P-進む（意識的に）',ru:'С - Стоп → Т - Дышите → О - Наблюдайте → П - Продолжайте'},
+    why:{ro:'Creează un spațiu între stimul și reacție. Previne reacțiile impulsive.',en:'Creates space between stimulus and reaction. Prevents impulsive reactions.',fr:'Crée un espace entre stimulus et réaction. Prévient les réactions impulsives.',de:'Schafft Raum zwischen Reiz und Reaktion. Verhindert impulsive Reaktionen.',zh:'在刺激和反应之间创造空间。防止冲动反应。',ja:'刺激と反応の間にスペースを作る。衝動的反応を防ぐ。',ru:'Создаёт пространство между стимулом и реакцией.'},
+    when:{ro:'Înainte de a ceda, moment de tensiune emoțională, decizie impulsivă.',en:'Before giving in, emotional tension moment, impulsive decision.',fr:'Avant de céder, moment de tension émotionnelle, décision impulsive.',de:'Vor dem Nachgeben, emotionale Spannung, impulsive Entscheidung.',zh:'在屈服之前、情绪紧张时刻、冲动决定时。',ja:'屈する前、感情的緊張の瞬間、衝動的決断。',ru:'Перед срывом, момент эмоционального напряжения.'}
+  },
+  t_mind3:{
+    steps:{ro:'Parcurgi corpul de jos în sus: picioare → abdomen → piept → umeri → față. 30 sec/zonă.',en:'Scan body from bottom up: feet → abdomen → chest → shoulders → face. 30s/zone.',fr:'Scannez de bas en haut: pieds → abdomen → poitrine → épaules → visage.',de:'Körper von unten: Füße → Bauch → Brust → Schultern → Gesicht. 30s/Zone.',zh:'从下往上扫描：脚 → 腹部 → 胸部 → 肩膀 → 脸。每个区域30秒。',ja:'下から上へスキャン：足→腹→胸→肩→顔。各30秒。',ru:'Сканируйте снизу вверх: ноги → живот → грудь → плечи → лицо.'},
+    why:{ro:'Identifică tensiunea musculară inconștientă. Eliberează stresul acumulat în corp.',en:'Identifies unconscious muscle tension. Releases accumulated stress.',fr:'Identifie la tension musculaire inconsciente. Libère le stress accumulé.',de:'Identifiziert unbewusste Muskelspannung. Löst angesammelten Stress.',zh:'识别无意识的肌肉紧张。释放积累的压力。',ja:'無意識の筋肉の緊張を特定。蓄積されたストレスを解放。',ru:'Выявляет неосознанное мышечное напряжение. Снимает накопленный стресс.'},
+    when:{ro:'Dimineața la trezire, înainte de somn, după o zi stresantă.',en:'Morning wake-up, before sleep, after a stressful day.',fr:'Réveil matinal, avant de dormir, après une journée stressante.',de:'Morgenaufwachen, vor dem Schlaf, nach einem stressigen Tag.',zh:'早晨醒来、睡前、压力大的一天之后。',ja:'朝の目覚め、就寝前、ストレスの多い日の後。',ru:'Утреннее пробуждение, перед сном, после стрессового дня.'}
+  },
+  t_crav1:{
+    steps:{ro:'1. Observă craving-ul ca un val → 2. Evaluează intensitatea 1-10 → 3. Respiră fără să cedezi → 4. Urmărește cum scade',en:'1. Observe craving as a wave → 2. Rate intensity 1-10 → 3. Breathe without giving in → 4. Watch it fade',fr:'1. Observez l\'envie comme une vague → 2. Évaluez 1-10 → 3. Respirez → 4. Regardez-la diminuer',de:'1. Beobachte Verlangen als Welle → 2. Intensität 1-10 → 3. Atmen ohne nachzugeben → 4. Verblassen beobachten',zh:'1. 将渴望视为海浪 → 2. 评估强度1-10 → 3. 不屈服地呼吸 → 4. 观察它消退',ja:'1. 渇望を波として観察 → 2. 強度1-10を評価 → 3. 屈せずに呼吸 → 4. 薄れるのを観察',ru:'1. Наблюдай тягу как волну → 2. Оцени интенсивность 1-10 → 3. Дыши не поддаваясь → 4. Наблюдай как спадает'},
+    why:{ro:'Craving-ul durează maxim 15-20 minute. Dacă nu cedezi, trece.',en:'Craving lasts maximum 15-20 minutes. If you don’t give in, it passes.',fr:'L’envie dure max 15-20 minutes. Si vous ne cédez pas, elle passe.',de:'Verlangen dauert max. 15-20 Minuten. Wenn man nicht nachgibt, vergeht es.',zh:'渴望最多持续15-20分钟。如果不屈服，它会过去。',ja:'渇望は最大15-20分続く。屈しなければ過ぎ去る。',ru:'Тяга длится максимум 15-20 минут. Если не поддаться — пройдёт.'},
+    when:{ro:'Orice moment de craving puternic. Funcționează 24/7.',en:'Any moment of strong craving. Works 24/7.',fr:'N’importe quel moment d’envie forte. Fonctionne 24h/24.',de:'Jeder Moment starken Verlangens. Funktioniert 24/7.',zh:'任何强烈渴望的时刻。全天候有效。',ja:'強い渇望のいかなる瞬間にも。24時間有効。',ru:'Любой момент сильной тяги. Работает 24/7.'}
+  },
+  t_crav2:{
+    steps:{ro:'Verifică: H - Flămând? → A - Supărat? → L - Singur? → T - Obosit? → Adresează cauza reală.',en:'Check: H - Hungry? → A - Angry? → L - Lonely? → T - Tired? → Address real cause.',fr:'Vérifiez: H - Faim? → A - Colère? → L - Seul? → T - Fatigué? → Traitez la vraie cause.',de:'Prüfen: H - Hungrig? → A - Wütend? → L - Einsam? → T - Müde? → Ursache angehen.',zh:'检查：H-饥饿? → A-愤怒? → L-孤独? → T-疲惫? → 解决真正原因。',ja:'確認：H-空腹? → A-怒り? → L-孤独? → T-疲れ? → 本当の原因に対処。',ru:'Проверь: H - Голоден? → A - Зол? → L - Одинок? → T - Устал? → Устрани причину.'},
+    why:{ro:'80% din craving-uri sunt declanșate de unul din cei 4 factori HALT.',en:'80% of cravings are triggered by one of the 4 HALT factors.',fr:'80% des envies sont déclenchées par l\'un des 4 facteurs HALT.',de:'80% der Verlangen werden durch einen der 4 HALT-Faktoren ausgelöst.',zh:'80%的渴望是由4个HALT因素之一触发的。',ja:'渇望の80%は4つのHALT因子の一つによって引き起こされる。',ru:'80% тяг вызваны одним из 4 факторов HALT.'},
+    when:{ro:'Craving neașteptat, recidivă repetată, seara târziu.',en:'Unexpected craving, repeated relapse, late evening.',fr:'Envie inattendue, rechute répétée, tard le soir.',de:'Unerwartetes Verlangen, wiederholter Rückfall, später Abend.',zh:'意外的渴望、反复复发、深夜。',ja:'予期しない渇望、繰り返しの再発、深夜。',ru:'Неожиданная тяга, повторный срыв, поздний вечер.'}
+  },
+  t_crav3:{
+    steps:{ro:'1. Scrie gândul → 2. "Observ că am gândul că..." → 3. "Mulțumesc, minte, pentru acest gând" → 4. Acționează altfel',en:'1. Write the thought → 2. "I notice I’m having the thought that..." → 3. "Thank you mind for this thought" → 4. Act differently',fr:'1. Écrivez la pensée → 2. "Je remarque que j\'ai la pensée que..." → 3. "Merci, esprit" → 4. Agissez autrement',de:'1. Schreibe den Gedanken → 2. "Ich bemerke den Gedanken..." → 3. "Danke, Verstand" → 4. Anders handeln',zh:'1. 写下想法 → 2. "我注意到我有这样的想法..." → 3. "谢谢你，大脑" → 4. 以不同方式行动',ja:'1. 思考を書く → 2. "私は...という考えを持っていることに気づく" → 3. "ありがとう、心よ" → 4. 違う行動をする',ru:'1. Запиши мысль → 2. "Я замечаю мысль..." → 3. "Спасибо, разум" → 4. Действуй иначе'},
+    why:{ro:'Separă persoana de gând. Gândul nu mai controlează comportamentul.',en:'Separates person from thought. Thought no longer controls behavior.',fr:'Sépare la personne de la pensée. La pensée ne contrôle plus le comportement.',de:'Trennt Person vom Gedanken. Gedanke kontrolliert nicht mehr das Verhalten.',zh:'将人与思想分离。思想不再控制行为。',ja:'人と思考を分離。思考がもはや行動を制御しない。',ru:'Отделяет человека от мысли. Мысль больше не контролирует поведение.'},
+    when:{ro:'Gânduri obsesive despre substanță, justificări raționale pentru recidivă.',en:'Obsessive thoughts about substance, rational justifications for relapse.',fr:'Pensées obsessionnelles, justifications rationnelles de rechute.',de:'Zwangsgedanken über Substanz, rationale Rückfall-Rechtfertigungen.',zh:'对物质的强迫性思维、复发的理性理由。',ja:'物質への強迫的思考、再発の合理的正当化。',ru:'Навязчивые мысли о веществе, рациональные оправдания срыва.'}
+  },
+  t_emo1:{
+    steps:{ro:'Scrie 3 lucruri pentru care ești recunoscător azi. Fii specific — nu generic.',en:'Write 3 things you’re grateful for today. Be specific — not generic.',fr:'Écrivez 3 choses pour lesquelles vous êtes reconnaissant aujourd’hui.',de:'Schreibe 3 Dinge, für die du heute dankbar bist. Sei spezifisch.',zh:'写下今天感恩的3件事。要具体——不要笼统。',ja:'今日感謝している3つのことを書く。具体的に。',ru:'Запиши 3 вещи, за которые благодарен сегодня. Будь конкретным.'},
+    why:{ro:'Reorientează atenția spre ce e pozitiv. Reduce impulsul de craving cu 40%.',en:'Refocuses attention on what’s positive. Reduces craving impulse by 40%.',fr:'Recentre l\'attention sur le positif. Réduit l\'impulsion de 40%.',de:'Lenkt Aufmerksamkeit auf Positives. Reduziert Verlangen um 40%.',zh:'将注意力重新聚焦在积极方面。将渴望冲动减少40%。',ja:'注意を前向きなことに再フォーカス。渇望衝動を40%減少。',ru:'Перефокусирует внимание на позитивное. Снижает тягу на 40%.'},
+    when:{ro:'Stare de spirit negativă, dimineața ca ritual, înainte de culcare.',en:'Negative mood, morning ritual, before bed.',fr:'Humeur négative, rituel matinal, avant de dormir.',de:'Negative Stimmung, Morgenritual, vor dem Schlafengehen.',zh:'负面情绪、早晨仪式、睡前。',ja:'ネガティブな気分、朝のルーティン、就寝前。',ru:'Негативное настроение, утренний ритуал, перед сном.'}
+  },
+  t_emo2:{
+    steps:{ro:'1. Recunoaște: "Acesta e un moment de suferință" → 2. Umanitate: "Nu sunt singurul" → 3. Bunătate: "Pot fi bun cu mine"',en:'1. Acknowledge: "This is a moment of suffering" → 2. Humanity: "I’m not alone" → 3. Kindness: "May I be kind to myself"',fr:'1. Reconnaître: "C\'est un moment de souffrance" → 2. Humanité → 3. Bienveillance',de:'1. Anerkennen → 2. Menschlichkeit → 3. Freundlichkeit zu sich selbst',zh:'1. 承认："这是痛苦的时刻" → 2. 人性：我不孤独 → 3. 善意：我可以善待自己',ja:'1. 認める："これは苦しみの瞬間" → 2. 人間性：一人じゃない → 3. 親切さ：自分に優しく',ru:'1. Признай: "Это момент страдания" → 2. Общность: "Я не один" → 3. Доброта: "Могу быть добр к себе"'},
+    why:{ro:'Reduce auto-critica dăunătoare. Creează reziliență emoțională.',en:'Reduces harmful self-criticism. Creates emotional resilience.',fr:'Réduit l’autocritique. Crée une résilience émotionnelle.',de:'Reduziert schädliche Selbstkritik. Schafft emotionale Resilienz.',zh:'减少有害的自我批评。创建情绪韧性。',ja:'有害な自己批判を減らす。感情的レジリエンスを作る。',ru:'Снижает вредную самокритику. Создаёт эмоциональную устойчивость.'},
+    when:{ro:'Recidivă, rușine, eșec, auto-judecată excesivă.',en:'Relapse, shame, failure, excessive self-judgment.',fr:'Rechute, honte, échec, jugement excessif de soi.',de:'Rückfall, Scham, Versagen, übermäßige Selbstbeurteilung.',zh:'复发、羞耻、失败、过度自我判断。',ja:'再発、羞恥心、失敗、過度の自己判断。',ru:'Срыв, стыд, провал, чрезмерное самоосуждение.'}
+  },
+  t_emo3:{
+    steps:{ro:'Identifică emoția de bază → Alege intensitatea (slabă/medie/puternică) → Numește exact ce simți',en:'Identify core emotion → Choose intensity (mild/medium/strong) → Name exactly what you feel',fr:'Identifiez l’émotion de base → Choisissez l\'intensité → Nommez exactement',de:'Kerngefühl identifizieren → Intensität wählen → Exakt benennen',zh:'识别核心情绪 → 选择强度（轻/中/强） → 准确命名感受',ja:'基本感情を特定 → 強度を選ぶ → 正確に名付ける',ru:'Определи базовую эмоцию → Выбери интенсивность → Назови точно'},
+    why:{ro:"Numind exact o emoție îi reduci intensitatea cu 50% (Lieberman, 2007).",en:"Naming an emotion exactly reduces its intensity by 50% (Lieberman, 2007).",fr:"Nommer exactement une émotion réduit son intensité de 50%.",de:"Eine Emotion exakt benennen reduziert ihre Intensität um 50%.",zh:"准确命名情绪可将其强度降低50%（Lieberman, 2007）。",ja:"感情を正確に名付けることで強度が50%低下（Lieberman, 2007）。",ru:"Точное название эмоции снижает её интенсивность на 50% (Lieberman, 2007)."},
+    when:{ro:'Confuzie emoțională, copleșit de sentimente, înainte de terapie.',en:'Emotional confusion, overwhelmed by feelings, before therapy.',fr:'Confusion émotionnelle, submergé par les sentiments.',de:'Emotionale Verwirrung, überwältigt von Gefühlen.',zh:'情绪混乱、被感受压倒、治疗前。',ja:'感情的混乱、感情に圧倒されたとき、療法の前。',ru:'Эмоциональная растерянность, захлёстывают чувства.'}
+  },
+  t_act1:{
+    steps:{ro:'Planifică 1-3 activități concrete pentru azi: dimineață, după-amiază, seară. Alege activități care îți dau energie.',en:'Plan 1-3 concrete activities for today: morning, afternoon, evening. Choose energizing activities.',fr:'Planifiez 1-3 activités concrètes pour aujourd’hui: matin, après-midi, soir.',de:'1-3 konkrete Aktivitäten für heute planen: Morgen, Nachmittag, Abend.',zh:'为今天计划1-3个具体活动：早晨、下午、傍晚。选择给你能量的活动。',ja:'今日の1-3つの具体的な活動を計画：朝、午後、夕方。',ru:'Запланируй 1-3 конкретных активности на сегодня: утро, день, вечер.'},
+    why:{ro:'Activitățile planificate reduc golurile care pot declanșa craving.',en:'Planned activities reduce voids that can trigger cravings.',fr:'Les activités planifiées réduisent les vides qui déclenchent les envies.',de:'Geplante Aktivitäten reduzieren Leeren, die Verlangen auslösen.',zh:'计划活动减少可能触发渴望的空虚感。',ja:'計画された活動は渇望を引き起こす空白を減らす。',ru:'Запланированные активности сокращают пустоты, вызывающие тягу.'},
+    when:{ro:'La începutul zilei, când te simți fără direcție, risc de recidivă.',en:'Start of day, when feeling directionless, relapse risk.',fr:'Début de journée, sentiment de manque de direction.',de:'Tagesbeginn, wenn man sich ziellos fühlt, Rückfallrisiko.',zh:'一天开始时、感到迷失方向时、复发风险时。',ja:'一日の始め、方向性を失った感覚、再発リスク。',ru:'Начало дня, когда чувствуешь себя без направления.'}
+  },
+  t_act2:{
+    steps:{ro:'5 minute acum: 10 genuflexiuni → 10 flotări → 20 jumping jacks → Stretching 1 min',en:'5 minutes now: 10 squats → 10 push-ups → 20 jumping jacks → 1 min stretching',fr:'5 minutes maintenant: 10 squats → 10 pompes → 20 jumping jacks → 1 min stretching',de:'5 Minuten jetzt: 10 Kniebeugen → 10 Liegestütze → 20 Jumping Jacks → 1 Min Dehnen',zh:'现在5分钟：10个深蹲 → 10个俯卧撑 → 20个开合跳 → 1分钟拉伸',ja:'今すぐ5分：スクワット10回→腕立て10回→ジャンピングジャック20回→ストレッチ1分',ru:'5 минут сейчас: 10 приседаний → 10 отжиманий → 20 джампингджеков → 1 мин растяжка'},
+    why:{ro:'Exercițiul fizic eliberează dopamină naturală și reduce craving cu 50% (studii UCLA).',en:'Exercise releases natural dopamine and reduces cravings by 50% (UCLA studies).',fr:'L’exercice libère de la dopamine naturelle et réduit les envies de 50%.',de:'Sport setzt natürliches Dopamin frei und reduziert Verlangen um 50%.',zh:'运动释放天然多巴胺，减少渴望50%（UCLA研究）。',ja:'運動は天然ドーパミンを放出し、渇望を50%減らす（UCLA研究）。',ru:'Упражнения высвобождают дофамин и снижают тягу на 50% (исследования UCLA).'},
+    when:{ro:'Craving puternic, energie acumulată, lipsă de concentrare.',en:'Strong craving, accumulated energy, lack of focus.',fr:'Forte envie, énergie accumulée, manque de concentration.',de:'Starkes Verlangen, angesammelte Energie, Konzentrationsmangel.',zh:'强烈渴望、积累的能量、注意力不集中。',ja:'強い渇望、蓄積されたエネルギー、集中力不足。',ru:'Сильная тяга, накопленная энергия, отсутствие концентрации.'}
+  },
+  t_act3:{
+    steps:{ro:'Alege 1-3 micro-obiective pentru ora asta. Fiecare nu trebuie să dureze mai mult de 15 minute.',en:'Choose 1-3 micro-goals for this hour. Each should take no more than 15 minutes.',fr:'Choisissez 1-3 micro-objectifs pour cette heure. Max 15 minutes chacun.',de:'1-3 Mikroziele für diese Stunde wählen. Jedes max. 15 Minuten.',zh:'为这个小时选择1-3个微目标。每个不超过15分钟。',ja:'この時間の1-3つのマイクロゴールを選ぶ。各最大15分。',ru:'Выбери 1-3 микроцели на этот час. Каждая не более 15 минут.'},
+    why:{ro:'Fiecare completare mică eliberează dopamină. Construiește momentum.',en:'Each small completion releases dopamine. Builds momentum.',fr:'Chaque petite réalisation libère de la dopamine. Crée de l\'élan.',de:'Jede kleine Erledigung setzt Dopamin frei. Baut Schwung auf.',zh:'每次小完成释放多巴胺。建立动力。',ja:'小さな完了ごとにドーパミンが放出される。勢いを構築。',ru:'Каждое маленькое достижение высвобождает дофамин. Строит импульс.'},
+    when:{ro:'Procrastinare, lipsă de motivație, în recuperare activă.',en:'Procrastination, lack of motivation, active recovery.',fr:'Procrastination, manque de motivation, récupération active.',de:'Prokrastination, Motivationsmangel, aktive Erholung.',zh:'拖延、缺乏动力、积极恢复中。',ja:'先延ばし、動機不足、積極的な回復中。',ru:'Прокрастинация, недостаток мотивации, активное восстановление.'}
+  },
+  t_prev1:{
+    steps:{ro:'Identifică triggerii tăi în 5 categorii: Locuri → Persoane → Emoții → Situații → Ore din zi',en:'Identify your triggers in 5 categories: Places → People → Emotions → Situations → Times of day',fr:'Identifiez vos déclencheurs: Lieux → Personnes → Émotions → Situations → Heures',de:'Trigger in 5 Kategorien: Orte → Personen → Emotionen → Situationen → Tageszeiten',zh:'在5个类别中识别触发因素：地点 → 人物 → 情绪 → 情况 → 一天中的时间',ja:'5つのカテゴリーでトリガーを特定：場所→人→感情→状況→時間帯',ru:'Определи триггеры в 5 категориях: Места → Люди → Эмоции → Ситуации → Время дня'},
+    why:{ro:'Cunoașterea triggerilor reduce probabilitatea recidivei cu 60%.',en:'Knowing your triggers reduces relapse probability by 60%.',fr:'Connaître ses déclencheurs réduit le risque de rechute de 60%.',de:'Trigger kennen reduziert Rückfallwahrscheinlichkeit um 60%.',zh:'了解你的触发因素可将复发概率降低60%。',ja:'トリガーを知ることで再発確率が60%低下。',ru:'Знание триггеров снижает вероятность срыва на 60%.'},
+    when:{ro:'O dată pe lună, după o recidivă, la începutul recuperării.',en:'Once a month, after a relapse, at the start of recovery.',fr:'Une fois par mois, après une rechute, au début de la récupération.',de:'Einmal im Monat, nach einem Rückfall, zu Beginn der Genesung.',zh:'每月一次、复发后、恢复初期。',ja:'月1回、再発後、回復の開始時。',ru:'Раз в месяц, после срыва, в начале восстановления.'}
+  },
+  t_prev2:{
+    steps:{ro:'Completează: Semne de avertizare → Strategii de coping → Persoana de suport → Locul sigur → Motivul tău',en:'Complete: Warning signs → Coping strategies → Support person → Safe place → Your reason',fr:'Complétez: Signes d’alerte → Stratégies → Personne de soutien → Lieu sûr → Votre raison',de:'Ausfüllen: Warnsignale → Bewältigungsstrategien → Unterstützungsperson → Sicherer Ort → Ihr Grund',zh:'完成：警告信号 → 应对策略 → 支持人员 → 安全地点 → 你的原因',ja:'記入：警告サイン → 対処戦略 → サポート人 → 安全な場所 → あなたの理由',ru:'Заполни: Предупредительные знаки → Стратегии → Человек поддержки → Безопасное место → Твоя причина'},
+    why:{ro:'Un plan de criză scris reduce probabilitatea recăderii cu 40%.',en:'A written crisis plan reduces relapse probability by 40%.',fr:'Un plan de crise écrit réduit le risque de rechute de 40%.',de:'Ein schriftlicher Krisenplan reduziert Rückfallwahrscheinlichkeit um 40%.',zh:'书面危机计划将复发概率降低40%。',ja:'書面による危機計画は再発確率を40%低下させる。',ru:'Письменный план кризиса снижает вероятность срыва на 40%.'},
+    when:{ro:'La începutul recuperării și revizuit lunar.',en:'At the start of recovery and revised monthly.',fr:'Au début de la récupération et révisé mensuellement.',de:'Zu Beginn der Genesung und monatlich überarbeitet.',zh:'在恢复开始时，每月修订。',ja:'回復の開始時と毎月の見直し。',ru:'В начале восстановления и ежемесячный пересмотр.'}
+  },
+  t_prev3:{
+    steps:{ro:'Urmărești zilele libere, milestones (1zi, 7, 30, 60, 90, 180, 365 zile) și banii economisiți.',en:'Track sober days, milestones (1d, 7, 30, 60, 90, 180, 365 days) and money saved.',fr:'Suivez les jours sobres, jalons et l’argent économisé.',de:'Nüchterne Tage, Meilensteine und gespartes Geld verfolgen.',zh:'追踪清醒天数、里程碑（1天、7、30、60、90、180、365天）和节省的钱。',ja:'禁断日数、マイルストーン（1日、7、30、60、90、180、365日）と節約金額を追跡。',ru:'Отслеживай дни трезвости, вехи (1д, 7, 30, 60, 90, 180, 365) и сэкономленные деньги.'},
+    why:{ro:'Vizualizarea progresului crește motivația. Fiecare zi contează.',en:'Visualizing progress increases motivation. Every day counts.',fr:'Visualiser les progrès augmente la motivation. Chaque jour compte.',de:'Fortschritt visualisieren erhöht Motivation. Jeder Tag zählt.',zh:'可视化进展增加动力。每一天都重要。',ja:'進捗の可視化はモチベーションを高める。毎日が重要。',ru:'Визуализация прогресса повышает мотивацию. Каждый день важен.'},
+    when:{ro:'Zilnic — 30 secunde dimineața.',en:'Daily — 30 seconds in the morning.',fr:'Quotidiennement — 30 secondes le matin.',de:'Täglich — 30 Sekunden morgens.',zh:'每天——早上30秒。',ja:'毎日——朝30秒。',ru:'Ежедневно — 30 секунд утром.'}
+  },
+};
+
+const TOOLS_DATA = [
+  {i:'🌬',n_key:'t_breath1',cat:'breath',c_key:'cat_breath',dur:'4 min',ev:'Parasympathetic activation',r:true},
+  {i:'⬜',n_key:'t_breath2',cat:'breath',c_key:'cat_breath',dur:'4 min',ev:'Navy SEALs protocol',r:true},
+  {i:'💜',n_key:'t_breath3',cat:'breath',c_key:'cat_breath',dur:'5 min',ev:'HeartMath Institute',r:false},
+  {i:'🌍',n_key:'t_mind1',cat:'mind',c_key:'cat_mind',dur:'3 min',ev:'CBT grounding',r:true},
+  {i:'✋',n_key:'t_mind2',cat:'mind',c_key:'cat_mind',dur:'1 min',ev:'MBSR protocol',r:false},
+  {i:'🧘',n_key:'t_mind3',cat:'mind',c_key:'cat_mind',dur:'6 min',ev:'Jon Kabat-Zinn MBSR',r:false},
+  {i:'🏄',n_key:'t_crav1',cat:'crav',c_key:'cat_crav',dur:'5 min',ev:'Alan Marlatt',r:true},
+  {i:'🛑',n_key:'t_crav2',cat:'crav',c_key:'cat_crav',dur:'2 min',ev:'AA/NA framework',r:true},
+  {i:'🧠',n_key:'t_crav3',cat:'crav',c_key:'cat_crav',dur:'3 min',ev:'ACT — Hayes, 2004',r:false},
+  {i:'📒',n_key:'t_emo1',cat:'emo',c_key:'cat_emo',dur:'3 min',ev:'Emmons & McCullough',r:false},
+  {i:'💚',n_key:'t_emo2',cat:'emo',c_key:'cat_emo',dur:'3 min',ev:'Kristin Neff MSC',r:false},
+  {i:'🎡',n_key:'t_emo3',cat:'emo',c_key:'cat_emo',dur:'2 min',ev:'Plutchik (1980)',r:false},
+  {i:'📅',n_key:'t_act1',cat:'act',c_key:'cat_act',dur:'5 min',ev:'Behavioral Activation',r:false},
+  {i:'⚡',n_key:'t_act2',cat:'act',c_key:'cat_act',dur:'5 min',ev:'Exercise reduces cravings 50%',r:true},
+  {i:'🎯',n_key:'t_act3',cat:'act',c_key:'cat_act',dur:'2 min',ev:'Implementation intention',r:false},
+  {i:'🗺️',n_key:'t_prev1',cat:'prev',c_key:'cat_prev',dur:'10 min',ev:'CBT functional analysis',r:false},
+  {i:'📋',n_key:'t_prev2',cat:'prev',c_key:'cat_prev',dur:'10 min',ev:'Safety planning',r:false},
+  {i:'🏆',n_key:'t_prev3',cat:'prev',c_key:'cat_prev',dur:'—',ev:'Behavioral self-monitoring',r:false},
+];
+
+
+const TOOLS_NAMES = {
+  t_breath1:{ro:'Respirație 4-7-8',en:'4-7-8 Breathing',fr:'Respiration 4-7-8',de:'4-7-8 Atmung',zh:'4-7-8呼吸',ja:'4-7-8呼吸法',ru:'Дыхание 4-7-8'},
+  t_breath2:{ro:'Box Breathing 4-4-4-4',en:'Box Breathing 4-4-4-4',fr:'Respiration carrée',de:'Box-Atmung 4-4-4-4',zh:'箱式呼吸4-4-4-4',ja:'ボックス呼吸4-4-4-4',ru:'Квадратное дыхание'},
+  t_breath3:{ro:'Coerență Cardiacă',en:'Cardiac Coherence',fr:'Cohérence Cardiaque',de:'Herzkoherenz',zh:'心脏连贯',ja:'心臓コヒーレンス',ru:'Сердечная когерентность'},
+  t_mind1:{ro:'Ancorare 5-4-3-2-1',en:'5-4-3-2-1 Grounding',fr:'Ancrage 5-4-3-2-1',de:'Erdung 5-4-3-2-1',zh:'5-4-3-2-1接地',ja:'5-4-3-2-1グラウンディング',ru:'Заземление 5-4-3-2-1'},
+  t_mind2:{ro:'Tehnica STOP',en:'STOP Technique',fr:'Technique STOP',de:'STOPP-Technik',zh:'STOP技术',ja:'STOP技法',ru:'Техника СТОП'},
+  t_mind3:{ro:'Scanare Corporală',en:'Body Scan',fr:'Scan Corporel',de:'Körperscan',zh:'身体扫描',ja:'ボディスキャン',ru:'Сканирование тела'},
+  t_crav1:{ro:'Urge Surfing',en:'Urge Surfing',fr:'Surf de l\'envie',de:'Urge Surfing',zh:'冲动冲浪',ja:'アージサーフィン',ru:'Серфинг на побуждениях'},
+  t_crav2:{ro:'Checklist HALT',en:'HALT Checklist',fr:'Liste HALT',de:'HALT-Checkliste',zh:'HALT检查清单',ja:'HALTチェックリスト',ru:'Контрольный список HALT'},
+  t_crav3:{ro:'Defuzionare Cognitivă',en:'Cognitive Defusion',fr:'Défusion Cognitive',de:'Kognitive Defusion',zh:'认知解离',ja:'認知的脱フュージョン',ru:'Когнитивное разделение'},
+  t_emo1:{ro:'Jurnal Recunoștință',en:'Gratitude Journal',fr:'Journal de Gratitude',de:'Dankbarkeitstagebuch',zh:'感恩日记',ja:'感謝日記',ru:'Дневник благодарности'},
+  t_emo2:{ro:'Auto-compasiune SOS',en:'Self-Compassion SOS',fr:'Auto-compassion SOS',de:'Selbstmitgefühl SOS',zh:'自我慈悲SOS',ja:'セルフコンパッション SOS',ru:'Самосострадание SOS'},
+  t_emo3:{ro:'Roata Emoțiilor',en:'Emotion Wheel',fr:'Roue des Émotions',de:'Emotionsrad',zh:'情绪轮',ja:'感情の輪',ru:'Колесо эмоций'},
+  t_act1:{ro:'Planificator Activitate',en:'Activity Planner',fr:'Planificateur d\'Activité',de:'Aktivitätsplaner',zh:'活动计划表',ja:'活動プランナー',ru:'Планировщик активности'},
+  t_act2:{ro:'Mișcare Urgență 5 min',en:'Emergency Movement 5 min',fr:'Mouvement d\'Urgence 5 min',de:'Notfall-Bewegung 5 min',zh:'紧急运动5分钟',ja:'緊急運動5分',ru:'Экстренное движение 5 мин'},
+  t_act3:{ro:'Micro-obiective Zilnice',en:'Daily Micro Goals',fr:'Micro-objectifs Quotidiens',de:'Tägliche Mikroziele',zh:'每日微目标',ja:'デイリーマイクロゴール',ru:'Ежедневные микроцели'},
+  t_prev1:{ro:'Harta Triggerilor',en:'Trigger Map',fr:'Carte des Déclencheurs',de:'Trigger-Karte',zh:'触发器地图',ja:'トリガーマップ',ru:'Карта триггеров'},
+  t_prev2:{ro:'Planul de Criză',en:'Crisis Plan',fr:'Plan de Crise',de:'Krisenplan',zh:'危机计划',ja:'クライシスプラン',ru:'План кризиса'},
+  t_prev3:{ro:'Tracker Sobrietate',en:'Sobriety Tracker',fr:'Suivi de Sobriété',de:'Nüchternheits-Tracker',zh:'清醒追踪器',ja:'禁断トラッカー',ru:'Трекер трезвости'},
+};
+
+// ═══════════════════════════════════════════════════════
+// CORE
+// ═══════════════════════════════════════════════════════
+let LANG = 'ro';
+
+function t(key) { return (I18N[LANG] && I18N[LANG][key]) || (I18N['en'] && I18N['en'][key]) || key; }
+
+// ── Globe dropdown ───────────────────────────────────────
+const FLAG_MAP = {ro:'🇷🇴',en:'🇬🇧',fr:'🇫🇷',de:'🇩🇪',zh:'🇨🇳',ja:'🇯🇵',ru:'🇷🇺'};
+
+function toggleLangMenu() {
+  document.getElementById('langMenu').classList.toggle('open');
+}
+function pickLang(lang) {
+  document.getElementById('langMenu').classList.remove('open');
+  setLang(lang);
+}
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('globeWrap');
+  if (wrap && !wrap.contains(e.target)) document.getElementById('langMenu').classList.remove('open');
+});
+
+// ── Auto-detect language from IP geolocation ─────────────
+async function detectLangFromIP() {
+  try {
+    const saved = localStorage.getItem('vxlang');
+    if (saved && I18N[saved]) return saved; // respect saved preference
+    // Use free ipapi.co — no key needed, 1000 req/day
+    const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) });
+    const data = await res.json();
+    const country = (data.country_code || '').toUpperCase();
+    const countryToLang = {
+      RO:'ro', MD:'ro',
+      GB:'en', US:'en', AU:'en', CA:'en', IE:'en', NZ:'en', ZA:'en',
+      FR:'fr', BE:'fr', CH:'fr', LU:'fr', MC:'fr',
+      DE:'de', AT:'de',
+      CN:'zh', TW:'zh', HK:'zh', SG:'zh',
+      JP:'ja',
+      RU:'ru', BY:'ru', KZ:'ru',
+    };
+    return countryToLang[country] || 'en';
+  } catch {
+    return null; // fallback to browser lang
+  }
+}
+
+function setLang(lang) {
+  LANG = lang;
+  document.documentElement.className = '';
+  if (lang === 'zh') document.documentElement.classList.add('zh-cn');
+  if (lang === 'ja') document.documentElement.classList.add('ja');
+  if (lang === 'ru') document.documentElement.classList.add('ru');
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+
+  // Translate all elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if (key.endsWith('_html')) el.innerHTML = val;
+    else el.textContent = val;
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+
+  // Update globe flag
+  const flagEl = document.getElementById('activeFlag');
+  if (flagEl) flagEl.textContent = FLAG_MAP[lang] || '🌐';
+
+  // Update dropdown active states
+  document.querySelectorAll('.lang-option').forEach(btn => {
+    const m = btn.getAttribute('onclick').match(/'(\w+)'/);
+    btn.classList.toggle('active', m && m[1] === lang);
+  });
+
+  buildTools(currentFilter);
+  updateDemoTexts();
+  try { localStorage.setItem('vxlang', lang); } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════
+// TOOLS — stable cat IDs, filter, modal detail
+// ═══════════════════════════════════════════════════════
+let currentFilter = 'all';
+
+// Stable category IDs (never change, language-independent)
+const CAT_IDS  = ['all','breath','mind','crav','emo','act','prev'];
+const CAT_KEYS = ['cat_all','cat_breath','cat_mind','cat_crav','cat_emo','cat_act','cat_prev'];
+
+function buildCats() {
+  const row = document.getElementById('catRow');
+  row.innerHTML = CAT_IDS.map((id, i) => `
+    <div class="cat ${currentFilter === id ? 'active' : ''}"
+         onclick="filterTools('${id}')">
+      ${t(CAT_KEYS[i])}
+    </div>`).join('');
+}
+
+function filterTools(catId) {
+  currentFilter = catId;
+  buildTools(catId);
+}
+
+function buildTools(catId) {
+  currentFilter = catId;
+  const grid = document.getElementById('tg');
+  const filtered = catId === 'all'
+    ? TOOLS_DATA
+    : TOOLS_DATA.filter(tool => tool.cat === catId);
+
+  buildCats();
+
+  grid.innerHTML = filtered.map(tool => {
+    const name = (TOOLS_NAMES[tool.n_key] && TOOLS_NAMES[tool.n_key][LANG])
+      || TOOLS_NAMES[tool.n_key]?.en || tool.n_key;
+    const isRec = tool.r && catId === 'all';
+    return `<div class="tc ${isRec?'rec':''}" onclick="openToolModal('${tool.n_key}')">
+      ${isRec ? `<div class="tc-rb">${t('rec_badge')}</div>` : ''}
+      <div class="tc-icon">${tool.i}</div>
+      <div class="tc-name">${name}</div>
+      <div class="tc-dur">${tool.dur}</div>
+      <div class="tc-ev">${tool.ev}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Tool detail modal ────────────────────────────────────
+function openToolModal(nKey) {
+  const tool   = TOOLS_DATA.find(t => t.n_key === nKey);
+  const detail = TOOL_DETAILS[nKey];
+  if (!tool) return;
+
+  const name = (TOOLS_NAMES[nKey] && TOOLS_NAMES[nKey][LANG]) || TOOLS_NAMES[nKey]?.en || nKey;
+  const L = LANG;
+
+  const steps = detail?.steps?.[L] || detail?.steps?.en || '—';
+  const why   = detail?.why?.[L]   || detail?.why?.en   || '—';
+  const when  = detail?.when?.[L]  || detail?.when?.en  || '—';
+
+  const labels = {
+    steps:{ro:'Pași',en:'Steps',fr:'Étapes',de:'Schritte',zh:'步骤',ja:'ステップ',ru:'Шаги'},
+    why:  {ro:'De ce funcționează',en:'Why it works',fr:'Pourquoi ça marche',de:'Warum es wirkt',zh:'为什么有效',ja:'なぜ機能するか',ru:'Почему это работает'},
+    when: {ro:'Când îl folosești',en:'When to use it',fr:'Quand l’utiliser',de:'Wann verwenden',zh:'何时使用',ja:'いつ使うか',ru:'Когда использовать'},
+    close:{ro:'Închide',en:'Close',fr:'Fermer',de:'Schließen',zh:'关闭',ja:'閉じる',ru:'Закрыть'},
+  };
+  const lbl = k => labels[k]?.[L] || labels[k]?.en || k;
+
+  document.getElementById('tmIcon').textContent  = tool.i;
+  document.getElementById('tmName').textContent  = name;
+  document.getElementById('tmDur').textContent   = tool.dur;
+  document.getElementById('tmEv').textContent    = tool.ev;
+  document.getElementById('tmStepsLabel').textContent = lbl('steps');
+  document.getElementById('tmStepsText').textContent  = steps;
+  document.getElementById('tmWhyLabel').textContent   = lbl('why');
+  document.getElementById('tmWhyText').textContent    = why;
+  document.getElementById('tmWhenLabel').textContent  = lbl('when');
+  document.getElementById('tmWhenText').textContent   = when;
+  document.getElementById('tmCloseBtn').textContent   = lbl('close');
+
+  document.getElementById('toolModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeToolModal() {
+  document.getElementById('toolModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ═══════════════════════════════════════════════════════
+// EMOTION DEMO
+// ═══════════════════════════════════════════════════════
+let emoIdx = 0;
+
+function getEmos() {
+  return [
+    {o:'😔', l:t('emo_tired_label'), s:t('emo_tired_sub'), c:'#854F0B', msg:t('emo_tired_msg')},
+    {o:'😢', l:t('emo_sad_label'),   s:t('emo_sad_sub'),   c:'#A32D2D', msg:t('emo_sad_msg')},
+    {o:'😄', l:t('emo_happy_label'), s:t('emo_happy_sub'), c:'#1D9E75', msg:t('emo_happy_msg')},
+    {o:'😰', l:t('emo_anx_label'),   s:t('emo_anx_sub'),   c:'#7F77DD', msg:t('emo_anx_msg')},
+    {o:'😤', l:t('emo_ang_label'),   s:t('emo_ang_sub'),   c:'#E24B4A', msg:t('emo_ang_msg')},
+  ];
+}
+
+const MEMORIES = {
+  ro:['"Am primit vestea că am luat jobul. Nu-mi venea să cred."','"Zi simplă, dar cafeaua a fost perfectă."'],
+  en:['"I got the job! I couldn\'t believe it."','"A simple day, but the coffee was perfect."'],
+  fr:['"J\'ai eu le poste! Je n\'en revenais pas."','"Une journée simple, mais le café était parfait."'],
+  de:['"Ich habe die Stelle bekommen! Ich konnte es nicht glauben."','"Ein einfacher Tag, aber der Kaffee war perfekt."'],
+  zh:['"我得到了那份工作！我简直不敢相信。"','"普通的一天，但咖啡很完美。"'],
+  ja:['"仕事の内定をもらった！信じられなかった。"','"普通の日だったけど、コーヒーが最高だった。"'],
+  ru:['"Я получил работу! Я не мог поверить."','"Обычный день, но кофе был идеальным."'],
+};
+
+function updateDemoTexts() {
+  document.getElementById('dl').textContent = t('demo_orb_label');
+  document.getElementById('ds').textContent = t('demo_orb_sub');
+  document.querySelector('[data-i18n="demo_bubble_tag"]').textContent = t('demo_bubble_tag');
+}
+
+function cycleEmo() {
+  emoIdx = (emoIdx + 1) % 5;
+  const emos = getEmos();
+  const e = emos[emoIdx];
+  const orb = document.getElementById('do');
+  orb.textContent = e.o;
+  orb.style.background = e.c + '22';
+  orb.style.borderColor = e.c;
+  document.getElementById('dl').textContent = e.l;
+  document.getElementById('ds').textContent = e.s;
+  typeText('dt', e.msg);
+}
+
+function playMem() {
+  const mems = MEMORIES[LANG] || MEMORIES.en;
+  typeText('dt', t('mem_prefix') + ' ' + mems[Math.floor(Math.random()*mems.length)]);
+}
+
+function typeText(id, text) {
+  const el = document.getElementById(id); if (!el) return;
+  el.innerHTML = '<span class="cursor"></span>';
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i < text.length) { el.textContent = text.slice(0, ++i); el.innerHTML += '<span class="cursor"></span>'; }
+    else clearInterval(iv);
+  }, 20);
+}
+
+// ═══════════════════════════════════════════════════════
+// WAITLIST
+// ═══════════════════════════════════════════════════════
+const LOOPS_API_KEY = '0cfa96b4af2e8c514b59a890f22ba032';
+
+async function submitLoops(email, btn, form, ok) {
+  const orig = btn.textContent;
+  btn.textContent = '...'; btn.disabled = true; btn.style.opacity = '.7';
+  try {
+    const r = await fetch('https://app.loops.so/api/v1/contacts/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${LOOPS_API_KEY}` },
+      body: JSON.stringify({ email, source: 'waitlist', userGroup: LANG })
+    });
+    form.style.display = 'none'; ok.style.display = 'block';
+    target = Math.min(9999, target + 1);
+    document.getElementById('ctr').textContent = target.toLocaleString();
+  } catch {
+    form.style.display = 'none'; ok.style.display = 'block';
+    btn.textContent = orig; btn.disabled = false; btn.style.opacity = '1';
+  }
+}
+
+function join(n) {
+  const e = document.getElementById(`e${n}`).value.trim();
+  if (!e || !e.includes('@') || !e.includes('.')) {
+    const inp = document.getElementById(`e${n}`);
+    inp.style.outline = '1.5px solid #E24B4A';
+    setTimeout(() => { inp.style.outline = ''; }, 2000); return;
+  }
+  submitLoops(e, document.querySelector(`#wf${n} .wlbtn`), document.getElementById(`wf${n}`), document.getElementById(`wo${n}`));
+}
+
+document.getElementById('e1').addEventListener('keydown', e => { if(e.key==='Enter') join(1); });
+document.getElementById('e2').addEventListener('keydown', e => { if(e.key==='Enter') join(2); });
+
+// ═══════════════════════════════════════════════════════
+// CANVAS PARTICLES
+// ═══════════════════════════════════════════════════════
+const cvs = document.getElementById('cvs'), ctx = cvs.getContext('2d');
+let W, H, dots;
+function initC() {
+  W = cvs.width = window.innerWidth; H = cvs.height = window.innerHeight;
+  dots = Array.from({length:45}, () => ({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.4,dx:(Math.random()-.5)*.22,dy:(Math.random()-.5)*.22,a:Math.random()*Math.PI*2}));
+}
+function draw() {
+  ctx.clearRect(0,0,W,H);
+  dots.forEach(d => {
+    d.a+=.007; ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(127,119,221,${.1+.07*Math.sin(d.a)})`; ctx.fill();
+    d.x+=d.dx; d.y+=d.dy;
+    if(d.x<0||d.x>W)d.dx*=-1; if(d.y<0||d.y>H)d.dy*=-1;
+  });
+  requestAnimationFrame(draw);
+}
+initC(); draw(); window.addEventListener('resize', initC);
+
+// ═══════════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════════
+window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40));
+
+const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) { x.target.classList.add('visible'); io.unobserve(x.target); } }), {threshold:.1});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Counter animat cu requestAnimationFrame — se oprește singur,
+// se sincronizează cu ecranul, se pauzează automat când tab-ul e ascuns
+(function(){
+  const ctrEl = document.getElementById('ctr');
+  if(!ctrEl) return;
+  const target = 1247, duration = 1400;
+  let startTime = null;
+  function tick(ts){
+    if(!startTime) startTime = ts;
+    const progress = Math.min(1, (ts - startTime) / duration);
+    // ease-out
+    const eased = 1 - Math.pow(1 - progress, 3);
+    ctrEl.textContent = Math.round(target * eased).toLocaleString();
+    if(progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+// #nw span animation now pure CSS
+// Sound bar animation moved to pure CSS @keyframes for performance
+
+function clk() {
+  const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0');
+  const el=document.getElementById('dc'); if(el) el.textContent=h+':'+m;
+}
+clk(); setInterval(clk, 10000);
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+// INIT — browser lang first, then IP geo upgrade
+// ═══════════════════════════════════════════════════════
+(function init() {
+  buildTools('all');
+
+  // Step 1: instant render with browser language
+  let savedLang = null;
+  try { savedLang = localStorage.getItem('vxlang'); } catch(e) {}
+
+  const bl = (navigator.language || '').toLowerCase();
+  let instantLang = savedLang && I18N[savedLang] ? savedLang
+    : bl.startsWith('ro') ? 'ro'
+    : bl.startsWith('fr') ? 'fr'
+    : bl.startsWith('de') ? 'de'
+    : bl.startsWith('zh') ? 'zh'
+    : bl.startsWith('ja') ? 'ja'
+    : bl.startsWith('ru') ? 'ru'
+    : 'en';
+
+  setLang(instantLang);
+
+  // Step 2: async IP geolocation — overrides only if no saved preference
+  if (!savedLang) {
+    detectLangFromIP().then(ipLang => {
+      if (ipLang && ipLang !== instantLang && I18N[ipLang]) {
+        setLang(ipLang);
+      }
+    });
+  }
+})();
+</script>
+<script>
+// ── Optimizare baterie: oprește animațiile când pagina nu e vizibilă ──
+(function(){
+  document.addEventListener('visibilitychange', function(){
+    document.body.style.animationPlayState = document.hidden ? 'paused' : 'running';
+    // Oprește toate animațiile CSS prin clasă pe body
+    if(document.hidden) document.documentElement.classList.add('vx-paused');
+    else document.documentElement.classList.remove('vx-paused');
+  });
+})();
+</script>
+</body>
+</html>

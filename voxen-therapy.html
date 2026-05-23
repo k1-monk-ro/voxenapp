@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>voxen · Terapie</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --void:#0D0B1A;--surface:#1A1630;--card:#201C38;--border:#2E2850;
+  --purple:#534AB7;--mid:#7F77DD;--soft:#AFA9EC;--mist:#EEEDFE;
+  --teal:#1D9E75;--amber:#EF9F27;--red:#A32D2D;--white:#F0EFF8;--text2:#8B88C3;
+}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden}
+#cvs{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.25}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(13,11,26,.88);backdrop-filter:blur(16px);border-bottom:.5px solid var(--border)}
+.back-link{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text2);font-size:13px;font-weight:500;transition:color .2s}
+.back-link:hover{color:var(--white)}
+.brand{font-size:18px;font-weight:700;color:var(--white);letter-spacing:-.03em}
+.nav-links{display:flex;gap:6px}
+.nav-link{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;color:var(--text2);text-decoration:none;transition:all .2s}
+.nav-link:hover{color:var(--white);background:var(--surface)}
+.nav-link.active{color:var(--mist);background:var(--teal);border-color:var(--teal)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 60px;text-align:center;position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(29,158,117,.12) 0%,transparent 70%);pointer-events:none}
+.hero-chip{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:.5px solid rgba(29,158,117,.4);border-radius:100px;padding:6px 16px;font-size:12px;color:rgba(29,158,117,1);margin-bottom:32px}
+.chip-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero-title{font-size:clamp(40px,7vw,86px);font-weight:800;line-height:1.02;letter-spacing:-.04em;margin-bottom:20px}
+.hero-title em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--teal)}
+.hero-sub{font-size:16px;color:var(--text2);max-width:560px;line-height:1.75;margin-bottom:48px}
+
+/* ── TYPE SELECTOR ── */
+.type-tabs{display:flex;gap:10px;margin-bottom:40px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1}
+.type-tab{padding:12px 24px;border-radius:12px;border:.5px solid var(--border);background:var(--card);cursor:pointer;transition:all .25s;font-size:14px;font-weight:500;color:var(--text2)}
+.type-tab:hover{border-color:var(--teal);color:var(--white)}
+.type-tab.active{background:rgba(29,158,117,.15);border-color:var(--teal);color:var(--teal)}
+
+/* ── BOOKING FLOW ── */
+.booking-flow{width:100%;max-width:960px;position:relative;z-index:1}
+.flow-panel{display:none;animation:fadeIn .3s ease}
+.flow-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* Step indicator */
+.steps-row{display:flex;align-items:center;gap:0;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto}
+.step-dot{width:32px;height:32px;border-radius:50%;border:.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2);background:var(--surface);transition:all .3s;flex-shrink:0}
+.step-dot.done{background:var(--teal);border-color:var(--teal);color:var(--white)}
+.step-dot.active{background:rgba(29,158,117,.2);border-color:var(--teal);color:var(--teal)}
+.step-line{flex:1;height:1px;background:var(--border)}
+.step-line.done{background:var(--teal)}
+
+/* Therapist cards */
+.therapists-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:24px}
+.th-card{background:var(--card);border:.5px solid var(--border);border-radius:20px;padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.th-card:hover{border-color:var(--teal);transform:translateY(-2px)}
+.th-card.selected{border-color:var(--teal);background:rgba(29,158,117,.08)}
+.th-card.selected::after{content:'✓';position:absolute;top:12px;right:14px;width:22px;height:22px;border-radius:50%;background:var(--teal);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;display:grid;place-items:center}
+.th-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px;border:2px solid var(--border)}
+.th-name{font-size:15px;font-weight:600;margin-bottom:3px}
+.th-spec{font-size:12px;color:var(--teal);margin-bottom:6px;font-weight:500}
+.th-location{font-size:12px;color:var(--text2);margin-bottom:10px}
+.th-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.th-tag{font-size:10px;padding:3px 8px;border-radius:100px;background:rgba(83,74,183,.15);color:var(--soft);font-weight:500}
+.th-rating{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--amber)}
+.th-avail{font-size:11px;color:var(--teal);margin-top:6px}
+
+/* Calendar */
+.calendar-wrap{background:var(--card);border:.5px solid var(--border);border-radius:20px;padding:24px;margin-bottom:24px}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.cal-month{font-size:16px;font-weight:600}
+.cal-nav{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--text2);font-size:13px;transition:all .2s}
+.cal-nav:hover{background:var(--border);color:var(--white)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day-label{text-align:center;font-size:11px;color:var(--text2);font-weight:600;padding:4px 0;letter-spacing:.06em}
+.cal-day{height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:all .2s;color:var(--text2);border:.5px solid transparent}
+.cal-day:hover:not(.empty):not(.past){background:rgba(29,158,117,.15);border-color:var(--teal);color:var(--white)}
+.cal-day.available{color:var(--white)}
+.cal-day.selected{background:var(--teal);color:var(--white)}
+.cal-day.today{border-color:var(--purple);color:var(--mid)}
+.cal-day.past{opacity:.3;cursor:default}
+.cal-day.empty{cursor:default}
+
+/* Time slots */
+.slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-bottom:24px}
+.slot{padding:10px 6px;border-radius:10px;border:.5px solid var(--border);text-align:center;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .2s;background:var(--surface)}
+.slot:hover{border-color:var(--teal);color:var(--white)}
+.slot.selected{background:var(--teal);border-color:var(--teal);color:var(--white)}
+.slot.taken{opacity:.35;cursor:default;text-decoration:line-through}
+
+/* AI brief */
+.ai-brief{background:linear-gradient(135deg,rgba(83,74,183,.12),rgba(29,158,117,.08));border:.5px solid var(--purple);border-radius:16px;padding:20px;margin-bottom:24px}
+.ai-brief-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ai-brief-icon{font-size:24px}
+.ai-brief-title{font-size:14px;font-weight:600}
+.ai-brief-sub{font-size:11px;color:var(--text2)}
+.ai-brief-content{font-size:13px;color:var(--soft);line-height:1.7}
+.ai-brief-toggle{font-size:11px;color:var(--purple);cursor:pointer;margin-top:8px;display:inline-block}
+
+/* Confirm card */
+.confirm-card{background:var(--card);border:.5px solid var(--teal);border-radius:20px;padding:28px;margin-bottom:24px;text-align:center}
+.confirm-icon{font-size:48px;margin-bottom:16px}
+.confirm-title{font-size:22px;font-weight:700;margin-bottom:8px}
+.confirm-details{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px}
+.confirm-detail-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:.5px solid var(--border);text-align:left}
+.confirm-detail-row:last-child{border:none}
+.confirm-detail-icon{font-size:18px;width:28px;flex-shrink:0}
+.confirm-detail-text{font-size:13px;color:var(--white)}
+.confirm-detail-sub{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* Buttons */
+.btn{padding:13px 24px;border-radius:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;border:none;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--teal);color:var(--white)}
+.btn-primary:hover{background:#22b587;transform:scale(1.02)}
+.btn-secondary{background:var(--surface);color:var(--text2);border:.5px solid var(--border)}
+.btn-secondary:hover{background:var(--card);color:var(--white)}
+.btn-row{display:flex;gap:10px;justify-content:flex-end}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+
+/* Section */
+.section{padding:80px 24px;max-width:1000px;margin:0 auto;position:relative;z-index:1}
+.sep{border-top:.5px solid var(--border)}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:14px}
+.section-title{font-size:clamp(26px,3.5vw,44px);font-weight:700;line-height:1.12;letter-spacing:-.03em;margin-bottom:14px}
+.section-title em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--teal)}
+.section-sub{font-size:15px;color:var(--text2);max-width:500px;line-height:1.7;margin-bottom:40px}
+
+/* How voxen helps */
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+@media(max-width:600px){.diff-grid{grid-template-columns:1fr}}
+.diff-col{background:var(--card);border:.5px solid var(--border);border-radius:20px;padding:24px}
+.diff-col.good{border-color:rgba(29,158,117,.4)}
+.diff-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.diff-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:13px;line-height:1.5;color:var(--text2)}
+.diff-item span:first-child{font-size:16px;flex-shrink:0}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:10px;margin-top:40px}
+.faq-item{background:var(--card);border:.5px solid var(--border);border-radius:14px;overflow:hidden}
+.faq-q{padding:16px 20px;cursor:pointer;font-size:14px;font-weight:500;color:var(--white);display:flex;justify-content:space-between;align-items:center;transition:background .2s}
+.faq-q:hover{background:var(--surface)}
+.faq-q::after{content:'＋';font-size:18px;color:var(--text2);transition:transform .3s}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{display:none;padding:0 20px 16px;font-size:13px;color:var(--text2);line-height:1.7}
+.faq-item.open .faq-a{display:block}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+footer{border-top:.5px solid var(--border);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.fbrand{font-size:15px;font-weight:700;color:var(--text2)}
+.fcopy{font-size:11px;color:#4A4670}
+</style>
+
+<!-- ═══ VOXEN i18n MODULE ═══ -->
+<style>
+.globe-wrap{position:relative;display:flex;align-items:center}
+.globe-btn{width:34px;height:34px;border-radius:8px;border:.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;position:relative;flex-shrink:0}
+.globe-btn:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.active-flag{position:absolute;bottom:-3px;right:-3px;font-size:10px;line-height:1}
+.lang-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#201C38;border:.5px solid #2E2850;border-radius:12px;padding:6px;min-width:175px;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+.lang-dropdown.open{display:block;animation:dropIn .18s ease}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.lang-option{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;font-size:13px;font-weight:500;color:#8B88C3;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.lang-option:hover{background:#1A1630;color:#F0EFF8}
+.lang-option.active{background:rgba(83,74,183,.2);color:#EEEDFE}
+.lang-option .flag{font-size:17px;line-height:1;flex-shrink:0}
+.lang-option .lname{flex:1}
+.lang-option .lcode{font-size:10px;color:#534AB7;margin-left:auto}
+</style>
+
+<script id="voxen-i18n">
+window.voxenHooks = window.voxenHooks || [];
+(function(){
+  // ── Translations for subpages ──────────────────────────
+  const T = {
+    ro:{
+      footer_brand:'terapie',
+      back:'← voxen',
+      nav_companion:'Companion AI', nav_therapy:'Terapie', nav_groups:'Grupuri de sprijin',
+      // Companion
+      comp_chip:'Companion emoțional · Powered by Claude AI',
+      comp_h1:'Te aude.<br><em>Te înțelege.</em><br>E mereu acolo.',
+      comp_sub:'Nu e un chatbot. Nu îți dă sfaturi nesolicitate. E un prieten digital empatic — care citește emoția din vocea ta și răspunde exact cum ai nevoie la 3 dimineața.',
+      comp_voice_title:'🎙 Vocea ta',
+      comp_state:'Apasă orbul sau alege o emoție',
+      comp_btn_gen:'Generează răspuns empatic →',
+      comp_resp_title:'💜 Voxen răspunde',
+      comp_resp_waiting:'Așteptând...',
+      comp_resp_detecting:'— detectez emoția',
+      comp_resp_tag:'VOXEN SIMTE',
+      comp_resp_default:'Bună seara. Cum a fost azi?',
+      comp_btn_sim:'Simulează stare',
+      comp_btn_mem:'Amintire 1 an',
+      comp_m_tempo:'Tempo vocal', comp_m_energy:'Energie', comp_m_conf:'Confidență AI',
+      comp_hist_label:'Istoric sesiune',
+      comp_how_label:'Cum funcționează',
+      comp_how_title:'Știință aplicată.<br><em>Empatie reală.</em>',
+      comp_how_sub:'Voxen combină analiza prozodică a vocii cu procesarea semantică a textului.',
+      comp_emo_label:'Harta emoțională',
+      comp_emo_title:'8 emoții.<br><em>Infinite nuanțe.</em>',
+      comp_emo_sub:'Voxen detectează emoția primară, emoția secundară și intensitatea.',
+      comp_pros_label:'Semnale prozodice',
+      comp_pros_title:'Ce citim<br><em>din vocea ta.</em>',
+      comp_tl1_title:'Captarea vocii', comp_tl1_desc:'Expo AV înregistrează audio la calitate înaltă. Nu analizăm cuvintele — analizăm CUM le spui: tonul, ritmul, pauzele, tremuratul, volumul.',
+      comp_tl2_title:'Analiza prozodică', comp_tl2_desc:'Extragem 6 semnale vocale: tempo, pitch mediu, energie RMS, ratio pauze, rata vorbirii, variația volumului.',
+      comp_tl3_title:'Transcriere + semantică', comp_tl3_desc:'Whisper AI transcrie instant în orice limbă. Combinate cu semnalele prozodice (60% voce + 40% text).',
+      comp_tl4_title:'Răspuns empatic Claude', comp_tl4_desc:'Claude Haiku generează răspunsul în <2 secunde. Maxim 3 propoziții, fără exclamații, fără sfaturi nesolicitate.',
+      comp_tl5_title:'Memorie emoțională', comp_tl5_desc:'Fiecare intrare e salvată cu emoția detectată. Peste un an, când auzi din nou — înțelegi cum te-ai schimbat.',
+      // Therapy
+      th_chip:'Psihologi · Psihoterapeuți · Consultanți medicali',
+      th_h1:'Terapeutul potrivit.<br><em>La momentul potrivit.</em>',
+      th_sub:'Voxen nu înlocuiește terapeutul. Îl pregătește. Terapeutul tău primește un rezumat anonim al stării tale emoționale — prima ședință începe acolo unde ai rămas, nu de la zero.',
+      th_tab1:'🧑‍⚕️ Psiholog / Psihoterapeut', th_tab2:'💬 Consultație online', th_tab3:'🏥 Evaluare medicală',
+      th_step_sel:'Selectează un specialist din zona ta',
+      th_btn_cont:'Continuă →', th_btn_back:'← Înapoi', th_btn_confirm:'Confirmă programarea →',
+      th_ai_title:'Rezumat Voxen AI pentru terapeut', th_ai_sub:'Trimis anonim · Poți dezactiva oricând',
+      th_ai_hide:'Ascunde rezumatul', th_ai_show:'Afișează rezumatul',
+      th_confirm_title:'Programare confirmată!',
+      th_btn_reset:'Programează altă ședință',
+      th_diff_label:'Diferența Voxen',
+      th_diff_title:'Prima ședință.<br><em>Fără să repeți totul.</em>',
+      th_diff_sub:'Cel mai greu lucru în terapie e să explici de unde vii. Voxen face asta pentru tine.',
+      th_faq_label:'Întrebări frecvente',
+      th_faq_title:'Înainte să<br><em>rezervi.</em>',
+      th_step1_help:'Selectează un specialist din zona ta · Voxen le trimite un sumar anonim (cu acordul tău)',
+      th_pick_time:'Alege ora:',
+      th_brief_loading:'Se generează rezumatul tău emoțional din ultimele 30 de zile...',
+      th_online_h:'Consultație online în 24h',
+      th_online_p:'Consultant certificat în managementul stresului și recuperare. Video call sau chat securizat. Fără liste de așteptare lungi.',
+      th_online_f1a:'Disponibil în 24 ore', th_online_f1b:'Confirmare prin email',
+      th_online_f2a:'Sesiune criptată end-to-end', th_online_f2b:'Nimeni altcineva nu ascultă',
+      th_online_f3a:'Video, audio sau chat', th_online_f3b:'Alegi formatul care ți se potrivește',
+      th_online_btn:'Solicită consultație →',
+      th_med_h:'Evaluare medicală psihiatrică',
+      th_med_p:'Pentru cazuri care necesită evaluare psihiatrică, diagnostic sau tratament medicamentos. Voxen facilitează trimiterea cu context clinic complet.',
+      th_med_steps_h:'⚕️ Proces în 3 pași',
+      th_med_steps:'1. Voxen AI generează un raport clinic preliminar bazat pe 30 de zile de date vocale<br>2. Ești trimis la un psihiatru/medic specialist din rețeaua noastră<br>3. Urmărire continuă prin aplicație — terapeut + medic + Voxen lucrează împreună',
+      th_med_imp_label:'Important:',
+      th_med_imp:'Voxen nu înlocuiește consultul medical. Suntem un facilitator care ajută specialistul să înțeleagă mai bine starea ta emoțională.',
+      th_med_btn:'Solicită evaluare medicală →',
+      th_diff_bad_label:'❌ Fără Voxen', th_diff_good_label:'✓ Cu Voxen',
+      th_diff_b1:'Primele 3 ședințe: istoricul tău de la zero',
+      th_diff_b2:'Terapeutul nu știe cum ai dormit sau ce ai simțit ieri',
+      th_diff_b3:'Tu trebuie să îți amintești și să formulezi',
+      th_diff_b4:'Timp pierdut pe context, mai puțin pe vindecare',
+      th_diff_g1:'Terapeutul primește un rezumat anonim de 30 de zile',
+      th_diff_g2:'Evoluția emoțională, triggerii, momentele critice — vizualizate',
+      th_diff_g3:'Prima ședință direct la subiect',
+      th_diff_g4:'Terapeutul urmărește progresul între ședințe',
+      th_faq_q1:'Datele mele vocale sunt trimise terapeutului?',
+      th_faq_q2:'Sunt terapeuții verificați de Voxen?',
+      th_faq_q3:'Pot anula sau reprograma?',
+      th_faq_q4:'Ce se întâmplă dacă sunt în criză acum?',
+      th_faq_q5:'Terapia online e la fel de eficientă?',
+      th_faq_a1:'Nu. Terapeutul primește DOAR un rezumat text anonim — pattern-uri emoționale, nu înregistrări.',
+      th_faq_a2:'Da. Toți specialiștii sunt certificați de Colegiul Psihologilor.',
+      th_faq_a3:'Da, cu 24h înainte fără niciun cost.',
+      th_faq_a4:'Folosește butonul SOS din modulul de recuperare Voxen.',
+      th_faq_a5:'Studiile arată că terapia online are eficiență comparabilă cu cea față în față (Cuijpers, 2019).',
+            // Groups
+      gr_chip:'Sesiuni live săptămânale · 100% anonime',
+      gr_h1:'Nu ești singur.<br><em>Niciodată.</em>',
+      gr_sub:'Grupuri săptămânale anonime după modelul AA — actualizat pentru era digitală. Un moderator certificat, maximum 12 participanți, 60 de minute.',
+      gr_anon_note:'🔒 Numele tău real nu este niciodată afișat · Mesajele dispar după sesiune',
+      gr_send:'Trimite',
+      gr_input_ph:'Scrie în cerc... (demo)',
+      gr_circles_label:'Toate cercurile',
+      gr_circles_title:'Alege cercul<br><em>tău.</em>',
+      gr_circles_sub:'Fiecare cerc e facilitat de un specialist certificat. O dată pe săptămână, 60 de minute, maximum 12 persoane.',
+      gr_principles_label:'Principii',
+      gr_principles_title:'Cum funcționează<br><em>un cerc Voxen.</em>',
+      gr_timeline_label:'O sesiune tipică',
+      gr_timeline_title:'60 de minute.<br><em>Ce se întâmplă.</em>',
+      gr_join_btn:'Alătură-te cercului →',
+      gr_weekly:'Săptămânal', gr_max:'Max 12 participanți', gr_anon:'100% anonim',
+      gr_spots:'locuri libere',
+    },
+    en:{
+      footer_brand:'therapy',
+      back:'← voxen',
+      nav_companion:'AI Companion', nav_therapy:'Therapy', nav_groups:'Support Groups',
+      comp_chip:'Emotional companion · Powered by Claude AI',
+      comp_h1:'It hears you.<br><em>It understands you.</em><br>Always there.',
+      comp_sub:'It’s not a chatbot. It doesn’t give unsolicited advice. It’s an empathetic digital friend who reads emotion from your voice.',
+      comp_voice_title:'🎙 Your voice',
+      comp_state:'Tap the orb or choose an emotion',
+      comp_btn_gen:'Generate empathetic response →',
+      comp_resp_title:'💜 Voxen responds',
+      comp_resp_waiting:'Waiting...',
+      comp_resp_detecting:'— detecting emotion',
+      comp_resp_tag:'VOXEN FEELS',
+      comp_resp_default:'Good evening. How was today?',
+      comp_btn_sim:'Simulate emotion',
+      comp_btn_mem:'1-year memory',
+      comp_m_tempo:'Vocal tempo', comp_m_energy:'Energy', comp_m_conf:'AI Confidence',
+      comp_hist_label:'Session history',
+      comp_how_label:'How it works',
+      comp_how_title:'Applied science.<br><em>Real empathy.</em>',
+      comp_how_sub:'Voxen combines voice prosody analysis with semantic text processing.',
+      comp_emo_label:'Emotion map',
+      comp_emo_title:'8 emotions.<br><em>Infinite nuances.</em>',
+      comp_emo_sub:'Voxen detects primary emotion, secondary emotion and intensity.',
+      comp_pros_label:'Prosody signals',
+      comp_pros_title:'What we read<br><em>from your voice.</em>',
+      comp_tl1_title:'Voice capture', comp_tl1_desc:'Expo AV records high quality audio. We analyze HOW you say it: tone, rhythm, pauses, tremor, volume.',
+      comp_tl2_title:'Prosody analysis', comp_tl2_desc:'We extract 6 vocal signals: tempo, mean pitch, RMS energy, pause ratio, speech rate, volume variance.',
+      comp_tl3_title:'Transcription + semantics', comp_tl3_desc:'Whisper AI transcribes instantly in any language. Combined with prosody signals (60% voice + 40% text).',
+      comp_tl4_title:'Empathetic Claude response', comp_tl4_desc:'Claude Haiku generates response in <2 seconds. Max 3 sentences, no exclamations, no unsolicited advice.',
+      comp_tl5_title:'Emotional memory', comp_tl5_desc:'Each entry saved with detected emotion. One year later, hearing it again — you understand how you changed.',
+      th_chip:'Psychologists · Psychotherapists · Medical consultants',
+      th_h1:'The right therapist.<br><em>At the right time.</em>',
+      th_sub:'Voxen doesn’t replace the therapist. It prepares them. Your therapist receives an anonymous summary of your emotional state — the first session begins where you left off, not from zero.',
+      th_tab1:'🧑‍⚕️ Psychologist / Psychotherapist', th_tab2:'💬 Online consultation', th_tab3:'🏥 Medical evaluation',
+      th_step_sel:'Select a specialist near you',
+      th_btn_cont:'Continue →', th_btn_back:'← Back', th_btn_confirm:'Confirm booking →',
+      th_ai_title:'Voxen AI summary for therapist', th_ai_sub:'Sent anonymously · You can disable anytime',
+      th_ai_hide:'Hide summary', th_ai_show:'Show summary',
+      th_confirm_title:'Booking confirmed!',
+      th_btn_reset:'Book another session',
+      th_diff_label:'The Voxen difference',
+      th_diff_title:'First session.<br><em>Without repeating everything.</em>',
+      th_diff_sub:'The hardest thing in therapy is explaining where you come from. Voxen does that for you.',
+      th_faq_label:'Frequently asked questions',
+      th_faq_title:'Before you<br><em>book.</em>',
+      th_step1_help:'Select a specialist near you · Voxen sends them an anonymous summary (with your consent)',
+      th_pick_time:'Pick a time:',
+      th_brief_loading:'Generating your emotional summary from the past 30 days...',
+      th_online_h:'Online consultation within 24h',
+      th_online_p:'Certified consultant in stress management and recovery. Secure video or chat. No long waiting lists.',
+      th_online_f1a:'Available within 24 hours', th_online_f1b:'Confirmation by email',
+      th_online_f2a:'End-to-end encrypted session', th_online_f2b:'No one else listens',
+      th_online_f3a:'Video, audio or chat', th_online_f3b:'You pick the format that suits you',
+      th_online_btn:'Request consultation →',
+      th_med_h:'Psychiatric medical evaluation',
+      th_med_p:'For cases requiring psychiatric evaluation, diagnosis, or medication treatment. Voxen facilitates referral with full clinical context.',
+      th_med_steps_h:'⚕️ 3-step process',
+      th_med_steps:'1. Voxen AI generates a preliminary clinical report based on 30 days of voice data<br>2. You are referred to a psychiatrist/specialist from our network<br>3. Continuous follow-up through the app — therapist + doctor + Voxen work together',
+      th_med_imp_label:'Important:',
+      th_med_imp:'Voxen does not replace medical consultation. We are a facilitator helping the specialist better understand your emotional state.',
+      th_med_btn:'Request medical evaluation →',
+      th_diff_bad_label:'❌ Without Voxen', th_diff_good_label:'✓ With Voxen',
+      th_diff_b1:'First 3 sessions: your history from scratch',
+      th_diff_b2:'Therapist doesn’t know how you slept or felt yesterday',
+      th_diff_b3:'You have to remember and articulate everything',
+      th_diff_b4:'Time lost on context, less on healing',
+      th_diff_g1:'Therapist receives an anonymous 30-day summary',
+      th_diff_g2:'Emotional evolution, triggers, critical moments — visualized',
+      th_diff_g3:'First session straight to the point',
+      th_diff_g4:'Therapist tracks progress between sessions',
+      th_faq_q1:'Are my voice recordings sent to the therapist?',
+      th_faq_q2:'Are therapists verified by Voxen?',
+      th_faq_q3:'Can I cancel or reschedule?',
+      th_faq_q4:'What if I’m in crisis right now?',
+      th_faq_q5:'Is online therapy as effective?',
+      th_faq_a1:'No. The therapist receives ONLY an anonymous text summary — emotional patterns, not recordings.',
+      th_faq_a2:'Yes. All specialists are certified by the equivalent of the College of Psychologists.',
+      th_faq_a3:'Yes, with 24h notice at no cost. Voxen sends reminders 48h and 2h before.',
+      th_faq_a4:'Use the SOS button in the Voxen recovery module for immediate help.',
+      th_faq_a5:'Studies show online therapy has comparable effectiveness to in-person (Cuijpers, 2019).',
+            gr_chip:'Live weekly sessions · 100% anonymous',
+      gr_h1:'You are not alone.<br><em>Never.</em>',
+      gr_sub:'Anonymous weekly groups following the AA model — updated for the digital era. A certified moderator, maximum 12 participants, 60 minutes.',
+      gr_anon_note:'🔒 Your real name is never shown · Messages disappear after session',
+      gr_send:'Send',
+      gr_input_ph:'Write in circle... (demo)',
+      gr_circles_label:'All circles',
+      gr_circles_title:'Choose your<br><em>circle.</em>',
+      gr_circles_sub:'Each circle is facilitated by a certified specialist. Once a week, 60 minutes, maximum 12 people.',
+      gr_principles_label:'Principles',
+      gr_principles_title:'How a Voxen<br><em>circle works.</em>',
+      gr_timeline_label:'A typical session',
+      gr_timeline_title:'60 minutes.<br><em>What happens.</em>',
+      gr_join_btn:'Join the circle →',
+      gr_weekly:'Weekly', gr_max:'Max 12 participants', gr_anon:'100% anonymous',
+      gr_spots:'spots left',
+    },
+    fr:{
+      footer_brand:'thérapie',
+      back:'← voxen',
+      nav_companion:'Compagnon IA', nav_therapy:'Thérapie', nav_groups:'Groupes de soutien',
+      comp_chip:'Compagnon émotionnel · Propulsé par Claude AI',
+      comp_h1:'Il vous entend.<br><em>Il vous comprend.</em><br>Toujours là.',
+      comp_sub:"Ce n’est pas un chatbot. Il ne donne pas de conseils non sollicités. C’est un ami numérique empathique.",
+      comp_voice_title:'🎙 Votre voix',
+      comp_state:'Appuyez sur l’orbe ou choisissez une émotion',
+      comp_btn_gen:'Générer une réponse empathique →',
+      comp_resp_title:'💜 Voxen répond',
+      comp_resp_waiting:'En attente...',
+      comp_resp_detecting:'— détection de l’émotion',
+      comp_resp_tag:'VOXEN RESSENT',
+      comp_resp_default:'Bonsoir. Comment s’est passée votre journée?',
+      comp_btn_sim:'Simuler une émotion',
+      comp_btn_mem:'Souvenir 1 an',
+      comp_m_tempo:'Tempo vocal', comp_m_energy:'Énergie', comp_m_conf:'Confiance IA',
+      comp_hist_label:'Historique de session',
+      comp_how_label:'Comment ça marche',
+      comp_how_title:'Science appliquée.<br><em>Empathie réelle.</em>',
+      comp_how_sub:'Voxen combine l’analyse prosodique de la voix avec le traitement sémantique du texte.',
+      comp_emo_label:'Carte des émotions',
+      comp_emo_title:'8 émotions.<br><em>Nuances infinies.</em>',
+      comp_emo_sub:'Voxen détecte l’émotion primaire, secondaire et l’intensité.',
+      comp_pros_label:'Signaux prosodiques',
+      comp_pros_title:'Ce que nous lisons<br><em>dans votre voix.</em>',
+      comp_tl1_title:'Capture vocale', comp_tl1_desc:'Expo AV enregistre en haute qualité. Nous analysons COMMENT vous le dites.',
+      comp_tl2_title:'Analyse prosodique', comp_tl2_desc:'6 signaux vocaux: tempo, hauteur, énergie, pauses, débit, variance du volume.',
+      comp_tl3_title:'Transcription + sémantique', comp_tl3_desc:'Whisper AI transcrit instantanément. Combiné avec les signaux prosodiques (60% voix + 40% texte).',
+      comp_tl4_title:'Réponse empathique Claude', comp_tl4_desc:'Claude Haiku génère la réponse en <2 secondes. Max 3 phrases, sans conseils non sollicités.',
+      comp_tl5_title:'Mémoire émotionnelle', comp_tl5_desc:'Chaque entrée sauvegardée avec l’émotion détectée. Un an après, vous comprenez comment vous avez changé.',
+      th_chip:'Psychologues · Psychothérapeutes · Consultants médicaux',
+      th_h1:'Le bon thérapeute.<br><em>Au bon moment.</em>',
+      th_sub:'Voxen ne remplace pas le thérapeute. Il le prépare. Votre thérapeute reçoit un résumé anonyme — la première séance commence là où vous en êtes resté.',
+      th_tab1:'🧑‍⚕️ Psychologue / Psychothérapeute', th_tab2:'💬 Consultation en ligne', th_tab3:'🏥 Évaluation médicale',
+      th_step_sel:'Sélectionnez un spécialiste près de chez vous',
+      th_btn_cont:'Continuer →', th_btn_back:'← Retour', th_btn_confirm:'Confirmer le rendez-vous →',
+      th_ai_title:'Résumé Voxen IA pour le thérapeute', th_ai_sub:'Envoyé anonymement · Désactivable à tout moment',
+      th_ai_hide:'Masquer le résumé', th_ai_show:'Afficher le résumé',
+      th_confirm_title:'Rendez-vous confirmé!',
+      th_btn_reset:'Réserver une autre séance',
+      th_diff_label:'La différence Voxen',
+      th_diff_title:'Première séance.<br><em>Sans tout répéter.</em>',
+      th_diff_sub:'La chose la plus difficile en thérapie est d’expliquer d’où vous venez. Voxen le fait pour vous.',
+      th_faq_label:'Questions fréquentes',
+      th_faq_title:'Avant de<br><em>réserver.</em>',
+      th_step1_help:'Sélectionnez un spécialiste près de chez vous · Voxen lui envoie un résumé anonyme (avec votre accord)',
+      th_pick_time:'Choisissez une heure:',
+      th_brief_loading:'Génération de votre résumé émotionnel des 30 derniers jours...',
+      th_online_h:'Consultation en ligne sous 24h',
+      th_online_p:'Consultant certifié en gestion du stress et récupération. Vidéo ou chat sécurisé. Pas de longues listes d’attente.',
+      th_online_f1a:'Disponible sous 24 heures', th_online_f1b:'Confirmation par email',
+      th_online_f2a:'Session chiffrée de bout en bout', th_online_f2b:'Personne d’autre n’écoute',
+      th_online_f3a:'Vidéo, audio ou chat', th_online_f3b:'Vous choisissez le format qui vous convient',
+      th_online_btn:'Demander une consultation →',
+      th_med_h:'Évaluation médicale psychiatrique',
+      th_med_p:'Pour les cas nécessitant une évaluation psychiatrique, un diagnostic ou un traitement médicamenteux. Voxen facilite le référencement avec un contexte clinique complet.',
+      th_med_steps_h:'⚕️ Processus en 3 étapes',
+      th_med_steps:'1. Voxen IA génère un rapport clinique préliminaire basé sur 30 jours de données vocales<br>2. Vous êtes orienté vers un psychiatre/spécialiste de notre réseau<br>3. Suivi continu via l’application — thérapeute + médecin + Voxen travaillent ensemble',
+      th_med_imp_label:'Important:',
+      th_med_imp:'Voxen ne remplace pas la consultation médicale. Nous sommes un facilitateur qui aide le spécialiste à mieux comprendre votre état émotionnel.',
+      th_med_btn:'Demander une évaluation médicale →',
+      th_diff_bad_label:'❌ Sans Voxen', th_diff_good_label:'✓ Avec Voxen',
+      th_diff_b1:'3 premières séances: votre historique depuis zéro',
+      th_diff_b2:'Le thérapeute ne sait pas comment vous avez dormi hier',
+      th_diff_b3:'Vous devez vous souvenir et formuler',
+      th_diff_b4:'Temps perdu sur le contexte, moins sur la guérison',
+      th_diff_g1:'Le thérapeute reçoit un résumé anonyme de 30 jours',
+      th_diff_g2:'Évolution émotionnelle, déclencheurs — visualisés',
+      th_diff_g3:'Première séance directement au sujet',
+      th_diff_g4:'Le thérapeute suit les progrès entre les séances',
+      th_faq_q1:'Mes données vocales sont-elles envoyées au thérapeute?',
+      th_faq_q2:'Les thérapeutes sont-ils vérifiés par Voxen?',
+      th_faq_q3:'Puis-je annuler ou reprogrammer?',
+      th_faq_q4:'Que se passe-t-il si je suis en crise maintenant?',
+      th_faq_q5:'La thérapie en ligne est-elle aussi efficace?',
+      th_faq_a1:'Non. Le thérapeute reçoit UNIQUEMENT un résumé anonyme — des schémas émotionnels, pas des enregistrements.',
+      th_faq_a2:'Oui. Tous les spécialistes sont certifiés par l’équivalent du Collège des Psychologues.',
+      th_faq_a3:'Oui, avec 24h de préavis sans frais.',
+      th_faq_a4:'Utilisez le bouton SOS dans le module de récupération Voxen.',
+      th_faq_a5:'Les études montrent que la thérapie en ligne a une efficacité comparable (Cuijpers, 2019).',
+            gr_chip:'Sessions hebdomadaires en direct · 100% anonymes',
+      gr_h1:'Vous n’êtes pas seul.<br><em>Jamais.</em>',
+      gr_sub:'Groupes anonymes hebdomadaires selon le modèle AA — mis à jour pour l’ère numérique.',
+      gr_anon_note:'🔒 Votre vrai nom n’est jamais affiché · Messages supprimés après la session',
+      gr_send:'Envoyer',
+      gr_input_ph:'Écrire dans le cercle... (démo)',
+      gr_circles_label:'Tous les cercles',
+      gr_circles_title:'Choisissez votre<br><em>cercle.</em>',
+      gr_circles_sub:'Chaque cercle est animé par un spécialiste certifié. Une fois par semaine, 60 minutes.',
+      gr_principles_label:'Principes',
+      gr_principles_title:'Comment fonctionne<br><em>un cercle Voxen.</em>',
+      gr_timeline_label:'Une session typique',
+      gr_timeline_title:'60 minutes.<br><em>Ce qui se passe.</em>',
+      gr_join_btn:'Rejoindre le cercle →',
+      gr_weekly:'Hebdomadaire', gr_max:'Max 12 participants', gr_anon:'100% anonyme',
+      gr_spots:'places disponibles',
+    },
+    de:{
+      footer_brand:'Therapie',
+      back:'← voxen',
+      nav_companion:'KI-Begleiter', nav_therapy:'Therapie', nav_groups:'Selbsthilfegruppen',
+      comp_chip:'Emotionaler Begleiter · Powered by Claude AI',
+      comp_h1:'Er hört dich.<br><em>Er versteht dich.</em><br>Immer da.',
+      comp_sub:'Kein Chatbot. Keine ungebetenen Ratschläge. Ein einfühlsamer digitaler Freund.',
+      comp_voice_title:'🎙 Deine Stimme',
+      comp_state:'Orb drücken oder Emotion wählen',
+      comp_btn_gen:'Einfühlsame Antwort generieren →',
+      comp_resp_title:'💜 Voxen antwortet',
+      comp_resp_waiting:'Warten...',
+      comp_resp_detecting:'— erkenne Emotion',
+      comp_resp_tag:'VOXEN SPÜRT',
+      comp_resp_default:'Guten Abend. Wie war dein Tag?',
+      comp_btn_sim:'Emotion simulieren',
+      comp_btn_mem:'Erinnerung 1 Jahr',
+      comp_m_tempo:'Sprachtempo', comp_m_energy:'Energie', comp_m_conf:'KI-Konfidenz',
+      comp_hist_label:'Sitzungsverlauf',
+      comp_how_label:'Wie es funktioniert',
+      comp_how_title:'Angewandte Wissenschaft.<br><em>Echte Empathie.</em>',
+      comp_how_sub:'Voxen kombiniert Sprachprosodie-Analyse mit semantischer Textverarbeitung.',
+      comp_emo_label:'Emotionskarte',
+      comp_emo_title:'8 Emotionen.<br><em>Unendliche Nuancen.</em>',
+      comp_emo_sub:'Voxen erkennt primäre, sekundäre Emotion und Intensität.',
+      comp_pros_label:'Prosodie-Signale',
+      comp_pros_title:'Was wir lesen<br><em>aus deiner Stimme.</em>',
+      comp_tl1_title:'Stimmaufnahme', comp_tl1_desc:'Expo AV nimmt in hoher Qualität auf. Wir analysieren WIE du es sagst.',
+      comp_tl2_title:'Prosodie-Analyse', comp_tl2_desc:'6 Stimmsignale: Tempo, Tonhöhe, Energie, Pausen, Sprechrate, Lautstärkevariation.',
+      comp_tl3_title:'Transkription + Semantik', comp_tl3_desc:'Whisper KI transkribiert sofort. Kombiniert mit Prosodie-Signalen (60% Stimme + 40% Text).',
+      comp_tl4_title:'Einfühlsame Claude-Antwort', comp_tl4_desc:'Claude Haiku generiert Antwort in <2 Sekunden. Max 3 Sätze, keine ungebetenen Ratschläge.',
+      comp_tl5_title:'Emotionsgedächtnis', comp_tl5_desc:'Jeder Eintrag mit erkannter Emotion gespeichert. Ein Jahr später verstehst du, wie du dich verändert hast.',
+      th_chip:'Psychologen · Psychotherapeuten · Medizinische Berater',
+      th_h1:'Der richtige Therapeut.<br><em>Zum richtigen Zeitpunkt.</em>',
+      th_sub:'Voxen ersetzt den Therapeuten nicht. Es bereitet ihn vor. Dein Therapeut erhält eine anonyme Zusammenfassung — die erste Sitzung beginnt dort, wo du aufgehört hast.',
+      th_tab1:'🧑‍⚕️ Psychologe / Psychotherapeut', th_tab2:'💬 Online-Beratung', th_tab3:'🏥 Medizinische Bewertung',
+      th_step_sel:'Wähle einen Spezialisten in deiner Nähe',
+      th_btn_cont:'Weiter →', th_btn_back:'← Zurück', th_btn_confirm:'Buchung bestätigen →',
+      th_ai_title:'Voxen KI-Zusammenfassung für Therapeut', th_ai_sub:'Anonym gesendet · Jederzeit deaktivierbar',
+      th_ai_hide:'Zusammenfassung ausblenden', th_ai_show:'Zusammenfassung anzeigen',
+      th_confirm_title:'Buchung bestätigt!',
+      th_btn_reset:'Weitere Sitzung buchen',
+      th_diff_label:'Der Voxen-Unterschied',
+      th_diff_title:'Erste Sitzung.<br><em>Ohne alles zu wiederholen.</em>',
+      th_diff_sub:'Das Schwerste in der Therapie ist zu erklären, woher du kommst. Voxen tut das für dich.',
+      th_faq_label:'Häufige Fragen',
+      th_faq_title:'Bevor du<br><em>buchst.</em>',
+      th_step1_help:'Wähle einen Spezialisten in deiner Nähe · Voxen sendet ihm eine anonyme Zusammenfassung (mit deinem Einverständnis)',
+      th_pick_time:'Zeit wählen:',
+      th_brief_loading:'Erstelle deine emotionale Zusammenfassung der letzten 30 Tage...',
+      th_online_h:'Online-Beratung innerhalb 24h',
+      th_online_p:'Zertifizierter Berater für Stressmanagement und Genesung. Sicheres Video oder Chat. Keine langen Wartelisten.',
+      th_online_f1a:'Verfügbar innerhalb 24 Stunden', th_online_f1b:'Bestätigung per E-Mail',
+      th_online_f2a:'Ende-zu-Ende verschlüsselte Sitzung', th_online_f2b:'Niemand sonst hört zu',
+      th_online_f3a:'Video, Audio oder Chat', th_online_f3b:'Du wählst das passende Format',
+      th_online_btn:'Beratung anfragen →',
+      th_med_h:'Psychiatrische medizinische Bewertung',
+      th_med_p:'Für Fälle, die psychiatrische Bewertung, Diagnose oder Medikamentenbehandlung erfordern. Voxen erleichtert die Überweisung mit vollem klinischen Kontext.',
+      th_med_steps_h:'⚕️ 3-Schritte-Prozess',
+      th_med_steps:'1. Voxen KI erstellt einen vorläufigen klinischen Bericht basierend auf 30 Tagen Sprachdaten<br>2. Du wirst an einen Psychiater/Spezialisten unseres Netzwerks überwiesen<br>3. Kontinuierliche Nachverfolgung über die App — Therapeut + Arzt + Voxen arbeiten zusammen',
+      th_med_imp_label:'Wichtig:',
+      th_med_imp:'Voxen ersetzt nicht die medizinische Beratung. Wir sind ein Vermittler, der dem Spezialisten hilft, deinen emotionalen Zustand besser zu verstehen.',
+      th_med_btn:'Medizinische Bewertung anfragen →',
+      th_diff_bad_label:'❌ Ohne Voxen', th_diff_good_label:'✓ Mit Voxen',
+      th_diff_b1:'Erste 3 Sitzungen: deine Geschichte von vorne',
+      th_diff_b2:'Therapeut weiß nicht wie du geschlafen oder gefühlt hast',
+      th_diff_b3:'Du musst dich erinnern und formulieren',
+      th_diff_b4:'Zeit für Kontext verloren, weniger für Heilung',
+      th_diff_g1:'Therapeut erhält anonyme 30-Tage-Zusammenfassung',
+      th_diff_g2:'Emotionale Entwicklung, Trigger — visualisiert',
+      th_diff_g3:'Erste Sitzung direkt zum Thema',
+      th_diff_g4:'Therapeut verfolgt Fortschritt zwischen Sitzungen',
+      th_faq_q1:'Werden meine Stimmaufnahmen an den Therapeuten gesendet?',
+      th_faq_q2:'Werden Therapeuten von Voxen überprüft?',
+      th_faq_q3:'Kann ich absagen oder umbuchen?',
+      th_faq_q4:'Was passiert wenn ich gerade in einer Krise bin?',
+      th_faq_q5:'Ist Online-Therapie genauso wirksam?',
+      th_faq_a1:'Nein. Der Therapeut erhält NUR eine anonyme Zusammenfassung — emotionale Muster, keine Aufzeichnungen.',
+      th_faq_a2:'Ja. Alle Spezialisten sind von der Psychologenkammer zertifiziert.',
+      th_faq_a3:'Ja, mit 24h Vorankündigung kostenlos.',
+      th_faq_a4:'Nutze den SOS-Button im Voxen-Genesungsmodul.',
+      th_faq_a5:'Studien zeigen vergleichbare Wirksamkeit der Online-Therapie (Cuijpers, 2019).',
+            gr_chip:'Live wöchentliche Sitzungen · 100% anonym',
+      gr_h1:'Du bist nicht allein.<br><em>Niemals.</em>',
+      gr_sub:'Anonyme wöchentliche Gruppen nach dem AA-Modell — aktualisiert für das digitale Zeitalter.',
+      gr_anon_note:'🔒 Dein echter Name wird nie angezeigt · Nachrichten werden nach der Sitzung gelöscht',
+      gr_send:'Senden',
+      gr_input_ph:'Im Kreis schreiben... (Demo)',
+      gr_circles_label:'Alle Kreise',
+      gr_circles_title:'Wähle deinen<br><em>Kreis.</em>',
+      gr_circles_sub:'Jeder Kreis wird von einem zertifizierten Spezialisten moderiert.',
+      gr_principles_label:'Prinzipien',
+      gr_principles_title:'Wie ein Voxen-<br><em>Kreis funktioniert.</em>',
+      gr_timeline_label:'Eine typische Sitzung',
+      gr_timeline_title:'60 Minuten.<br><em>Was passiert.</em>',
+      gr_join_btn:'Kreis beitreten →',
+      gr_weekly:'Wöchentlich', gr_max:'Max. 12 Teilnehmer', gr_anon:'100% anonym',
+      gr_spots:'Plätze frei',
+    },
+    zh:{
+      footer_brand:'治疗',
+      back:'← voxen',
+      nav_companion:'AI伴侣', nav_therapy:'治疗', nav_groups:'支持小组',
+      comp_chip:'情感伴侣 · 由 Claude AI 驱动',
+      comp_h1:'它倾听您。<br><em>它理解您。</em><br>始终在您身边。',
+      comp_sub:'这不是聊天机器人。它不给出未经请求的建议。它是一个能读懂您声音中情绪的数字朋友。',
+      comp_voice_title:'🎙 您的声音',
+      comp_state:'点击球体或选择情绪',
+      comp_btn_gen:'生成移情回应 →',
+      comp_resp_title:'💜 Voxen 回应',
+      comp_resp_waiting:'等待中...',
+      comp_resp_detecting:'— 检测情绪',
+      comp_resp_tag:'VOXEN感受到',
+      comp_resp_default:'晚上好。今天怎么样？',
+      comp_btn_sim:'模拟情绪',
+      comp_btn_mem:'一年前的记忆',
+      comp_m_tempo:'声音节奏', comp_m_energy:'能量', comp_m_conf:'AI置信度',
+      comp_hist_label:'会话历史',
+      comp_how_label:'工作原理',
+      comp_how_title:'应用科学。<br><em>真实共情。</em>',
+      comp_how_sub:'Voxen将声音韵律分析与语义文本处理相结合。',
+      comp_emo_label:'情绪图谱',
+      comp_emo_title:'8种情绪。<br><em>无限细微差别。</em>',
+      comp_emo_sub:'Voxen检测主要情绪、次要情绪和强度。',
+      comp_pros_label:'韵律信号',
+      comp_pros_title:'我们从<br><em>您的声音中读取什么。</em>',
+      comp_tl1_title:'声音采集', comp_tl1_desc:'Expo AV录制高质量音频。我们分析您怎么说：语调、节奏、停顿、颤抖、音量。',
+      comp_tl2_title:'韵律分析', comp_tl2_desc:'提取6个声音信号：节奏、平均音调、RMS能量、停顿比、语速、音量变化。',
+      comp_tl3_title:'转录+语义', comp_tl3_desc:'Whisper AI即时转录任何语言。与韵律信号结合（60%声音+40%文本）。',
+      comp_tl4_title:'Claude移情回应', comp_tl4_desc:'Claude Haiku在<2秒内生成回应。最多3句话，无感叹号，无未经请求的建议。',
+      comp_tl5_title:'情绪记忆', comp_tl5_desc:'每条记录都保存检测到的情绪。一年后再听——了解自己如何改变。',
+      th_chip:'心理学家 · 心理治疗师 · 医疗顾问',
+      th_h1:'合适的治疗师。<br><em>在合适的时机。</em>',
+      th_sub:'Voxen不替代治疗师。它为治疗师做准备。您的治疗师收到匿名情绪摘要——第一次会话从您停下的地方开始，不是从零开始。',
+      th_tab1:'🧑‍⚕️ 心理学家/心理治疗师', th_tab2:'💬 在线咨询', th_tab3:'🏥 医疗评估',
+      th_step_sel:'选择您附近的专家',
+      th_btn_cont:'继续 →', th_btn_back:'← 返回', th_btn_confirm:'确认预约 →',
+      th_ai_title:'Voxen AI治疗师摘要', th_ai_sub:'匿名发送 · 随时可禁用',
+      th_ai_hide:'隐藏摘要', th_ai_show:'显示摘要',
+      th_confirm_title:'预约已确认！',
+      th_btn_reset:'预约另一次会话',
+      th_diff_label:'Voxen的不同',
+      th_diff_title:'第一次会话。<br><em>无需重复一切。</em>',
+      th_diff_sub:'治疗中最难的事是解释你从哪里来。Voxen为你做这件事。',
+      th_faq_label:'常见问题',
+      th_faq_title:'预约之前<br><em>了解这些。</em>',
+      th_step1_help:'选择您附近的专家 · Voxen会向他们发送匿名摘要（经您同意）',
+      th_pick_time:'选择时间：',
+      th_brief_loading:'正在生成您过去30天的情绪摘要...',
+      th_online_h:'24小时内在线咨询',
+      th_online_p:'压力管理和康复认证顾问。安全视频或聊天。无长等待名单。',
+      th_online_f1a:'24小时内可用', th_online_f1b:'电子邮件确认',
+      th_online_f2a:'端到端加密会话', th_online_f2b:'没有其他人在听',
+      th_online_f3a:'视频、音频或聊天', th_online_f3b:'您选择适合的格式',
+      th_online_btn:'请求咨询 →',
+      th_med_h:'精神病学医疗评估',
+      th_med_p:'适用于需要精神病学评估、诊断或药物治疗的情况。Voxen通过完整的临床背景促进转诊。',
+      th_med_steps_h:'⚕️ 3步流程',
+      th_med_steps:'1. Voxen AI基于30天语音数据生成初步临床报告<br>2. 您被转介给我们网络中的精神病学家/专科医生<br>3. 通过应用程序持续跟进——治疗师+医生+Voxen协同工作',
+      th_med_imp_label:'重要：',
+      th_med_imp:'Voxen不替代医疗咨询。我们是帮助专家更好理解您情绪状态的促进者。',
+      th_med_btn:'请求医疗评估 →',
+      th_diff_bad_label:'❌ 没有Voxen', th_diff_good_label:'✓ 有Voxen',
+      th_diff_b1:'前3次会话：从零开始你的历史',
+      th_diff_b2:'治疗师不知道你昨天睡得如何',
+      th_diff_b3:'你必须记住并表达一切',
+      th_diff_b4:'在背景上浪费时间，治疗时间减少',
+      th_diff_g1:'治疗师收到匿名30天摘要',
+      th_diff_g2:'情绪演变、触发因素——可视化',
+      th_diff_g3:'第一次会话直奔主题',
+      th_diff_g4:'治疗师跟踪会话间的进展',
+      th_faq_q1:'我的声音数据会发送给治疗师吗？',
+      th_faq_q2:'治疗师经过Voxen验证吗？',
+      th_faq_q3:'我可以取消或重新安排吗？',
+      th_faq_q4:'如果我现在处于危机中怎么办？',
+      th_faq_q5:'在线治疗同样有效吗？',
+      th_faq_a1:'不。治疗师只收到匿名文本摘要——情绪模式，不是录音。',
+      th_faq_a2:'是的。网络中的所有专家都经过认证。',
+      th_faq_a3:'是的，提前24小时无费用取消。',
+      th_faq_a4:'使用Voxen恢复模块中的SOS按钮获得即时帮助。',
+      th_faq_a5:'研究表明在线治疗与面对面治疗效果相当（Cuijpers，2019年）。',
+            gr_chip:'每周现场会议 · 100%匿名',
+      gr_h1:'你并不孤单。<br><em>永远不会。</em>',
+      gr_sub:'匿名每周小组，遵循AA模式——为数字时代更新。认证主持人，最多12名参与者，60分钟。',
+      gr_anon_note:'🔒 您的真实姓名从不显示 · 会话结束后消息消失',
+      gr_send:'发送',
+      gr_input_ph:'在圈子里写... (演示)',
+      gr_circles_label:'所有圈子',
+      gr_circles_title:'选择您的<br><em>圈子。</em>',
+      gr_circles_sub:'每个圈子由认证专家主持。每周一次，60分钟，最多12人。',
+      gr_principles_label:'原则',
+      gr_principles_title:'Voxen圈子<br><em>如何运作。</em>',
+      gr_timeline_label:'典型会话',
+      gr_timeline_title:'60分钟。<br><em>发生了什么。</em>',
+      gr_join_btn:'加入圈子 →',
+      gr_weekly:'每周', gr_max:'最多12名参与者', gr_anon:'100%匿名',
+      gr_spots:'个空位',
+    },
+    ja:{
+      footer_brand:'療法',
+      back:'← voxen',
+      nav_companion:'AIコンパニオン', nav_therapy:'療法', nav_groups:'サポートグループ',
+      comp_chip:'感情コンパニオン · Claude AI搭載',
+      comp_h1:'あなたを聞いている。<br><em>あなたを理解している。</em><br>いつもそこにいる。',
+      comp_sub:'チャットボットではない。求めていないアドバイスはしない。声の感情を読み取る共感的なデジタルの友人。',
+      comp_voice_title:'🎙 あなたの声',
+      comp_state:'球を押すか感情を選んでください',
+      comp_btn_gen:'共感的な回応を生成 →',
+      comp_resp_title:'💜 Voxenが回応',
+      comp_resp_waiting:'待機中...',
+      comp_resp_detecting:'— 感情を検出中',
+      comp_resp_tag:'VoxenはAIを感知',
+      comp_resp_default:'こんばんは。今日はどうでしたか？',
+      comp_btn_sim:'感情をシミュレート',
+      comp_btn_mem:'1年前の記憶',
+      comp_m_tempo:'音声テンポ', comp_m_energy:'エネルギー', comp_m_conf:'AI信頼度',
+      comp_hist_label:'セッション履歴',
+      comp_how_label:'使い方',
+      comp_how_title:'応用科学。<br><em>本物の共感。</em>',
+      comp_how_sub:'Voxenは声のプロソディ分析とテキストの意味処理を組み合わせます。',
+      comp_emo_label:'感情マップ',
+      comp_emo_title:'8つの感情。<br><em>無限のニュアンス。</em>',
+      comp_emo_sub:'Voxenは主要感情、副次感情、強度を検出します。',
+      comp_pros_label:'プロソディシグナル',
+      comp_pros_title:'声から<br><em>読み取ること。</em>',
+      comp_tl1_title:'音声キャプチャ', comp_tl1_desc:'Expo AVが高品質で録音。どのように言うかを分析：トーン、リズム、間、震え、音量。',
+      comp_tl2_title:'プロソディ分析', comp_tl2_desc:'6つの音声シグナル：テンポ、平均ピッチ、RMSエネルギー、ポーズ比率、話速、音量変化。',
+      comp_tl3_title:'文字起こし+意味論', comp_tl3_desc:'Whisper AIが即時に転写。プロソディシグナルと組み合わせ（60%声+40%テキスト）。',
+      comp_tl4_title:'Claude共感的回応', comp_tl4_desc:'Claude Haikuが2秒以内に回応生成。最大3文、感嘆符なし、求めていないアドバイスなし。',
+      comp_tl5_title:'感情記憶', comp_tl5_desc:'検出された感情と共に各エントリを保存。1年後に聞いて、どう変わったかを理解。',
+      th_chip:'心理士 · 心理療法士 · 医療コンサルタント',
+      th_h1:'適切なセラピスト。<br><em>適切なタイミングで。</em>',
+      th_sub:'Voxenはセラピストを代替しません。準備をします。あなたのセラピストは匿名のサマリーを受け取ります——最初のセッションはあなたが残したところから始まります。',
+      th_tab1:'🧑‍⚕️ 心理士/心理療法士', th_tab2:'💬 オンライン相談', th_tab3:'🏥 医療評価',
+      th_step_sel:'近くの専門家を選んでください',
+      th_btn_cont:'続ける →', th_btn_back:'← 戻る', th_btn_confirm:'予約を確認 →',
+      th_ai_title:'Voxen AIセラピスト向けサマリー', th_ai_sub:'匿名送信 · いつでも無効化可能',
+      th_ai_hide:'サマリーを隠す', th_ai_show:'サマリーを表示',
+      th_confirm_title:'予約が確認されました！',
+      th_btn_reset:'別のセッションを予約',
+      th_diff_label:'Voxenの違い',
+      th_diff_title:'最初のセッション。<br><em>すべてを繰り返さずに。</em>',
+      th_diff_sub:'療法で最も難しいのは、どこから来たかを説明すること。Voxenがそれをします。',
+      th_faq_label:'よくある質問',
+      th_faq_title:'予約前に<br><em>知っておくこと。</em>',
+      th_step1_help:'近くの専門家を選ぶ · Voxenが匿名サマリーを送信（あなたの同意のもと）',
+      th_pick_time:'時間を選ぶ：',
+      th_brief_loading:'過去30日間の感情サマリーを生成中...',
+      th_online_h:'24時間以内のオンライン相談',
+      th_online_p:'ストレス管理と回復の認定コンサルタント。安全なビデオまたはチャット。長い待機リストなし。',
+      th_online_f1a:'24時間以内に利用可能', th_online_f1b:'メールで確認',
+      th_online_f2a:'エンドツーエンド暗号化セッション', th_online_f2b:'他の誰も聞いていない',
+      th_online_f3a:'ビデオ、音声、またはチャット', th_online_f3b:'あなたに合う形式を選択',
+      th_online_btn:'相談をリクエスト →',
+      th_med_h:'精神医学的医療評価',
+      th_med_p:'精神医学的評価、診断、または薬物治療を必要とするケース向け。Voxenは完全な臨床コンテキストで紹介を促進します。',
+      th_med_steps_h:'⚕️ 3ステッププロセス',
+      th_med_steps:'1. Voxen AIが30日間の音声データに基づいて予備臨床レポートを生成<br>2. ネットワーク内の精神科医/専門医に紹介されます<br>3. アプリを通じた継続的フォローアップ——セラピスト＋医師＋Voxenが連携',
+      th_med_imp_label:'重要：',
+      th_med_imp:'Voxenは医療相談を代替しません。専門家があなたの感情状態をよりよく理解するのを助けるファシリテーターです。',
+      th_med_btn:'医療評価をリクエスト →',
+      th_diff_bad_label:'❌ Voxenなし', th_diff_good_label:'✓ Voxenあり',
+      th_diff_b1:'最初の3セッション：あなたの歴史をゼロから',
+      th_diff_b2:'セラピストは昨日の睡眠や気分を知らない',
+      th_diff_b3:'あなたが思い出して説明しなければならない',
+      th_diff_b4:'文脈に時間を浪費、治癒に費やす時間が減る',
+      th_diff_g1:'セラピストが匿名の30日サマリーを受け取る',
+      th_diff_g2:'感情の変化、トリガー——可視化',
+      th_diff_g3:'最初のセッションから本題へ',
+      th_diff_g4:'セラピストがセッション間の進捗を追跡',
+      th_faq_q1:'私の音声データはセラピストに送られますか？',
+      th_faq_q2:'セラピストはVoxenに確認されていますか？',
+      th_faq_q3:'キャンセルや変更はできますか？',
+      th_faq_q4:'今危機状態の場合はどうすればいいですか？',
+      th_faq_q5:'オンライン療法は同じくらい効果的ですか？',
+      th_faq_a1:'いいえ。セラピストは匿名のテキストサマリーのみ受け取ります。',
+      th_faq_a2:'はい。すべての専門家は心理学者協会から認定されています。',
+      th_faq_a3:'はい、24時間前なら無料でキャンセルできます。',
+      th_faq_a4:'即時支援はVoxen回復モジュールのSOSボタンを使用してください。',
+      th_faq_a5:'研究によれば、オンライン療法は対面療法と同等の効果があります（Cuijpers、2019年）。',
+            gr_chip:'毎週ライブセッション · 100%匿名',
+      gr_h1:'あなたは一人じゃない。<br><em>決して。</em>',
+      gr_sub:'AAモデルに基づく匿名の週次グループ — デジタル時代に更新。認定モデレーター、最大12名、60分。',
+      gr_anon_note:'🔒 本名は絶対に表示されません · セッション後にメッセージは削除',
+      gr_send:'送信',
+      gr_input_ph:'サークルに書く... (デモ)',
+      gr_circles_label:'すべてのサークル',
+      gr_circles_title:'あなたの<br><em>サークルを選ぶ。</em>',
+      gr_circles_sub:'各サークルは認定専門家が進行します。週1回、60分、最大12名。',
+      gr_principles_label:'原則',
+      gr_principles_title:'Voxenサークルの<br><em>仕組み。</em>',
+      gr_timeline_label:'典型的なセッション',
+      gr_timeline_title:'60分間。<br><em>何が起こるか。</em>',
+      gr_join_btn:'サークルに参加 →',
+      gr_weekly:'毎週', gr_max:'最大12名', gr_anon:'100%匿名',
+      gr_spots:'空席あり',
+    },
+    ru:{
+      footer_brand:'терапия',
+      back:'← voxen',
+      nav_companion:'ИИ-компаньон', nav_therapy:'Терапия', nav_groups:'Группы поддержки',
+      comp_chip:'Эмоциональный компаньон · На базе Claude AI',
+      comp_h1:'Он слышит тебя.<br><em>Он понимает тебя.</em><br>Всегда рядом.',
+      comp_sub:'Это не чатбот. Никаких незваных советов. Это чуткий цифровой друг, который читает эмоции в твоём голосе.',
+      comp_voice_title:'🎙 Твой голос',
+      comp_state:'Нажми на шар или выбери эмоцию',
+      comp_btn_gen:'Создать эмпатичный ответ →',
+      comp_resp_title:'💜 Voxen отвечает',
+      comp_resp_waiting:'Ожидание...',
+      comp_resp_detecting:'— определяю эмоцию',
+      comp_resp_tag:'VOXEN ЧУВСТВУЕТ',
+      comp_resp_default:'Добрый вечер. Как прошёл день?',
+      comp_btn_sim:'Симулировать эмоцию',
+      comp_btn_mem:'Воспоминание 1 год',
+      comp_m_tempo:'Речевой темп', comp_m_energy:'Энергия', comp_m_conf:'Уверенность ИИ',
+      comp_hist_label:'История сессии',
+      comp_how_label:'Как это работает',
+      comp_how_title:'Прикладная наука.<br><em>Настоящая эмпатия.</em>',
+      comp_how_sub:'Voxen сочетает анализ просодики голоса с семантической обработкой текста.',
+      comp_emo_label:'Карта эмоций',
+      comp_emo_title:'8 эмоций.<br><em>Бесконечные нюансы.</em>',
+      comp_emo_sub:'Voxen определяет первичную, вторичную эмоцию и интенсивность.',
+      comp_pros_label:'Просодические сигналы',
+      comp_pros_title:'Что мы читаем<br><em>из твоего голоса.</em>',
+      comp_tl1_title:'Захват голоса', comp_tl1_desc:'Expo AV записывает в высоком качестве. Анализируем КАК ты говоришь: тон, ритм, паузы, дрожание, громкость.',
+      comp_tl2_title:'Просодический анализ', comp_tl2_desc:'6 голосовых сигналов: темп, средний тон, RMS-энергия, соотношение пауз, скорость речи, вариация громкости.',
+      comp_tl3_title:'Транскрипция + семантика', comp_tl3_desc:'Whisper AI транскрибирует мгновенно. Комбинируется с просодическими сигналами (60% голос + 40% текст).',
+      comp_tl4_title:'Эмпатичный ответ Claude', comp_tl4_desc:'Claude Haiku генерирует ответ за <2 секунды. Максимум 3 предложения, без восклицаний.',
+      comp_tl5_title:'Эмоциональная память', comp_tl5_desc:'Каждая запись сохраняется с определённой эмоцией. Год спустя, слушая снова — понимаешь как изменился.',
+      th_chip:'Психологи · Психотерапевты · Медицинские консультанты',
+      th_h1:'Правильный терапевт.<br><em>В нужный момент.</em>',
+      th_sub:'Voxen не заменяет терапевта. Он его готовит. Терапевт получает анонимное резюме — первая сессия начинается там, где ты остановился, не с нуля.',
+      th_tab1:'🧑‍⚕️ Психолог/Психотерапевт', th_tab2:'💬 Онлайн-консультация', th_tab3:'🏥 Медицинская оценка',
+      th_step_sel:'Выбери специалиста рядом с тобой',
+      th_btn_cont:'Продолжить →', th_btn_back:'← Назад', th_btn_confirm:'Подтвердить запись →',
+      th_ai_title:'Резюме Voxen ИИ для терапевта', th_ai_sub:'Отправлено анонимно · Можно отключить',
+      th_ai_hide:'Скрыть резюме', th_ai_show:'Показать резюме',
+      th_confirm_title:'Запись подтверждена!',
+      th_btn_reset:'Записаться ещё раз',
+      th_diff_label:'Разница Voxen',
+      th_diff_title:'Первый сеанс.<br><em>Без повторений.</em>',
+      th_diff_sub:'Самое сложное в терапии — объяснить, откуда ты пришёл. Voxen делает это за тебя.',
+      th_faq_label:'Частые вопросы',
+      th_faq_title:'Перед тем как<br><em>записаться.</em>',
+      th_step1_help:'Выберите специалиста рядом · Voxen отправит ему анонимное резюме (с вашего согласия)',
+      th_pick_time:'Выберите время:',
+      th_brief_loading:'Создание вашего эмоционального резюме за последние 30 дней...',
+      th_online_h:'Онлайн-консультация в течение 24ч',
+      th_online_p:'Сертифицированный консультант по управлению стрессом и восстановлению. Защищённое видео или чат. Без длинных очередей.',
+      th_online_f1a:'Доступно в течение 24 часов', th_online_f1b:'Подтверждение по email',
+      th_online_f2a:'End-to-end зашифрованная сессия', th_online_f2b:'Никто другой не слушает',
+      th_online_f3a:'Видео, аудио или чат', th_online_f3b:'Вы выбираете подходящий формат',
+      th_online_btn:'Запросить консультацию →',
+      th_med_h:'Психиатрическая медицинская оценка',
+      th_med_p:'Для случаев, требующих психиатрической оценки, диагностики или медикаментозного лечения. Voxen облегчает направление с полным клиническим контекстом.',
+      th_med_steps_h:'⚕️ Процесс из 3 шагов',
+      th_med_steps:'1. Voxen ИИ создаёт предварительный клинический отчёт на основе 30 дней голосовых данных<br>2. Вас направляют к психиатру/специалисту из нашей сети<br>3. Непрерывное наблюдение через приложение — терапевт + врач + Voxen работают вместе',
+      th_med_imp_label:'Важно:',
+      th_med_imp:'Voxen не заменяет медицинскую консультацию. Мы — фасилитатор, помогающий специалисту лучше понять ваше эмоциональное состояние.',
+      th_med_btn:'Запросить медицинскую оценку →',
+      th_diff_bad_label:'❌ Без Voxen', th_diff_good_label:'✓ С Voxen',
+      th_diff_b1:'Первые 3 сессии: твоя история с нуля',
+      th_diff_b2:'Терапевт не знает как ты спал или что чувствовал вчера',
+      th_diff_b3:'Ты должен помнить и формулировать всё',
+      th_diff_b4:'Время потрачено на контекст, меньше на исцеление',
+      th_diff_g1:'Терапевт получает анонимное резюме за 30 дней',
+      th_diff_g2:'Эмоциональная динамика, триггеры — визуализированы',
+      th_diff_g3:'Первая сессия прямо к делу',
+      th_diff_g4:'Терапевт отслеживает прогресс между сессиями',
+      th_faq_q1:'Мои голосовые данные отправляются терапевту?',
+      th_faq_q2:'Терапевты проверены Voxen?',
+      th_faq_q3:'Могу ли я отменить или перенести?',
+      th_faq_q4:'Что если я сейчас в кризисе?',
+      th_faq_q5:'Онлайн-терапия так же эффективна?',
+      th_faq_a1:'Нет. Терапевт получает ТОЛЬКО анонимное текстовое резюме — паттерны, не записи.',
+      th_faq_a2:'Да. Все специалисты сертифицированы эквивалентом Коллегии психологов.',
+      th_faq_a3:'Да, за 24ч до встречи бесплатно.',
+      th_faq_a4:'Используй кнопку SOS в модуле восстановления Voxen.',
+      th_faq_a5:'Исследования показывают сопоставимую эффективность онлайн-терапии (Cuijpers, 2019).',
+            gr_chip:'Еженедельные живые сессии · 100% анонимно',
+      gr_h1:'Ты не один.<br><em>Никогда.</em>',
+      gr_sub:'Анонимные еженедельные группы по модели АА — обновлённые для цифровой эпохи. Сертифицированный модератор, максимум 12 участников, 60 минут.',
+      gr_anon_note:'🔒 Твоё настоящее имя никогда не отображается · Сообщения удаляются после сессии',
+      gr_send:'Отправить',
+      gr_input_ph:'Пиши в кружок... (демо)',
+      gr_circles_label:'Все кружки',
+      gr_circles_title:'Выбери свой<br><em>кружок.</em>',
+      gr_circles_sub:'Каждый кружок ведёт сертифицированный специалист. Раз в неделю, 60 минут.',
+      gr_principles_label:'Принципы',
+      gr_principles_title:'Как работает<br><em>кружок Voxen.</em>',
+      gr_timeline_label:'Типичная сессия',
+      gr_timeline_title:'60 минут.<br><em>Что происходит.</em>',
+      gr_join_btn:'Присоединиться к кружку →',
+      gr_weekly:'Еженедельно', gr_max:'Макс. 12 участников', gr_anon:'100% анонимно',
+      gr_spots:'свободных мест',
+    },
+  };
+
+  const FLAG_MAP = {ro:'🇷🇴',en:'🇬🇧',fr:'🇫🇷',de:'🇩🇪',zh:'🇨🇳',ja:'🇯🇵',ru:'🇷🇺'};
+  const LANG_NAMES = {ro:'Română',en:'English',fr:'Français',de:'Deutsch',zh:'中文',ja:'日本語',ru:'Русский'};
+
+  let LANG = 'ro';
+
+  function t(k){ return (T[LANG]&&T[LANG][k]) || (T.en&&T.en[k]) || k; }
+
+  function applyLang(lang){
+    LANG = lang;
+    document.documentElement.className = '';
+    if(lang==='zh') document.documentElement.className = 'zh-cn';
+    if(lang==='ja') document.documentElement.className = 'ja';
+    document.documentElement.lang = lang==='zh'?'zh-CN':lang;
+    document.querySelectorAll('[data-t]').forEach(el=>{
+      const k = el.getAttribute('data-t');
+      const v = t(k);
+      if(el.hasAttribute('data-t-html')) el.innerHTML = v;
+      else if(el.tagName==='INPUT'||el.tagName==='TEXTAREA') el.placeholder = v;
+      else el.textContent = v;
+    });
+    const af = document.getElementById('activeFlag');
+    if(af) af.textContent = FLAG_MAP[lang]||'🌐';
+    document.querySelectorAll('.lang-option').forEach(b=>{
+      const m = b.getAttribute('data-lang');
+      b.classList.toggle('active', m===lang);
+    });
+    try{ localStorage.setItem('vxlang', lang); }catch(e){}
+    // Run registered hooks
+    if (window.voxenHooks && Array.isArray(window.voxenHooks)) {
+      window.voxenHooks.forEach(fn => { try{ fn(lang); } catch(e){ console.error(e); } });
+    }
+  }
+
+  function toggleLangMenu(){
+    document.getElementById('langMenu').classList.toggle('open');
+  }
+  function pickLang(lang){
+    document.getElementById('langMenu').classList.remove('open');
+    applyLang(lang);
+  }
+  document.addEventListener('click', e=>{
+    const w = document.getElementById('globeWrap');
+    if(w && !w.contains(e.target)) document.getElementById('langMenu').classList.remove('open');
+  });
+
+  // Init: read saved language
+  window.addEventListener('DOMContentLoaded', ()=>{
+    let saved = 'ro';
+    try{ const s=localStorage.getItem('vxlang'); if(s && T[s]) saved=s; }catch(e){}
+    applyLang(saved);
+  });
+
+  // Expose globally
+  window.voxenT = t;
+  window.voxenLang = ()=>LANG;
+  window.applyLang = applyLang;
+  window.pickLang = pickLang;
+  window.toggleLangMenu = toggleLangMenu;
+})();
+</script>
+
+</head>
+<body>
+<canvas id="cvs"></canvas>
+
+<div class="topbar">
+  <a class="back-link" href="voxen-landing-multilingual__6_.html"><span data-t="back">← voxen</span></a>
+  <div class="brand">voxen</div>
+  <nav class="nav-links">
+    <a class="nav-link" href="voxen-companion.html"><span data-t="nav_companion">Companion AI</span></a>
+    <a class="nav-link active" href="voxen-therapy.html"><span data-t="nav_therapy">Terapie</span></a>
+    <a class="nav-link" href="voxen-groups.html"><span data-t="nav_groups">Grupuri de sprijin</span></a>
+  </nav>
+</div>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-chip"><div class="chip-dot"></div><span data-t="th_chip">Psihologi · Psihoterapeuți · Consultanți medicali</span></div>
+  <h1 class="hero-title"><span data-t="th_h1" data-t-html>Terapeutul potrivit.<br><em>La momentul potrivit.</em></span></h1>
+  <p class="hero-sub" data-t="th_sub">Voxen nu înlocuiește terapeutul. Îl pregătește. Terapeutul tău primește un rezumat anonim al stării tale emoționale — prima ședință începe acolo unde ai rămas, nu de la zero.</p>
+
+  <!-- TYPE TABS -->
+  <div class="type-tabs">
+    <div class="type-tab active" onclick="showType('individual')"><span data-t="th_tab1">🧑‍⚕️ Psiholog / Psihoterapeut</span></div>
+    <div class="type-tab" onclick="showType('online')"><span data-t="th_tab2">💬 Consultație online</span></div>
+    <div class="type-tab" onclick="showType('medical')"><span data-t="th_tab3">🏥 Evaluare medicală</span></div>
+  </div>
+
+  <!-- BOOKING FLOW: INDIVIDUAL -->
+  <div class="booking-flow">
+    <div class="flow-panel active" id="panel-individual">
+      <!-- Step indicator -->
+      <div class="steps-row">
+        <div class="step-dot active" id="si1">1</div>
+        <div class="step-line" id="sl1"></div>
+        <div class="step-dot" id="si2">2</div>
+        <div class="step-line" id="sl2"></div>
+        <div class="step-dot" id="si3">3</div>
+        <div class="step-line" id="sl3"></div>
+        <div class="step-dot" id="si4">4</div>
+      </div>
+
+      <!-- Step 1: Choose therapist -->
+      <div id="step1" class="step-content">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px;text-align:left" data-t="th_step1_help">Selectează un specialist din zona ta · Voxen le trimite un sumar anonim (cu acordul tău)</p>
+        <div class="therapists-grid" id="therapistGrid"></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btn1" onclick="goStep(2)" disabled><span data-t="th_btn_cont">Continuă →</span></button>
+        </div>
+      </div>
+
+      <!-- Step 2: Pick date -->
+      <div id="step2" class="step-content" style="display:none">
+        <div class="calendar-wrap">
+          <div class="cal-header">
+            <button class="cal-nav" onclick="prevMonth()">←</button>
+            <div class="cal-month" id="calMonth">Mai 2026</div>
+            <button class="cal-nav" onclick="nextMonth()">→</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="goStep(1)"><span data-t="th_btn_back">← Înapoi</span></button>
+          <button class="btn btn-primary" id="btn2" onclick="goStep(3)" disabled data-t="th_btn_cont">Continuă →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Pick time + AI brief -->
+      <div id="step3" class="step-content" style="display:none">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:14px;text-align:left" data-t="th_pick_time">Alege ora:</p>
+        <div class="slots-grid" id="slotsGrid"></div>
+        <div class="ai-brief">
+          <div class="ai-brief-header">
+            <span class="ai-brief-icon">🧠</span>
+            <div>
+              <div class="ai-brief-title"><span data-t="th_ai_title">Rezumat Voxen AI pentru terapeut</span></div>
+              <div class="ai-brief-sub"><span data-t="th_ai_sub">Trimis anonim · Poți dezactiva oricând</span></div>
+            </div>
+          </div>
+          <div class="ai-brief-content" id="aiBriefText" data-t="th_brief_loading">Se generează rezumatul tău emoțional din ultimele 30 de zile...</div>
+          <span class="ai-brief-toggle" onclick="toggleBrief()"><span data-t='th_ai_hide'>Ascunde rezumatul</span></span>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="goStep(2)">← Înapoi</button>
+          <button class="btn btn-primary" id="btn3" onclick="goStep(4)" disabled><span data-t="th_btn_confirm">Confirmă programarea →</span></button>
+        </div>
+      </div>
+
+      <!-- Step 4: Confirmation -->
+      <div id="step4" class="step-content" style="display:none">
+        <div class="confirm-card">
+          <div class="confirm-icon">✅</div>
+          <div class="confirm-title"><span data-t="th_confirm_title">Programare confirmată!</span></div>
+          <div id="confirmDetails"></div>
+          <button class="btn btn-primary" style="margin-top:20px;width:100%;justify-content:center" onclick="resetBooking()"><span data-t="th_btn_reset">Programează altă ședință</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: ONLINE -->
+    <div class="flow-panel" id="panel-online">
+      <div style="background:var(--card);border:.5px solid rgba(29,158,117,.3);border-radius:20px;padding:28px;text-align:left;max-width:640px;margin:0 auto">
+        <div style="font-size:32px;margin-bottom:14px">💬</div>
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:10px" data-t="th_online_h">Consultație online în 24h</h3>
+        <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px" data-t="th_online_p">Consultant certificat în managementul stresului și recuperare. Video call sau chat securizat. Fără liste de așteptare lungi.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
+          <div style="display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:10px;padding:12px">
+            <span style="font-size:20px">⏱</span>
+            <div><div style="font-size:13px;font-weight:500" data-t="th_online_f1a">Disponibil în 24 ore</div><div style="font-size:11px;color:var(--text2)" data-t="th_online_f1b">Confirmare prin email</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:10px;padding:12px">
+            <span style="font-size:20px">🔒</span>
+            <div><div style="font-size:13px;font-weight:500" data-t="th_online_f2a">Sesiune criptată end-to-end</div><div style="font-size:11px;color:var(--text2)" data-t="th_online_f2b">Nimeni altcineva nu ascultă</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:10px;padding:12px">
+            <span style="font-size:20px">📱</span>
+            <div><div style="font-size:13px;font-weight:500" data-t="th_online_f3a">Video, audio sau chat</div><div style="font-size:11px;color:var(--text2)" data-t="th_online_f3b">Alegi formatul care ți se potrivește</div></div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;font-size:15px" onclick="alert('Disponibil la lansare V2 — înscrie-te pe lista de așteptare!')" data-t="th_online_btn">Solicită consultație →</button>
+      </div>
+    </div>
+
+    <!-- PANEL: MEDICAL -->
+    <div class="flow-panel" id="panel-medical">
+      <div style="background:var(--card);border:.5px solid rgba(239,159,39,.3);border-radius:20px;padding:28px;text-align:left;max-width:640px;margin:0 auto">
+        <div style="font-size:32px;margin-bottom:14px">🏥</div>
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:10px" data-t="th_med_h">Evaluare medicală psihiatrică</h3>
+        <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px" data-t="th_med_p">Pentru cazuri care necesită evaluare psihiatrică, diagnostic sau tratament medicamentos. Voxen facilitează trimiterea cu context clinic complet.</p>
+        <div style="background:rgba(239,159,39,.1);border:.5px solid rgba(239,159,39,.4);border-radius:12px;padding:14px;margin-bottom:20px">
+          <div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:6px" data-t="th_med_steps_h">⚕️ Proces în 3 pași</div>
+          <div style="font-size:13px;color:var(--soft);line-height:1.8">
+            <span data-t="th_med_steps" data-t-html>1. Voxen AI generează un raport clinic preliminar bazat pe 30 de zile de date vocale<br>2. Ești trimis la un psihiatru/medic specialist din rețeaua noastră<br>3. Urmărire continuă prin aplicație — terapeut + medic + Voxen lucrează împreună</span>
+          </div>
+        </div>
+        <div style="background:var(--surface);border-radius:10px;padding:14px;margin-bottom:20px;font-size:12px;color:var(--text2);line-height:1.6">
+          <strong style="color:var(--white)" data-t="th_med_imp_label">Important:</strong> <span data-t="th_med_imp">Voxen nu înlocuiește consultul medical. Suntem un facilitator care ajută specialistul să înțeleagă mai bine starea ta emoțională.</span>
+        </div>
+        <button class="btn btn-primary" style="background:var(--amber);width:100%;justify-content:center;font-size:15px" onclick="alert('Disponibil la lansare V2 — înscrie-te pe lista de așteptare!')" data-t="th_med_btn">Solicită evaluare medicală →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW VOXEN HELPS -->
+<section class="section sep reveal">
+  <p class="section-label"><span data-t="th_diff_label">Diferența Voxen</span></p>
+  <h2 class="section-title"><span data-t="th_diff_title" data-t-html>Prima ședință.<br><em>Fără să repeți totul.</em></span></h2>
+  <p class="section-sub"><span data-t="th_diff_sub">Cel mai greu lucru în terapie e să explici de unde vii. Voxen face asta pentru tine.</span></p>
+  <div class="diff-grid">
+    <div class="diff-col">
+      <div class="diff-label" style="color:var(--text2)" data-t="th_diff_bad_label">❌ Fără Voxen</div>
+      <div class="diff-item"><span>😤</span><span data-t="th_diff_b1">Primele 3 ședințe: istoricul tău de la zero</span></div>
+      <div class="diff-item"><span>🤷</span><span data-t="th_diff_b2">Terapeutul nu știe cum ai dormit sau ce ai simțit ieri</span></div>
+      <div class="diff-item"><span>📝</span><span data-t="th_diff_b3">Tu trebuie să îți amintești și să formulezi</span></div>
+      <div class="diff-item"><span>⌛</span><span data-t="th_diff_b4">Timp pierdut pe context, mai puțin pe vindecare</span></div>
+    </div>
+    <div class="diff-col good">
+      <div class="diff-label" style="color:var(--teal)" data-t="th_diff_good_label">✓ Cu Voxen</div>
+      <div class="diff-item"><span>🧠</span><span data-t="th_diff_g1">Terapeutul primește un rezumat anonim de 30 de zile</span></div>
+      <div class="diff-item"><span>📊</span><span data-t="th_diff_g2">Evoluția emoțională, triggerii, momentele critice — vizualizate</span></div>
+      <div class="diff-item"><span>🎯</span><span data-t="th_diff_g3">Prima ședință direct la subiect</span></div>
+      <div class="diff-item"><span>🔄</span><span data-t="th_diff_g4">Terapeutul urmărește progresul între ședințe</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section sep reveal">
+  <p class="section-label"><span data-t="th_faq_label">Întrebări frecvente</span></p>
+  <h2 class="section-title"><span data-t="th_faq_title" data-t-html>Înainte să<br><em>rezervi.</em></span></h2>
+  <div class="faq-list">
+    <div class="faq-item"><div class="faq-q" data-t="th_faq_q1">Datele mele vocale sunt trimise terapeutului?</div><div class="faq-a" data-t="th_faq_a1">Nu. Terapeutul primește DOAR un rezumat text anonim — pattern-uri emoționale, nu înregistrări. Tu controlezi ce se trimite și poți dezactiva în orice moment.</div></div>
+    <div class="faq-item"><div class="faq-q" data-t="th_faq_q2">Sunt terapeuții verificați de Voxen?</div><div class="faq-a" data-t="th_faq_a2">Da. Toți specialiștii din rețea sunt certificați de Colegiul Psihologilor din România sau echivalent în țara lor. Verificăm licențele activ.</div></div>
+    <div class="faq-item"><div class="faq-q" data-t="th_faq_q3">Pot anula sau reprograma?</div><div class="faq-a" data-t="th_faq_a3">Da, cu 24h înainte fără niciun cost. Voxen trimite reminder cu 48h și 2h înainte.</div></div>
+    <div class="faq-item"><div class="faq-q" data-t="th_faq_q4">Ce se întâmplă dacă sunt în criză acum?</div><div class="faq-a" data-t="th_faq_a4">Folosește butonul SOS din modulul de recuperare Voxen pentru ajutor imediat. Programarea la terapeut e pentru suport continuu, nu pentru urgențe acute.</div></div>
+    <div class="faq-item"><div class="faq-q" data-t="th_faq_q5">Terapia online e la fel de eficientă?</div><div class="faq-a" data-t="th_faq_a5">Studiile arată că terapia online are eficiență comparabilă cu cea față în față pentru anxietate, depresie și recuperare din dependențe (meta-analiza Cuijpers, 2019).</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="fbrand">voxen · <span data-t="footer_brand">terapie</span></div>
+  <div class="fcopy">© 2026 Voxen SRL · your voice. your memory.</div>
+</footer>
+
+<script>
+// Canvas
+const cvs=document.getElementById('cvs'),ctx=cvs.getContext('2d');
+let W,H,dots;
+function initC(){W=cvs.width=window.innerWidth;H=cvs.height=window.innerHeight;dots=Array.from({length:30},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.3,dx:(Math.random()-.5)*.18,dy:(Math.random()-.5)*.18,a:Math.random()*Math.PI*2}));}
+function draw(){ctx.clearRect(0,0,W,H);dots.forEach(d=>{d.a+=.005;ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);ctx.fillStyle=`rgba(29,158,117,${.06+.04*Math.sin(d.a)})`;ctx.fill();d.x+=d.dx;d.y+=d.dy;if(d.x<0||d.x>W)d.dx*=-1;if(d.y<0||d.y>H)d.dy*=-1;});requestAnimationFrame(draw);}
+initC();draw();window.addEventListener('resize',initC);
+
+// Reveal
+document.querySelectorAll('.reveal').forEach(el=>{
+  new IntersectionObserver(([e])=>{if(e.isIntersecting)el.classList.add('visible');},{threshold:.1}).observe(el);
+});
+
+// FAQ
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click',()=>q.parentElement.classList.toggle('open'));
+});
+
+// Type tabs
+function showType(type) {
+  document.querySelectorAll('.type-tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.flow-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+type).classList.add('active');
+}
+
+// Therapists data
+const THERAPISTS = [
+  {id:1, avatar:'👩‍⚕️', bg:'#1A2030', name:'Dr. Andreea Popescu', spec:'Psiholog clinician', location:'București, sector 1', tags:['Anxietate','Depresie','Trauma'], rating:'4.9', reviews:127, avail:'Disponibil Luni 14:00'},
+  {id:2, avatar:'🧑‍⚕️', bg:'#1A2420', name:'Mihai Constantin', spec:'Psihoterapeut CBT', location:'Cluj-Napoca', tags:['CBT','Dependențe','Burnout'], rating:'4.8', reviews:94, avail:'Disponibil Marți 10:00'},
+  {id:3, avatar:'👩‍⚕️', bg:'#201A30', name:'Dr. Ioana Marin', spec:'Psihoterapeut EMDR', location:'Online · România', tags:['EMDR','PTSD','Relații'], rating:'5.0', reviews:63, avail:'Disponibil Joi 16:00'},
+  {id:4, avatar:'🧑‍⚕️', bg:'#1A2030', name:'Alexandru Radu', spec:'Consilier psihologic', location:'Timișoara', tags:['Stres','Carieră','Cuplu'], rating:'4.7', reviews:81, avail:'Disponibil Vineri 11:00'},
+];
+
+let selectedTherapist = null;
+let selectedDate = null;
+let selectedSlot = null;
+
+const grid = document.getElementById('therapistGrid');
+THERAPISTS.forEach(th=>{
+  const d = document.createElement('div');
+  d.className = 'th-card';
+  d.innerHTML = `
+    <div class="th-avatar" style="background:${th.bg};font-size:26px">${th.avatar}</div>
+    <div class="th-name">${th.name}</div>
+    <div class="th-spec">${th.spec}</div>
+    <div class="th-location">📍 ${th.location}</div>
+    <div class="th-tags">${th.tags.map(t=>`<span class="th-tag">${t}</span>`).join('')}</div>
+    <div class="th-rating">⭐ ${th.rating} <span style="color:var(--text2);font-weight:400">(${th.reviews} recenzii)</span></div>
+    <div class="th-avail">✓ ${th.avail}</div>`;
+  d.onclick = ()=>{
+    document.querySelectorAll('.th-card').forEach(c=>c.classList.remove('selected'));
+    d.classList.add('selected');
+    selectedTherapist = th;
+    document.getElementById('btn1').disabled = false;
+  };
+  grid.appendChild(d);
+});
+
+// Calendar
+let calYear = 2026, calMonth = 4; // May 2026 (0-indexed)
+const MONTHS = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
+const DAYS = ['Lu','Ma','Mi','Jo','Vi','Sâ','Du'];
+
+function renderCal() {
+  document.getElementById('calMonth').textContent = MONTHS[calMonth] + ' ' + calYear;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = DAYS.map(d=>`<div class="cal-day-label">${d}</div>`).join('');
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const offset = (first === 0) ? 6 : first - 1;
+  const days = new Date(calYear, calMonth+1, 0).getDate();
+  const today = new Date();
+  for(let i=0;i<offset;i++) grid.innerHTML += '<div class="cal-day empty"></div>';
+  for(let d=1;d<=days;d++){
+    const date = new Date(calYear, calMonth, d);
+    const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const isToday = date.toDateString() === today.toDateString();
+    const isAvail = !isPast && date.getDay() !== 0;
+    const isSelected = selectedDate && selectedDate.getDate()===d && selectedDate.getMonth()===calMonth;
+    const cls = ['cal-day', isAvail?'available':'', isPast?'past':'', isToday?'today':'', isSelected?'selected':''].filter(Boolean).join(' ');
+    const el = document.createElement('div');
+    el.className = cls;
+    el.textContent = d;
+    if(isAvail) el.onclick = ()=>selectDate(new Date(calYear, calMonth, d));
+    grid.appendChild(el);
+  }
+}
+
+function selectDate(d) {
+  selectedDate = d;
+  renderCal();
+  document.getElementById('btn2').disabled = false;
+}
+function prevMonth(){ if(calMonth===0){calMonth=11;calYear--;}else calMonth--; renderCal(); }
+function nextMonth(){ if(calMonth===11){calMonth=0;calYear++;}else calMonth++; renderCal(); }
+renderCal();
+
+// Time slots
+const SLOTS_BASE = ['09:00','09:30','10:00','10:30','11:00','14:00','14:30','15:00','15:30','16:00','17:00','18:00','19:00'];
+const TAKEN = ['10:30','15:00','17:00'];
+function renderSlots(){
+  const g = document.getElementById('slotsGrid');
+  g.innerHTML = SLOTS_BASE.map(s=>{
+    const taken = TAKEN.includes(s);
+    const sel = selectedSlot === s;
+    return `<div class="slot ${taken?'taken':''} ${sel?'selected':''}" onclick="${taken?'':`selectSlot('${s}')`}">${s}${taken?'<br><span style="font-size:9px">ocupat</span>':''}</div>`;
+  }).join('');
+}
+function selectSlot(s){
+  selectedSlot = s;
+  renderSlots();
+  document.getElementById('btn3').disabled = false;
+  // Generate AI brief - multilingual
+  const L = window.voxenLang ? window.voxenLang() : 'ro';
+  const briefs = {
+    ro:'Ultima lună: predominant anxietate (34%) și oboseală (28%). Craving moderat detectat în 3 momente. HRV sub medie în ultimele 2 săptămâni. Streak recuperare: 14 zile. Recomandare: focus pe managementul stresului cronic.',
+    en:'Last month: predominantly anxiety (34%) and fatigue (28%). Moderate craving detected in 3 moments. HRV below average in past 2 weeks. Recovery streak: 14 days. Recommendation: focus on chronic stress management.',
+    fr:'Le mois dernier: principalement anxiété (34%) et fatigue (28%). Envies modérées détectées à 3 reprises. VFC sous la moyenne. Série récupération: 14 jours. Recommandation: gestion du stress chronique.',
+    de:'Letzter Monat: überwiegend Angst (34%) und Müdigkeit (28%). Moderates Verlangen in 3 Momenten erkannt. HRV unter Durchschnitt. Erholungsserie: 14 Tage. Empfehlung: Fokus auf chronisches Stressmanagement.',
+    zh:'上个月：主要是焦虑（34%）和疲劳（28%）。在3个时刻检测到中等渴望。过去2周HRV低于平均水平。康复连续：14天。建议：专注于慢性压力管理。',
+    ja:'先月：主に不安（34%）と疲労（28%）。3つの瞬間で中程度の渇望を検出。過去2週間HRV平均以下。回復連続：14日。推奨：慢性ストレス管理に焦点。',
+    ru:'Прошлый месяц: преимущественно тревога (34%) и усталость (28%). Умеренная тяга в 3 моментах. ВСР ниже среднего за 2 недели. Стрик восстановления: 14 дней. Рекомендация: фокус на хроническом стрессе.',
+  };
+  document.getElementById('aiBriefText').textContent = briefs[L] || briefs.en;
+}
+renderSlots();
+
+let briefVisible = true;
+function toggleBrief(){
+  briefVisible = !briefVisible;
+  document.getElementById('aiBriefText').style.display = briefVisible ? 'block' : 'none';
+  event.target.textContent = briefVisible ? window.voxenT('th_ai_hide') : window.voxenT('th_ai_show');
+}
+
+// Steps navigation
+function goStep(n) {
+  [1,2,3,4].forEach(i=>{
+    document.getElementById('step'+i).style.display = i===n?'block':'none';
+    const dot = document.getElementById('si'+i);
+    if(dot){
+      dot.className = 'step-dot' + (i<n?' done':i===n?' active':'');
+    }
+    const line = document.getElementById('sl'+i);
+    if(line) line.className = 'step-line' + (i<n?' done':'');
+  });
+  if(n===4) renderConfirm();
+}
+
+function renderConfirm() {
+  const therapist = selectedTherapist;
+  const d = selectedDate;
+  const det = document.getElementById('confirmDetails');
+  const L = window.voxenLang ? window.voxenLang() : 'ro';
+  const localeMap = {ro:'ro-RO',en:'en-US',fr:'fr-FR',de:'de-DE',zh:'zh-CN',ja:'ja-JP',ru:'ru-RU'};
+  const opts = {weekday:'long',day:'numeric',month:'long',year:'numeric'};
+  const labels = {
+    at:    {ro:'ora',en:'at',fr:'à',de:'um',zh:'时间',ja:'時間',ru:'в'},
+    dur:   {ro:'60 minute · Prima ședință',en:'60 minutes · First session',fr:'60 minutes · Première séance',de:'60 Minuten · Erste Sitzung',zh:'60分钟 · 第一次会话',ja:'60分 · 初回セッション',ru:'60 минут · Первая сессия'},
+    sum:   {ro:'Rezumat Voxen trimis',en:'Voxen summary sent',fr:'Résumé Voxen envoyé',de:'Voxen-Zusammenfassung gesendet',zh:'Voxen摘要已发送',ja:'Voxenサマリー送信済み',ru:'Резюме Voxen отправлено'},
+    anon:  {ro:'Anonim · Terapeutul vine informat',en:'Anonymous · Therapist arrives informed',fr:'Anonyme · Le thérapeute arrive informé',de:'Anonym · Therapeut kommt informiert',zh:'匿名 · 治疗师事先了解情况',ja:'匿名 · セラピストは事前に情報を得て参加',ru:'Анонимно · Терапевт приходит подготовленным'},
+  };
+  const lbl = k => labels[k]?.[L] || labels[k]?.en || k;
+  det.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:0;text-align:left;margin:16px 0">
+      <div class="confirm-detail-row"><span class="confirm-detail-icon">${therapist?.avatar||'👩‍⚕️'}</span><div><div class="confirm-detail-text">${therapist?.name||'Dr. Specialist'}</div><div class="confirm-detail-sub">${therapist?.spec||''}</div></div></div>
+      <div class="confirm-detail-row"><span class="confirm-detail-icon">📅</span><div><div class="confirm-detail-text">${d?.toLocaleDateString(localeMap[L]||'en-US',opts)||'—'}</div><div class="confirm-detail-sub">${lbl('at')} ${selectedSlot}</div></div></div>
+      <div class="confirm-detail-row"><span class="confirm-detail-icon">📍</span><div><div class="confirm-detail-text">${therapist?.location||'—'}</div><div class="confirm-detail-sub">${lbl('dur')}</div></div></div>
+      <div class="confirm-detail-row"><span class="confirm-detail-icon">🧠</span><div><div class="confirm-detail-text">${lbl('sum')}</div><div class="confirm-detail-sub">${lbl('anon')}</div></div></div>
+    </div>`;
+}
+
+function resetBooking() {
+  selectedTherapist = null; selectedDate = null; selectedSlot = null;
+  goStep(1);
+  document.querySelectorAll('.th-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('btn1').disabled = true;
+  document.getElementById('btn2').disabled = true;
+  document.getElementById('btn3').disabled = true;
+  renderCal(); renderSlots();
+}
+</script>
+</body>
+</html>

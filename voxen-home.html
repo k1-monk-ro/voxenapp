@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxen — Acasă</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0D0B1A;
+    --surface:#1A1630;
+    --card:#201C38;
+    --border:#2E2850;
+    --purple:#534AB7;
+    --mid:#7F77DD;
+    --soft:#AFA9EC;
+    --mist:#EEEDFE;
+    --teal:#1D9E75;
+    --teal-soft:rgba(29,158,117,.14);
+    --amber:#EF9F27;
+    --warm:#D4537E;
+    --white:#F0EFF8;
+    --text2:#8B88C3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:var(--void);color:var(--white);
+    font-family:'Syne',-apple-system,BlinkMacSystemFont,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;padding-bottom:88px;
+  }
+  .serif{font-family:'Instrument Serif',Georgia,serif}
+
+  /* ── Top bar ── */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 22px;border-bottom:.5px solid var(--border);
+    position:sticky;top:0;background:var(--void);z-index:10;
+  }
+  .brand{font-weight:700;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+  .brand-mark{width:24px;height:24px;border-radius:7px;background:var(--purple);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px}
+  .settings{font-size:20px;text-decoration:none;opacity:.6;transition:opacity .2s}
+  .settings:hover{opacity:1}
+
+  .wrap{max-width:600px;margin:0 auto;padding:28px 22px}
+
+  /* ── Salut ── */
+  .greet{margin-bottom:26px}
+  .greet-eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:8px}
+  .greet h1{font-family:'Instrument Serif',Georgia,serif;font-size:34px;font-weight:400;line-height:1.15;margin-bottom:8px}
+  .greet p{font-size:14px;color:var(--text2);line-height:1.55}
+
+  /* ── Butonul jurnal — eroul ── */
+  .journal-hero{
+    background:linear-gradient(150deg,var(--purple),#3D3590);
+    border-radius:22px;padding:28px 24px;text-align:center;
+    margin-bottom:14px;cursor:pointer;
+    transition:transform .18s ease;
+    border:.5px solid rgba(127,119,221,.4);
+  }
+  .journal-hero:active{transform:scale(.98)}
+  .jh-orb{
+    width:84px;height:84px;border-radius:50%;margin:0 auto 16px;
+    background:rgba(238,237,254,.12);
+    display:flex;align-items:center;justify-content:center;
+    font-size:36px;position:relative;
+  }
+  .jh-orb::before{
+    content:'';position:absolute;inset:-8px;border-radius:50%;
+    border:1.5px solid rgba(238,237,254,.25);
+    animation:orbReady 3s ease-in-out infinite;
+  }
+  @keyframes orbReady{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.08);opacity:.15}}
+  .jh-title{font-family:'Instrument Serif',Georgia,serif;font-size:24px;color:var(--mist);margin-bottom:6px}
+  .jh-sub{font-size:13px;color:var(--soft);line-height:1.5}
+
+  /* ── Streak / progres mic ── */
+  .ministats{
+    display:flex;gap:10px;margin-bottom:26px;
+  }
+  .mstat{
+    flex:1;background:var(--card);border:.5px solid var(--border);
+    border-radius:14px;padding:14px;text-align:center;
+  }
+  .mstat-num{font-family:'Instrument Serif',Georgia,serif;font-size:26px;color:var(--white);line-height:1}
+  .mstat-lbl{font-size:11px;color:var(--text2);margin-top:5px;letter-spacing:.02em}
+
+  /* ── Secțiuni plan ── */
+  .section-eyebrow{
+    font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--mid);margin:30px 0 14px;
+  }
+  .plan-card{
+    background:var(--card);border:.5px solid var(--border);border-radius:18px;
+    padding:20px;margin-bottom:12px;
+  }
+  .pc-tag{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    padding:5px 10px;border-radius:100px;margin-bottom:12px;
+  }
+  .pc-tag.now{background:rgba(212,83,126,.16);color:var(--warm)}
+  .pc-tag.daily{background:var(--teal-soft);color:var(--teal)}
+  .pc-tag.week{background:rgba(239,159,39,.16);color:var(--amber)}
+  .pc-title{font-family:'Instrument Serif',Georgia,serif;font-size:21px;font-weight:400;margin-bottom:12px}
+  .pc-item{
+    display:flex;gap:11px;padding:10px 0;border-top:.5px solid var(--border);
+    font-size:13.5px;line-height:1.55;color:var(--soft);
+  }
+  .pc-item:first-of-type{border-top:none}
+  .pc-bullet{color:var(--mid);flex-shrink:0;font-weight:700}
+
+  /* week steps cu checkbox */
+  .week-step{
+    display:flex;gap:12px;padding:11px 0;border-top:.5px solid var(--border);
+    cursor:pointer;align-items:flex-start;
+  }
+  .week-step:first-of-type{border-top:none}
+  .ws-check{
+    width:22px;height:22px;border-radius:7px;border:1.5px solid var(--border);
+    flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    transition:background .18s,border-color .18s;margin-top:1px;
+  }
+  .week-step.done .ws-check{background:var(--teal);border-color:var(--teal)}
+  .week-step.done .ws-check::after{content:'✓';color:#fff;font-size:12px;font-weight:700}
+  .ws-body{flex:1}
+  .ws-day{font-size:11px;color:var(--text2);letter-spacing:.04em;margin-bottom:2px}
+  .ws-text{font-size:13.5px;color:var(--soft);line-height:1.5}
+  .week-step.done .ws-text{color:var(--text2);text-decoration:line-through;text-decoration-color:var(--border)}
+
+  /* ── Cele 3 căi ── */
+  .ways{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .way{
+    background:var(--card);border:.5px solid var(--border);border-radius:15px;
+    padding:16px 12px;text-decoration:none;text-align:center;
+    transition:border-color .2s;display:block;
+  }
+  .way:hover{border-color:var(--purple)}
+  .way-icon{
+    width:42px;height:42px;border-radius:12px;margin:0 auto 9px;
+    display:flex;align-items:center;justify-content:center;font-size:20px;
+  }
+  .way-name{font-size:12.5px;font-weight:600;color:var(--white);line-height:1.3}
+
+  /* ── Bara jos — siguranță ── */
+  .safebar{
+    position:fixed;bottom:0;left:0;right:0;
+    background:var(--surface);border-top:.5px solid var(--border);
+    padding:14px 22px;display:flex;align-items:center;gap:12px;
+    justify-content:center;z-index:20;
+  }
+  .safebar-text{font-size:12px;color:var(--text2);line-height:1.4}
+  .safebar-btn{
+    background:rgba(212,83,126,.16);color:var(--warm);
+    border:.5px solid rgba(212,83,126,.4);border-radius:10px;
+    padding:9px 16px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
+    text-decoration:none;white-space:nowrap;transition:background .2s;
+  }
+  .safebar-btn:hover{background:rgba(212,83,126,.26)}
+
+  @media(max-width:560px){
+    .greet h1{font-size:29px}
+    .ways{gap:8px}
+    .way{padding:14px 8px}
+  }
+
+  /* Optimizare baterie */
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
+  html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
+    animation-play-state:paused!important;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="brand-mark">◢</span> voxen</div>
+  <a href="#" class="settings" title="Setări">⚙</a>
+</div>
+
+<div class="wrap">
+
+  <!-- Salut -->
+  <div class="greet">
+    <div class="greet-eyebrow" id="greetEyebrow">Acasă</div>
+    <h1 class="serif" id="greetTitle">Bună.</h1>
+    <p id="greetSub">Mă bucur că ești aici. Un minut din ziua ta face diferența.</p>
+  </div>
+
+  <!-- Jurnal vocal — eroul -->
+  <div class="journal-hero" onclick="openJournal()">
+    <div class="jh-orb">🎙</div>
+    <div class="jh-title serif">Spune-mi cum ești azi</div>
+    <div class="jh-sub">Un minut. Fără format, fără judecată. Voxen ascultă.</div>
+  </div>
+
+  <!-- Mini-stats -->
+  <div class="ministats">
+    <div class="mstat">
+      <div class="mstat-num" id="statDays">1</div>
+      <div class="mstat-lbl">zi pe drum</div>
+    </div>
+    <div class="mstat">
+      <div class="mstat-num" id="statEntries">0</div>
+      <div class="mstat-lbl">jurnale</div>
+    </div>
+    <div class="mstat">
+      <div class="mstat-num" id="statSteps">0/7</div>
+      <div class="mstat-lbl">pași făcuți</div>
+    </div>
+  </div>
+
+  <!-- Planul tău -->
+  <div class="section-eyebrow">Planul tău de recuperare</div>
+
+  <div class="plan-card">
+    <span class="pc-tag now">⚠ Când vine pofta</span>
+    <div class="pc-title serif">Harta ta de declanșatori</div>
+    <div id="homeTriggers"></div>
+  </div>
+
+  <div class="plan-card">
+    <span class="pc-tag daily">↻ În fiecare zi</span>
+    <div class="pc-title serif">Rutina ta</div>
+    <div id="homeDaily"></div>
+  </div>
+
+  <div class="plan-card">
+    <span class="pc-tag week">→ Săptămâna asta</span>
+    <div class="pc-title serif">Primii 7 pași</div>
+    <div id="homeWeek"></div>
+  </div>
+
+  <!-- Cele 3 căi -->
+  <div class="section-eyebrow">Sprijinul tău</div>
+  <div class="ways">
+    <a class="way" href="voxen-companion.html">
+      <div class="way-icon" style="background:rgba(83,74,183,.18)">🎙</div>
+      <div class="way-name">Companion AI</div>
+    </a>
+    <a class="way" href="voxen-therapy.html">
+      <div class="way-icon" style="background:var(--teal-soft)">🧑‍⚕️</div>
+      <div class="way-name">Terapie</div>
+    </a>
+    <a class="way" href="voxen-groups.html">
+      <div class="way-icon" style="background:rgba(212,83,126,.16)">👥</div>
+      <div class="way-name">Grupuri</div>
+    </a>
+  </div>
+
+</div>
+
+<!-- Bara de siguranță -->
+<div class="safebar">
+  <span class="safebar-text">Treci printr-un moment greu?</span>
+  <a href="tel:112" class="safebar-btn">Ajutor acum</a>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// VOXEN ACASĂ — citește profilul din onboarding, afișează planul
+// ═══════════════════════════════════════════════════════════
+
+// Profil-exemplu — folosit dacă utilizatorul nu a parcurs onboarding-ul
+const DEMO_PROFILE = {
+  struggle:'alcohol', stage:'early',
+  triggers:['evening','stress'], support:'person', time:'evening'
+};
+
+// Încearcă să citească profilul real salvat de onboarding
+function loadProfile(){
+  try {
+    const raw = localStorage.getItem('voxen_profile');
+    if(raw){
+      const p = JSON.parse(raw);
+      if(p && p.struggle) return { profile:p, isReal:true };
+    }
+  } catch(e){ /* localStorage blocat — folosim demo */ }
+  return { profile:DEMO_PROFILE, isReal:false };
+}
+
+const { profile, isReal } = loadProfile();
+
+// ── Salut în funcție de ora zilei ──
+function setGreeting(){
+  const h = new Date().getHours();
+  let g;
+  if(h < 11) g = 'Bună dimineața.';
+  else if(h < 18) g = 'Bună ziua.';
+  else g = 'Bună seara.';
+  document.getElementById('greetTitle').textContent = g;
+
+  if(!isReal){
+    document.getElementById('greetEyebrow').textContent = 'Acasă · plan demonstrativ';
+    document.getElementById('greetSub').textContent =
+      'Acesta e un plan-exemplu. Parcurge configurarea ca să primești planul tău personal.';
+  }
+}
+
+// ── Datele de plan (aceeași logică din onboarding) ──
+const TRIGGER_PLAN = {
+  evening:'Serile târzii — pregătește o activitate de seară din timp: o plimbare, un duș, un episod. Pofta scade dacă mâinile au ceva de făcut.',
+  stress:'Stresul — la primul semn de tensiune, deschide Voxen și vorbește 60 de secunde. A pune în cuvinte ce simți reduce presiunea.',
+  loneliness:'Singurătatea — ai pregătit 2 persoane cărora le poți scrie un simplu „salut". Conexiunea scurtă întrerupe spirala.',
+  social:'Ieșirile sociale — decide înainte de a pleca ce vei bea/face. Un plan dinainte e mai puternic decât voința din moment.',
+  conflict:'Certurile — după un conflict: nimic în următoarea oră. Deschide Voxen, lasă valul să treacă.',
+  boredom:'Plictiseala — ține o listă de 3 lucruri mici de făcut când apare golul. Tratează plictiseala ca pe un declanșator real.'
+};
+
+const WEEK_STEPS = [
+  {day:'Zilele 1–2', text:'Înregistrează primul tău jurnal vocal. Scopul nu e să sune bine, e doar să începi.'},
+  {day:'Ziua 3', text:'Explorează modulul de recuperare și alege un instrument care ți se pare util.'},
+  {day:'Ziua 4', text:'Marchează prima ta mică victorie. Progresul mic, văzut, contează.'},
+  {day:'Ziua 5', text:'Identifică momentul tău cel mai greu și pregătește un plan pentru el.'},
+  {day:'Ziua 6', text:'Spune-i persoanei tale de sprijin că ai început. Cu voce tare, devine real.'},
+  {day:'Ziua 7', text:'Ascultă-ți primul jurnal de acum o săptămână. Vei auzi deja o diferență.'}
+];
+
+// ── Construiește secțiunea declanșatori ──
+function buildTriggers(){
+  const wrap = document.getElementById('homeTriggers');
+  wrap.innerHTML = '';
+  const triggers = profile.triggers && profile.triggers.length ? profile.triggers : ['evening'];
+  triggers.forEach(t=>{
+    if(!TRIGGER_PLAN[t]) return;
+    const d = document.createElement('div');
+    d.className = 'pc-item';
+    d.innerHTML = '<span class="pc-bullet">→</span><span>'+TRIGGER_PLAN[t]+'</span>';
+    wrap.appendChild(d);
+  });
+}
+
+// ── Construiește rutina zilnică ──
+function buildDaily(){
+  const wrap = document.getElementById('homeDaily');
+  const timeLabels = {morning:'dimineața', evening:'seara', night:'noaptea târziu', anytime:'oricând'};
+  const tl = timeLabels[profile.time] || 'seara';
+  const journalLine = (profile.time === 'anytime')
+    ? 'Un minut de jurnal vocal când simți nevoia — Voxen e disponibil non-stop.'
+    : 'Un minut de jurnal vocal ' + tl + '. Voxen îți trimite o notificare blândă.';
+  const items = [
+    journalLine,
+    'Voxen ascultă cum ești de fapt — dacă te aude alunecând, e acolo cu un instrument potrivit.'
+  ];
+  if(profile.support === 'therapist'){
+    items.push('Rezumatul tău emoțional se pregătește pentru terapeut — ajungi la ședință cu context.');
+  } else if(profile.support === 'group'){
+    items.push('Înainte de întâlnirea grupului, vezi tiparele săptămânii — mergi pregătit.');
+  } else if(profile.support === 'alone'){
+    items.push('Voxen îți sugerează, fără presiune, un grup de sprijin potrivit.');
+  } else {
+    items.push('Ține persoana ta de încredere aproape de acest drum.');
+  }
+  wrap.innerHTML = '';
+  items.forEach(it=>{
+    const d = document.createElement('div');
+    d.className = 'pc-item';
+    d.innerHTML = '<span class="pc-bullet">↻</span><span>'+it+'</span>';
+    wrap.appendChild(d);
+  });
+}
+
+// ── Construiește pașii săptămânii (cu bifare) ──
+let doneSteps = [];
+try {
+  const saved = localStorage.getItem('voxen_week_progress');
+  if(saved) doneSteps = JSON.parse(saved) || [];
+} catch(e){ doneSteps = []; }
+
+function buildWeek(){
+  const wrap = document.getElementById('homeWeek');
+  wrap.innerHTML = '';
+  WEEK_STEPS.forEach((step, i)=>{
+    const d = document.createElement('div');
+    d.className = 'week-step' + (doneSteps.includes(i) ? ' done' : '');
+    d.innerHTML =
+      '<div class="ws-check"></div>'+
+      '<div class="ws-body"><div class="ws-day">'+step.day+'</div>'+
+      '<div class="ws-text">'+step.text+'</div></div>';
+    d.addEventListener('click', ()=> toggleStep(i));
+    wrap.appendChild(d);
+  });
+  updateStepStat();
+}
+
+function toggleStep(i){
+  if(doneSteps.includes(i)) doneSteps = doneSteps.filter(x=>x!==i);
+  else doneSteps.push(i);
+  try { localStorage.setItem('voxen_week_progress', JSON.stringify(doneSteps)); } catch(e){}
+  buildWeek();
+}
+
+function updateStepStat(){
+  document.getElementById('statSteps').textContent = doneSteps.length + '/7';
+}
+
+// ── Acțiuni ──
+function openJournal(){
+  // În aplicația reală: deschide înregistrarea vocală
+  window.location.href = 'voxen-companion.html';
+}
+
+// ── Pauză animații când pagina nu e vizibilă (baterie) ──
+document.addEventListener('visibilitychange', function(){
+  if(document.hidden) document.documentElement.classList.add('vx-paused');
+  else document.documentElement.classList.remove('vx-paused');
+});
+
+// ── Init ──
+setGreeting();
+buildTriggers();
+buildDaily();
+buildWeek();
+</script>
+</body>
+</html>
