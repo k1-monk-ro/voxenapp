@@ -1,4 +1,23 @@
-# Netlify redirects — voxen
-/companion    /voxen-companion.html    200
-/therapy      /voxen-therapy.html      200
-/groups       /voxen-groups.html       200
+# Netlify redirects — URL-uri curate
+/onboarding    /onboarding.html    200
+/home          /home.html          200
+/companion     /companion.html     200
+/emotional     /emotional.html     200
+/therapy       /therapy.html       200
+/groups        /groups.html        200
+/alcool        /alcool.html        200
+/substante     /substante.html     200
+/autoexcludere /autoexcludere.html 200
+/landing       /landing.html       200
+
+# Redirecturi de la URL-urile vechi
+/voxen-onboarding              /onboarding    301
+/voxen-home                    /home          301
+/voxen-companion               /companion     301
+/voxen-emotional               /emotional     301
+/voxen-therapy                 /therapy       301
+/voxen-groups                  /groups        301
+/voxen-alcool                  /alcool        301
+/voxen-substante               /substante     301
+/voxen-autoexcludere           /autoexcludere 301
+/voxen-landing-multilingual*   /landing       301

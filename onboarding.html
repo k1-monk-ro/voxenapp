@@ -3,6 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Configurează-ți drumul de recuperare cu Voxen. Companion vocal cu AI empatic pentru dependențe și blocaj emoțional.">
+<meta property="og:title" content="Voxen — Începe recuperarea">
+<meta property="og:description" content="Configurează-ți drumul de recuperare cu Voxen. Companion vocal cu AI empatic pentru dependențe și blocaj emoțional.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://getvoxen.com/onboarding">
+<meta property="og:site_name" content="Voxen">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Voxen — Începe recuperarea">
+<meta name="twitter:description" content="Configurează-ți drumul de recuperare cu Voxen. Companion vocal cu AI empatic pentru dependențe și blocaj emoțional.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23534AB7'/><text x='8' y='23' font-size='20' fill='white'>◢</text></svg>">
+
 <title>Voxen — Configurează-ți drumul</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -384,7 +395,7 @@ html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
     <p class="lead">Voxen nu e o singură funcție — sunt patru moduri de sprijin care lucrează împreună. Le poți folosi pe toate sau doar pe cele de care ai nevoie.</p>
 
     <div class="ways">
-      <a class="way" href="voxen-companion.html">
+      <a class="way" href="companion.html">
         <div class="way-icon" style="background:rgba(83,74,183,.18);color:var(--mid)">🎙</div>
         <div class="way-body">
           <div class="way-title">Companion AI</div>
@@ -392,7 +403,7 @@ html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
           <span class="way-link">Descoperă Companion →</span>
         </div>
       </a>
-      <a class="way" href="voxen-emotional.html">
+      <a class="way" href="emotional.html">
         <div class="way-icon" style="background:rgba(175,169,236,.15);color:var(--soft)">🌫️</div>
         <div class="way-body">
           <div class="way-title">Blocaj emoțional</div>
@@ -400,7 +411,7 @@ html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
           <span class="way-link">Descoperă instrumentele →</span>
         </div>
       </a>
-      <a class="way" href="voxen-therapy.html">
+      <a class="way" href="therapy.html">
         <div class="way-icon" style="background:var(--teal-soft);color:var(--teal)">🧑‍⚕️</div>
         <div class="way-body">
           <div class="way-title">Terapie</div>
@@ -408,7 +419,7 @@ html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
           <span class="way-link">Descoperă Terapia →</span>
         </div>
       </a>
-      <a class="way" href="voxen-groups.html">
+      <a class="way" href="groups.html">
         <div class="way-icon" style="background:rgba(212,83,126,.16);color:var(--warm)">👥</div>
         <div class="way-body">
           <div class="way-title">Grupuri de sprijin</div>
@@ -681,14 +692,14 @@ function finish(){
   } catch(e) {
     // localStorage indisponibil — Acasă va folosi planul-exemplu
   }
-  window.location.href = 'voxen-home.html';
+  window.location.href = 'home.html';
 }
 
 // Skip link
 document.getElementById('skipLink').addEventListener('click', e=>{
   e.preventDefault();
   if(confirm('Sigur sari peste configurare? O poți relua oricând din setări.')){
-    window.location.href = 'voxen-home.html';
+    window.location.href = 'home.html';
   }
 });
 
