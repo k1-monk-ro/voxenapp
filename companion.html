@@ -15,6 +15,8 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23534AB7'/><text x='8' y='23' font-size='20' fill='white'>◢</text></svg>">
 
 <title>voxen · Companion AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -177,6 +179,31 @@ footer{border-top:.5px solid var(--border);padding:24px 40px;display:flex;align-
 /* Când pagina nu e vizibilă — oprește toate animațiile (economie baterie) */
 html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
   animation-play-state:paused!important;
+}
+
+/* Previne flash-ul de font (FOUT) */
+html { 
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Responsive mobil ── */
+@media(max-width:560px){
+  .hero-title{font-size:48px!important}
+  .hero-sub, .comp-sub{font-size:13px!important}
+  .section{padding:30px 0!important}
+  .section-title{font-size:26px!important}
+  .emo-grid{grid-template-columns:repeat(3,1fr)!important}
+  .tl-step{flex-direction:column!important}
+  .tl-num{width:100%!important;text-align:left!important}
+  .resp-card{flex-direction:column!important}
+  body{padding-bottom:80px!important}
+}
+
+@media(max-width:480px){
+  .topbar{flex-wrap:wrap!important;justify-content:center!important;gap:6px!important;padding:10px 14px!important}
+  .topbar nav{width:100%;display:flex;justify-content:center}
+  .topbar nav a{font-size:11px!important}
 }
 </style>
 
@@ -1386,16 +1413,32 @@ function analyzeRecording() {
     pitchVar = Math.sqrt(variance);
   }
   
-  // Detect emotion from prosody signals
+  // Detect emotion from prosody signals — praguri recalibrate
+  // Bazat pe: pitch mediu normal 85-255Hz, energie normală 0.01-0.06
   let detectedEmotion = 'neutral';
   
-  if (avgEnergy < 0.02 && pauseRatio > 0.5) detectedEmotion = 'tired';
-  else if (avgPitch < 150 && pauseRatio > 0.4 && pitchVar < 20) detectedEmotion = 'sad';
-  else if (avgEnergy > 0.08 && avgPitch > 200 && pitchVar > 30) detectedEmotion = 'happy';
-  else if (avgEnergy > 0.06 && pauseRatio < 0.2 && pitchVar > 25) detectedEmotion = 'anxious';
-  else if (avgEnergy > 0.1 && avgPitch > 180) detectedEmotion = 'angry';
-  else if (pauseRatio > 0.55 && pitchVar < 15) detectedEmotion = 'confused';
-  else if (avgEnergy > 0.07 && pitchVar > 35) detectedEmotion = 'excited';
+  // Scor relativ — compară cu mediile tipice, nu praguri absolute
+  const pitchIsLow = avgPitch > 0 && avgPitch < 140;
+  const pitchIsHigh = avgPitch > 200;
+  const energyIsLow = avgEnergy < 0.025;
+  const energyIsHigh = avgEnergy > 0.045;
+  const manyPauses = pauseRatio > 0.4;
+  const fewPauses = pauseRatio < 0.25;
+  const monotone = pitchVar < 18;
+  const expressive = pitchVar > 22;
+  
+  if (energyIsLow && manyPauses) detectedEmotion = 'tired';
+  else if (pitchIsLow && monotone && manyPauses) detectedEmotion = 'sad';
+  else if (pitchIsLow && energyIsLow) detectedEmotion = 'sad';
+  else if (energyIsHigh && expressive && fewPauses) detectedEmotion = 'happy';
+  else if (pitchIsHigh && fewPauses && expressive) detectedEmotion = 'excited';
+  else if (fewPauses && expressive && energyIsHigh) detectedEmotion = 'anxious';
+  else if (energyIsHigh && pitchIsHigh) detectedEmotion = 'angry';
+  else if (manyPauses && monotone) detectedEmotion = 'confused';
+  else if (energyIsLow) detectedEmotion = 'tired';
+  else if (expressive && !manyPauses) detectedEmotion = 'happy';
+  else if (monotone) detectedEmotion = 'sad';
+  // Dacă nimic nu se potrivește, neutral — dar acum se ajunge aici mult mai rar
   
   // Display REAL metrics
   document.getElementById('mTempo').textContent = avgPitch > 0 ? Math.round(avgPitch) + ' Hz' : '—';
@@ -1414,33 +1457,89 @@ function triggerResponse() {
   const respOrb = document.getElementById('respOrb');
   const respEmo = document.getElementById('respEmo');
   const respInt = document.getElementById('respIntensity');
-  const sigBars = document.getElementById('sigBars').querySelectorAll('.sb');
+  const respText = document.getElementById('respText');
 
   respOrb.textContent = emo.e;
   respOrb.style.background = emo.color + '22';
   respOrb.style.borderColor = emo.color;
   respEmo.textContent = emo.name;
-  respInt.textContent = `Intensitate: ${emo.conf} confidence`;
+  respInt.textContent = getWhen(currentEmo);
 
-  // Animate signal bars
-  emo.signals.forEach((h,i)=>{
-    if(sigBars[i]){
-      sigBars[i].style.height = h+'px';
-      sigBars[i].style.background = emo.color;
-    }
-  });
+  // RĂSPUNSURI MULTIPLE — alege aleatoriu, nu se repetă
+  const responses = getHumanResponses(currentEmo);
+  const idx = Math.floor(Math.random() * responses.length);
+  respText.textContent = responses[idx];
+  
+  // Resetăm barele de semnal
+  const sigBars = document.getElementById('sigBars').querySelectorAll('.sb');
+  sigBars.forEach(b => { b.style.height = '4px'; b.style.background = emo.color; });
+  
+  // Stare
+  document.getElementById('voiceState').textContent = getEmo(currentEmo);
+}
 
-  document.getElementById('mTempo').textContent = emo.tempo;
-  document.getElementById('mEnergy').textContent = emo.energy;
-  document.getElementById('mConf').textContent = emo.conf;
-
-  typeText('respText', emo.response);
-  document.getElementById('voiceState').textContent = `Emoție detectată: ${emo.name}`;
-
-  // Add to history
-  history.unshift({e:emo.e, name:emo.name, time: new Date().toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'})});
-  if(history.length > 3) history.pop();
-  renderHistory();
+// Răspunsuri umane — multiple variante per emoție
+// Principii: validare + observație + întrebare deschisă = dialog, nu monolog
+function getHumanResponses(emo) {
+  const L = window.voxenLang ? window.voxenLang() : 'ro';
+  
+  // Răspunsuri RO — fiecare emoție are 4-5 variante
+  const RO = {
+    tired: [
+      'Te aud obosit. Nu trebuie să spui mult azi — chiar și faptul că ai deschis aplicația contează. Ce te-a epuizat cel mai mult?',
+      'Vocea ta sună grea. Oboseala asta e din corp sau din suflet? Uneori merită să le deosebim.',
+      'Ești pe ultimele rezerve, nu-i așa? Hai să nu forțăm nimic azi. Spune-mi doar un lucru mic care ți-ar face seara mai ușoară.',
+      'Aud că ești la capătul zilei. Și totuși ești aici — asta nu e puțin lucru. Cum a fost ziua, în trei cuvinte?',
+      'Oboseala asta pare adâncă. Ai dormit bine azi-noapte? Uneori de acolo pornește tot.',
+    ],
+    sad: [
+      'Aud ceva greu în voce. Nu trebuie să explici — uneori e destul să stai cu ce simți. Dar dacă vrei să-mi spui, sunt aici.',
+      'Pare o zi în care totul e mai greu decât ar trebui. Ce anume te apasă cel mai tare acum?',
+      'Tristețea pe care o aud e reală și e a ta. Nu trebuie reparată imediat. Spune-mi — de când durează asta?',
+      'Vocea ta îmi spune că nu ești bine. Și e ok să nu fii bine. Ce ai nevoie cel mai mult chiar acum — să vorbești sau să fii ascultat?',
+      'Aud un soi de greutate în ce spui. Ai reușit să vorbești cu cineva despre asta? Uneori ajută să scoți afară.',
+    ],
+    happy: [
+      'Se aude bine în voce! Ce s-a întâmplat azi de te-a bucurat? Vreau să știu.',
+      'Aud energie bună. Zi-mi — ce a mers bine? Merită remarcat, chiar și lucrurile mici.',
+      'Vocea ta sună diferit azi, în bine. Ține minte cum te simți acum — o să ai nevoie de amintirea asta într-o zi mai grea.',
+      'E o zi bună, nu-i așa? Bucură-te de ea fără vinovăție. Ce-ai vrea să faci cu energia asta?',
+    ],
+    anxious: [
+      'Aud o tensiune în voce. Respiră un moment cu mine. Ce te neliniștește cel mai tare acum?',
+      'Pare că gândurile merg repede azi. Hai să le punem pe rând — care e primul lucru care te îngrijorează?',
+      'Anxietatea pe care o aud nu e irațională — e corpul tău care îți spune ceva. Ce crezi că încearcă să-ți spună?',
+      'Vocea ta trădează o neliniște. Asta e ceva nou sau e ceva care revine? Uneori e util să vedem tiparul.',
+      'Simt o grabă în ce spui. Ce s-ar întâmpla dacă ai lua totul mai încet în următoarea oră?',
+    ],
+    angry: [
+      'Aud o tensiune puternică. Furia asta e despre ceva ce s-a întâmplat azi sau e ceva mai vechi?',
+      'Pare că ceva te-a scos din sărite. Spune-mi — ce s-a întâmplat? Uneori să pui în cuvinte dezamorsează.',
+      'Vocea ta are forță azi. Furia nu e rea — e un semnal că ceva contează pentru tine. Ce anume?',
+      'Te aud aprins. Hai să nu luăm decizii acum — lasă valul să treacă. Ce te-a provocat?',
+    ],
+    confused: [
+      'Aud o ezitare în voce. E ok să nu știi ce simți — uneori cel mai cinstit răspuns e "nu știu". Ce te deranjează cel mai mult acum?',
+      'Pare că ești într-un punct în care nimic nu e clar. Hai să nu încercăm să rezolvăm totul — doar spune-mi o singură întrebare care te macină.',
+      'Confuzia pe care o aud e normală — înseamnă că procesezi ceva important. Ce anume stă în aer?',
+    ],
+    excited: [
+      'Aud entuziasm real! Ce te-a energizat? Zi-mi tot — vreau să știu.',
+      'Vocea ta are o vitalitate pe care n-am mai auzit-o. Ce plan ai? Sună interesant.',
+      'Se aude că ești plin de energie. Profită de momentul ăsta — ce-ai vrea să faci cu el?',
+      'Wow, aud o schimbare. Ce s-a întâmplat? Povestește-mi.',
+    ],
+    neutral: [
+      'Aud o voce calmă. Cum a fost ziua ta, sincer? Nu cum "ar trebui" să fi fost — cum a fost cu adevărat.',
+      'Pare o zi echilibrată. Spune-mi un lucru care te-a surprins azi — pozitiv sau negativ.',
+      'Vocea ta sună stabilă. Asta e un semn bun. Ce e pe sufletul tău acum, dacă ar fi să pui în cuvinte?',
+      'Aud un calm. E calm de mulțumire sau calm de obișnuință? Uneori merită să facem diferența.',
+      'Zi-mi — cum te simți acum, în acest moment, nu cum te-ai simțit azi? Doar acum.',
+    ],
+  };
+  
+  return (L === 'ro') ? RO[emo] || RO.neutral : RO[emo] || RO.neutral;
+  // TODO: adaugă EN, FR etc. cu aceeași structură de variante
 }
 
 function renderHistory() {

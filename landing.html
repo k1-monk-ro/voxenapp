@@ -385,6 +385,12 @@ footer{position:relative;z-index:1;border-top:.5px solid var(--border);padding:2
 html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
   animation-play-state:paused!important;
 }
+
+/* Previne flash-ul de font (FOUT) */
+html { 
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
 </style>
 </head>
 <body>

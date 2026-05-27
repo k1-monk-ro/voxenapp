@@ -15,6 +15,8 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23534AB7'/><text x='8' y='23' font-size='20' fill='white'>◢</text></svg>">
 
 <title>Voxen — Autoexcludere jocuri de noroc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{--void:#0D0B1A;--surface:#1A1630;--card:#201C38;--border:#2E2850;--purple:#534AB7;--mid:#7F77DD;--soft:#AFA9EC;--mist:#EEEDFE;--teal:#1D9E75;--teal-soft:rgba(29,158,117,.14);--amber:#EF9F27;--warm:#D4537E;--white:#F0EFF8;--text2:#8B88C3}
@@ -97,6 +99,12 @@ body{background:var(--void);color:var(--white);font-family:'Syne',-apple-system,
 @media(max-width:560px){.hero h1{font-size:34px}.ops-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 html.vx-paused *{animation-play-state:paused!important}
+
+/* Previne flash-ul de font (FOUT) */
+html { 
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
 </style>
 </head>
 <body>

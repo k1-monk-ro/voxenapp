@@ -15,6 +15,8 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23534AB7'/><text x='8' y='23' font-size='20' fill='white'>◢</text></svg>">
 
 <title>Voxen — Configurează-ți drumul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -236,6 +238,12 @@
 /* Când pagina nu e vizibilă — oprește toate animațiile (economie baterie) */
 html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
   animation-play-state:paused!important;
+}
+
+/* Previne flash-ul de font (FOUT) */
+html { 
+  font-display: swap;
+  text-rendering: optimizeLegibility;
 }
 </style>
 </head>
@@ -473,7 +481,7 @@ html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
           <div class="pc-feat"><span class="pc-chk">✓</span>Integrare cu brățara / wearable</div>
           <div class="pc-feat"><span class="pc-chk">✓</span>Memorie emoțională pe termen lung</div>
         </div>
-        <button class="btn btn-primary pc-btn" onclick="finish()">Începe cu Plus</button>
+        <button class="btn btn-primary pc-btn" onclick="finishPlus()">Începe cu Plus</button>
       </div>
     </div>
 
@@ -693,6 +701,26 @@ function finish(){
     // localStorage indisponibil — Acasă va folosi planul-exemplu
   }
   window.location.href = 'home.html';
+}
+
+function finishPlus(){
+  // Salvează profilul + marchează Plus
+  try {
+    const data = JSON.parse(JSON.stringify(answers));
+    data.plan = 'plus';
+    localStorage.setItem('voxen_profile', JSON.stringify(data));
+  } catch(e) {}
+  // Arată modal "Plus vine curând"
+  const m = document.createElement('div');
+  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(13,11,26,.92);display:flex;align-items:center;justify-content:center;padding:24px';
+  m.innerHTML = '<div style="max-width:400px;background:#201C38;border:.5px solid #2E2850;border-radius:22px;padding:36px;text-align:center">'
+    + '<div style="font-size:36px;margin-bottom:16px">💜</div>'
+    + '<h3 style="font-family:Instrument Serif,Georgia,serif;font-size:26px;color:#F0EFF8;margin-bottom:12px">Voxen Plus vine curând.</h3>'
+    + '<p style="font-size:14px;color:#8B88C3;line-height:1.6;margin-bottom:20px">Terapie zonală, rapoarte detaliate, integrare wearable — le pregătim cu grijă. Deocamdată, tot ce ai nevoie e în planul gratuit.</p>'
+    + '<button onclick="window.location.href=\'home.html\'" style="background:#534AB7;color:#EEEDFE;border:none;border-radius:14px;padding:15px 32px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%">Continuă gratuit →</button>'
+    + '<p style="font-size:12px;color:#8B88C3;margin-top:14px">Te vom anunța când Plus e disponibil.</p>'
+    + '</div>';
+  document.body.appendChild(m);
 }
 
 // Skip link
