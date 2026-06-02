@@ -1,60 +1,14 @@
-<!DOCT
-<!-- STEP 9: Felicitare + Rezumat -->
-  <div class="step" data-step="9">
-    <div style="text-align:center;margin-bottom:24px">
-      <div style="font-size:52px;margin-bottom:12px">🎉</div>
-      <h2 class="serif" style="font-size:32px;margin-bottom:8px">Ai făcut ceva important.</h2>
-      <p class="lead" style="color:var(--text2)">Iată ce ai realizat în ultimele 2 minute:</p>
-    </div>
-    <div style="background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:22px;margin-bottom:20px">
-      <div id="summaryChecks" style="display:flex;flex-direction:column;gap:14px"></div>
-    </div>
-    <div class="nav">
-      <button class="btn btn-ghost" onclick="goStep(8)">Înapoi</button>
-      <button class="btn btn-primary" onclick="buildSummary();goStep(10)">Continuă →</button>
-    </div>
-  </div>
-
-  <!-- STEP 10: Autentificare -->
-  <div class="step" data-step="10">
-    <div style="text-align:center;margin-bottom:28px">
-      <div style="font-size:40px;margin-bottom:14px">🔒</div>
-      <h2 class="serif" style="font-size:30px;margin-bottom:10px">Salvează-ți progresul.</h2>
-      <p class="lead" style="color:var(--text2)">Creează un cont ca să nu-ți pierzi planul, jurnalele și progresul — pe orice dispozitiv.</p>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
-      <button onclick="authWith('email')" style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:16px;border-radius:14px;border:.5px solid var(--border);background:var(--card);color:var(--white);font-family:Syne,sans-serif;font-size:15px;font-weight:600;cursor:pointer">
-        <span style="font-size:20px">✉️</span> Continuă cu Email
-      </button>
-      <button onclick="authWith('apple')" style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:16px;border-radius:14px;border:.5px solid var(--border);background:var(--card);color:var(--white);font-family:Syne,sans-serif;font-size:15px;font-weight:600;cursor:pointer">
-        <span style="font-size:20px">🍎</span> Continuă cu Apple
-      </button>
-      <button onclick="authWith('google')" style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:16px;border-radius:14px;border:.5px solid var(--border);background:var(--card);color:var(--white);font-family:Syne,sans-serif;font-size:15px;font-weight:600;cursor:pointer">
-        <span style="font-size:18px;font-weight:800">G</span> Continuă cu Google
-      </button>
-    </div>
-    <p style="font-size:12px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:20px">Prin continuare, accepți <a href="#" style="color:var(--mid)">Termenii</a> și confirmi că ai cel puțin 18 ani.</p>
-    <div style="text-align:center">
-      <button onclick="finish()" style="background:transparent;border:none;color:var(--text2);font-family:Syne,sans-serif;font-size:14px;cursor:pointer;padding:12px">Continuă fără cont →</button>
-      <p style="font-size:11px;color:var(--text2);margin-top:6px;opacity:.7">Datele vor fi salvate doar pe acest dispozitiv.</p>
-    </div>
-  </div>
-
-
+<!DOCTYPE html>
 <html lang="ro">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Configurează-ți drumul de recuperare cu Voxen. Companion vocal cu AI empatic pentru dependențe și blocaj emoțional.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23534AB7%27/%3E%3Cg stroke=%27%23EEEDFE%27 stroke-linecap=%27round%27 fill=%27none%27 stroke-width=%272%27%3E%3Cline x1=%2710%27 y1=%2710%27 x2=%2710%27 y2=%2722%27/%3E%3Cline x1=%2716%27 y1=%276%27 x2=%2716%27 y2=%2726%27/%3E%3Cline x1=%2722%27 y1=%2710%27 x2=%2722%27 y2=%2722%27/%3E%3C/g%3E%3Ccircle cx=%2716%27 cy=%2727%27 r=%271.5%27 fill=%27%231D9E75%27/%3E%3C/svg%3E">
+
+<meta name="description" content="Configurează-ți drumul de recuperare cu Voxen. Companion vocal cu AI empatic.">
 <meta property="og:title" content="Voxen — Începe recuperarea">
-<meta property="og:description" content="Configurează-ți drumul de recuperare cu Voxen. Companion vocal cu AI empatic pentru dependențe și blocaj emoțional.">
+<meta property="og:description" content="Jurnal vocal cu AI empatic pentru dependențe și blocaj emoțional.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://getvoxen.com/onboarding">
-<meta property="og:site_name" content="Voxen">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Voxen — Începe recuperarea">
-<meta name="twitter:description" content="Configurează-ți drumul de recuperare cu Voxen. Companion vocal cu AI empatic pentru dependențe și blocaj emoțional.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23534AB7'/><g stroke='%23EEEDFE' stroke-linecap='round' fill='none' stroke-width='2'><line x1='10' y1='10' x2='10' y2='22'/><line x1='16' y1='6' x2='16' y2='26'/><line x1='22' y1='10' x2='22' y2='22'/></g><circle cx='16' cy='27' r='1.5' fill='%231D9E75'/></svg>"><rect width='32' height='32' rx='8' fill='%23534AB7'/><g stroke='%23EEEDFE' stroke-linecap='round' fill='none' stroke-width='2'><line x1='10' y1='10' x2='10' y2='22'/><line x1='16' y1='6' x2='16' y2='26'/><line x1='22' y1='10' x2='22' y2='22'/></g><circle cx='16' cy='27' r='1.5' fill='%231D9E75'/></svg>">
 
 <title>Voxen — Configurează-ți drumul</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -282,11 +236,7 @@ html.vx-paused *,html.vx-paused *::before,html.vx-paused *::after{
   animation-play-state:paused!important;
 }
 
-/* Previne flash-ul de font (FOUT) */
-html { 
-  font-display: swap;
-  text-rendering: optimizeLegibility;
-}
+html{font-display:swap;text-rendering:optimizeLegibility}
 </style>
 </head>
 <body>
@@ -435,8 +385,47 @@ html {
       <button class="btn btn-primary" onclick="next()">Vezi cum te însoțește Voxen →</button>
     </div>
 
+  <!-- STEP 9: Felicitare + Rezumat -->
+  <div class="step" data-step="9">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:52px;margin-bottom:12px">🎉</div>
+      <h2 class="serif" style="font-size:32px;margin-bottom:8px">Ai făcut ceva important.</h2>
+      <p class="lead" style="color:var(--text2)">Iată ce ai realizat în ultimele 2 minute:</p>
+    </div>
+    <div style="background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:22px;margin-bottom:20px">
+      <div id="summaryChecks" style="display:flex;flex-direction:column;gap:14px"></div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goStep(8)">Înapoi</button>
+      <button class="btn btn-primary" onclick="goStep(10)">Continuă →</button>
+    </div>
+  </div>
 
-  
+  <!-- STEP 10: Autentificare -->
+  <div class="step" data-step="10">
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="font-size:40px;margin-bottom:14px">🔒</div>
+      <h2 class="serif" style="font-size:30px;margin-bottom:10px">Salvează-ți progresul.</h2>
+      <p class="lead" style="color:var(--text2)">Creează un cont ca să nu-ți pierzi planul, jurnalele și progresul — pe orice dispozitiv.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
+      <button onclick="authWith('email')" style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:16px;border-radius:14px;border:.5px solid var(--border);background:var(--card);color:var(--white);font-family:Syne,sans-serif;font-size:15px;font-weight:600;cursor:pointer">
+        <span style="font-size:20px">✉️</span> Continuă cu Email
+      </button>
+      <button onclick="authWith('apple')" style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:16px;border-radius:14px;border:.5px solid var(--border);background:var(--card);color:var(--white);font-family:Syne,sans-serif;font-size:15px;font-weight:600;cursor:pointer">
+        <span style="font-size:20px">🍎</span> Continuă cu Apple
+      </button>
+      <button onclick="authWith('google')" style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:16px;border-radius:14px;border:.5px solid var(--border);background:var(--card);color:var(--white);font-family:Syne,sans-serif;font-size:15px;font-weight:600;cursor:pointer">
+        <span style="font-size:18px;font-weight:800">G</span> Continuă cu Google
+      </button>
+    </div>
+    <p style="font-size:12px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:20px">Prin continuare, accepți <a href="#" style="color:var(--mid)">Termenii</a> și confirmi că ai cel puțin 18 ani.</p>
+    <div style="text-align:center">
+      <button onclick="finish()" style="background:transparent;border:none;color:var(--text2);font-family:Syne,sans-serif;font-size:14px;cursor:pointer;padding:12px">Continuă fără cont →</button>
+      <p style="font-size:11px;color:var(--text2);margin-top:6px;opacity:.7">Datele vor fi salvate doar pe acest dispozitiv.</p>
+    </div>
+  </div>
+
 
     <p class="disclaimer">Voxen este un instrument de sprijin emoțional. Nu înlocuiește un psiholog, un medic sau serviciile de urgență. În situații de criză, sună la <strong>112</strong>.</p>
   </div>
@@ -526,7 +515,7 @@ html {
           <div class="pc-feat"><span class="pc-chk">✓</span>Integrare cu brățara / wearable</div>
           <div class="pc-feat"><span class="pc-chk">✓</span>Memorie emoțională pe termen lung</div>
         </div>
-        <button class="btn btn-primary pc-btn" onclick="goStep(9)">Începe cu Plus</button>
+        <button class="btn btn-primary pc-btn" onclick="finish()">Începe cu Plus</button>
       </div>
     </div>
 
@@ -569,7 +558,6 @@ function paintProgress(){
 
 // ── Navigare ──
 function showStep(n){
-  if(n===9 && typeof buildSummary==='function') buildSummary();
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   const el = document.querySelector(`.step[data-step="${n}"]`);
   if(el) el.classList.add('active');
@@ -577,7 +565,6 @@ function showStep(n){
   paintProgress();
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function goStep(n){ showStep(n); }
 function next(){ if(current < TOTAL_STEPS-1) showStep(current+1); }
 function prev(){ if(current > 0) showStep(current-1); }
 
@@ -750,79 +737,45 @@ function finish(){
   window.location.href = 'home.html';
 }
 
-// ── Step 9: Construiește rezumatul cu check-uri verzi ──
+function goStep(n){ if(n===9) buildSummary(); showStep(n); }
+
 function buildSummary(){
-  const w = document.getElementById('summaryChecks');
+  var w = document.getElementById('summaryChecks');
   if(!w) return;
-  
-  const STRUGGLE_NAMES = {
-    alcohol:'Alcool', substances:'Substanțe', gambling:'Jocuri de noroc',
-    depression:'Blocaj emoțional', other:'Obicei de schimbat'
-  };
-  const SUPPORT_NAMES = {
-    person:'O persoană de încredere', therapist:'Un terapeut',
-    group:'Un grup de sprijin', alone:'Singur, deocamdată'
-  };
-  const TIME_NAMES = {
-    morning:'Dimineața', evening:'Seara', night:'Noaptea târziu',
-    anytime:'Când simt nevoia'
-  };
-  
-  const items = [
-    { label:'Ai numit cu ce te lupți', value: STRUGGLE_NAMES[answers.struggle] || answers.struggle },
-    { label:'Ai identificat unde ești pe drum', value: answers.stage === 'early' ? 'La început' : answers.stage === 'thinking' ? 'Te gândești' : answers.stage === 'months' ? 'De câteva luni' : 'După o recădere' },
-    { label:'Ai descoperit declanșatorii tăi', value: (answers.triggers||[]).length + ' momente identificate' },
-    { label:'Ai ales cine te susține', value: SUPPORT_NAMES[answers.support] || '' },
-    { label:'Ai ales când vorbești cu Voxen', value: TIME_NAMES[answers.time] || '' },
-    { label:'Ai primit planul tău personalizat', value: 'Unic, făcut pentru tine' },
+  var SNAMES = {alcohol:'Alcool',substances:'Substanțe',gambling:'Jocuri de noroc',depression:'Blocaj emoțional',other:'Altceva'};
+  var SUNAMES = {person:'O persoană de încredere',therapist:'Un terapeut',group:'Un grup',alone:'Singur, deocamdată'};
+  var TNAMES = {morning:'Dimineața',evening:'Seara',night:'Noaptea târziu',anytime:'Când simt nevoia'};
+  var items = [
+    {l:'Ai numit cu ce te lupți', v:SNAMES[answers.struggle]||answers.struggle},
+    {l:'Ai identificat unde ești pe drum', v:answers.stage==='early'?'La început':answers.stage==='thinking'?'Te gândești':answers.stage==='months'?'De câteva luni':'După o recădere'},
+    {l:'Ai descoperit declanșatorii tăi', v:(answers.triggers||[]).length+' momente identificate'},
+    {l:'Ai ales cine te susține', v:SUNAMES[answers.support]||''},
+    {l:'Ai ales când vorbești cu Voxen', v:TNAMES[answers.time]||''},
+    {l:'Ai primit planul tău personalizat', v:'Unic, făcut pentru tine'},
   ];
-  
-  w.innerHTML = '';
+  w.innerHTML='';
   items.forEach(function(item){
-    const row = document.createElement('div');
-    row.style.cssText = 'display:flex;gap:12px;align-items:flex-start';
-    row.innerHTML = '<div style="width:28px;height:28px;border-radius:8px;background:var(--teal);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700">✓</div>'
-      + '<div><div style="font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px">'+ item.label +'</div>'
-      + '<div style="font-size:13px;color:var(--text2)">'+ item.value +'</div></div>';
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;gap:12px;align-items:flex-start;padding:6px 0';
+    row.innerHTML='<div style="width:28px;height:28px;border-radius:8px;background:var(--teal);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700">✓</div>'
+      +'<div><div style="font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px">'+item.l+'</div>'
+      +'<div style="font-size:13px;color:var(--text2)">'+item.v+'</div></div>';
     w.appendChild(row);
   });
 }
 
-// ── Step 10: Autentificare (placeholder — necesită Supabase) ──
 function authWith(provider){
-  // În producție: Supabase Auth cu provider-ul ales
-  // Deocamdată: arată modal informativ
-  const m = document.createElement('div');
-  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(13,11,26,.92);display:flex;align-items:center;justify-content:center;padding:24px';
-  m.innerHTML = '<div style="max-width:380px;background:var(--card);border:.5px solid var(--border);border-radius:22px;padding:32px;text-align:center">'
-    + '<div style="font-size:32px;margin-bottom:14px">🔐</div>'
-    + '<h3 style="font-family:Instrument Serif,Georgia,serif;font-size:24px;color:var(--white);margin-bottom:10px">Conturile vin curând.</h3>'
-    + '<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px">Autentificarea cu '+ provider +' va fi disponibilă în versiunea următoare. Deocamdată, datele tale se salvează pe acest dispozitiv.</p>'
-    + '<button onclick="this.closest(\'div[style]\').remove();finish()" style="background:var(--purple);color:var(--mist);border:none;border-radius:14px;padding:14px 28px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%">Am înțeles — continuă →</button>'
-    + '</div>';
+  var m=document.createElement('div');
+  m.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(13,11,26,.92);display:flex;align-items:center;justify-content:center;padding:24px';
+  m.innerHTML='<div style="max-width:380px;background:var(--card);border:.5px solid var(--border);border-radius:22px;padding:32px;text-align:center">'
+    +'<div style="font-size:32px;margin-bottom:14px">🔐</div>'
+    +'<h3 style="font-family:Instrument Serif,Georgia,serif;font-size:24px;color:var(--white);margin-bottom:10px">Conturile vin curând.</h3>'
+    +'<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px">Autentificarea cu '+provider+' va fi disponibilă în versiunea următoare. Deocamdată, datele se salvează pe acest dispozitiv.</p>'
+    +'<button onclick="this.closest(\'div[style]\').remove();finish()" style="background:var(--purple);color:var(--mist);border:none;border-radius:14px;padding:14px 28px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%">Am înțeles — continuă →</button>'
+    +'</div>';
   document.body.appendChild(m);
 }
 
-
-function finishPlus(){
-  // Salvează profilul + marchează Plus
-  try {
-    const data = JSON.parse(JSON.stringify(answers));
-    data.plan = 'plus';
-    localStorage.setItem('voxen_profile', JSON.stringify(data));
-  } catch(e) {}
-  // Arată modal "Plus vine curând"
-  const m = document.createElement('div');
-  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(13,11,26,.92);display:flex;align-items:center;justify-content:center;padding:24px';
-  m.innerHTML = '<div style="max-width:400px;background:#201C38;border:.5px solid #2E2850;border-radius:22px;padding:36px;text-align:center">'
-    + '<div style="font-size:36px;margin-bottom:16px">💜</div>'
-    + '<h3 style="font-family:Instrument Serif,Georgia,serif;font-size:26px;color:#F0EFF8;margin-bottom:12px">Voxen Plus vine curând.</h3>'
-    + '<p style="font-size:14px;color:#8B88C3;line-height:1.6;margin-bottom:20px">Terapie zonală, rapoarte detaliate, integrare wearable — le pregătim cu grijă. Deocamdată, tot ce ai nevoie e în planul gratuit.</p>'
-    + '<button onclick="window.location.href=\'home.html\'" style="background:#534AB7;color:#EEEDFE;border:none;border-radius:14px;padding:15px 32px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;cursor:pointer;width:100%">Continuă gratuit →</button>'
-    + '<p style="font-size:12px;color:#8B88C3;margin-top:14px">Te vom anunța când Plus e disponibil.</p>'
-    + '</div>';
-  document.body.appendChild(m);
-}
 
 // Skip link
 document.getElementById('skipLink').addEventListener('click', e=>{
