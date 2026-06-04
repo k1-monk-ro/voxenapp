@@ -962,8 +962,22 @@ window.voxenHooks = window.voxenHooks || [];
 
   // Init: read saved language
   window.addEventListener('DOMContentLoaded', ()=>{
-    let saved = 'ro';
+    let saved = null;
+    // 1. Verifică preferința salvată explicit de utilizator
     try{ const s=localStorage.getItem('vxlang'); if(s && T[s]) saved=s; }catch(e){}
+    
+    // 2. Dacă nu există preferință salvată → detectează limba browserului
+    if(!saved){
+      try{
+        const browserLang = (navigator.language || navigator.userLanguage || 'ro').slice(0,2).toLowerCase();
+        // Mapare limbă browser → limbi disponibile
+        const LANG_MAP = {ro:'ro', en:'en', fr:'fr', de:'de', zh:'zh', ja:'ja', ru:'ru',
+                          es:'en', it:'en', pt:'en', nl:'de', ko:'ja', uk:'ru'};
+        saved = LANG_MAP[browserLang] || (T[browserLang] ? browserLang : 'en');
+        // Dacă limba detectată e una pe care o avem → folosim
+        // Dacă nu → fallback la engleză (nu română — un străin nu înțelege română)
+      }catch(e){ saved = 'ro'; }
+    }
     applyLang(saved);
   });
 
@@ -981,14 +995,18 @@ window.voxenHooks = window.voxenHooks || [];
 <canvas id="cvs"></canvas>
 
 <div class="topbar" style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:.5px solid var(--border);position:sticky;top:0;background:var(--void);z-index:10;flex-wrap:wrap;gap:8px">
-  <a href="home.html" style="color:var(--text2);text-decoration:none;font-size:14px;font-family:Syne,sans-serif">← Acasă</a>
+  <a href="home.html" style="color:var(--text2);text-decoration:none;font-size:14px;font-family:Syne,sans-serif" data-t="home">← Acasă</a>
   <div style="font-weight:700;font-size:18px;letter-spacing:-.02em;font-family:Syne,sans-serif"><svg width="24" height="24" viewBox="0 0 24 24" style="vertical-align:middle;margin-right:6px"><rect width="24" height="24" rx="6" fill="#534AB7"/><g stroke="#EEEDFE" stroke-linecap="round" fill="none" stroke-width="1.6"><line x1="7" y1="8" x2="7" y2="16"/><line x1="10.5" y1="5" x2="10.5" y2="19"/><line x1="14" y1="9" x2="14" y2="15"/><line x1="17.5" y1="6" x2="17.5" y2="18"/></g><circle cx="12" cy="20.5" r="1.2" fill="#1D9E75"/></svg> voxen</div>
   <nav style="display:flex;gap:14px">
-    <a href="companion.html" style="color:var(--text2);text-decoration:none;font-size:12px;font-weight:600;font-family:Syne,sans-serif" id="nav_companion">Companion</a>
-    <a href="emotional.html" style="color:var(--text2);text-decoration:none;font-size:12px;font-weight:600;font-family:Syne,sans-serif" id="nav_emotional">Emoțional</a>
-    <a href="therapy.html" style="color:var(--text2);text-decoration:none;font-size:12px;font-weight:600;font-family:Syne,sans-serif" id="nav_therapy" style="color:var(--white);text-decoration:none;font-size:12px;font-weight:600;font-family:Syne,sans-serif">Terapie</a>
-    <a href="groups.html" style="color:var(--text2);text-decoration:none;font-size:12px;font-weight:600;font-family:Syne,sans-serif" id="nav_groups">Grupuri</a>
+    <a href="companion.html" style="color:var(--text2);text-decoration:none;font-size:12px;font-weight:600;font-family:Syne,sans-serif" id="nav_companion" data-t="companion">Companion</a>
+    <a href="emotional.html" style="color:var(--text2);text-decoration:none;font-size:12px;font-weight:600;font-family:Syne,sans-serif" id="nav_emotional" data-t="emotional">Emoțional</a>
+    <a href="therapy.html" style="color:var(--text2);text-decoration:none;font-size:12px;font-weight:600;font-family:Syne,sans-serif" id="nav_therapy" style="color:var(--white);text-decoration:none;font-size:12px;font-weight:600;font-family:Syne,sans-serif" data-t="therapy">Terapie</a>
+    <a href="groups.html" style="color:var(--text2);text-decoration:none;font-size:12px;font-weight:600;font-family:Syne,sans-serif" id="nav_groups" data-t="groups">Grupuri</a>
   </nav>
+    <div class="globe-wrap">
+      <button class="globe-btn" onclick="toggleGlobeLang()" title="Limbă">🌐</button>
+      <div class="globe-menu" id="globeLangMenu"></div>
+    </div>
 </div>
 
 <section class="hero">
@@ -1348,7 +1366,50 @@ document.addEventListener('visibilitychange', function(){
   if(document.hidden) document.documentElement.classList.add('vx-paused');
   else document.documentElement.classList.remove('vx-paused');
 });
+
+
+// ── Global Language Selector ──
+var GLOBE_LANGS = [
+  {code:'ro',label:'Română'},{code:'en',label:'English'},
+  {code:'es',label:'Español'},{code:'fr',label:'Français'},
+  {code:'de',label:'Deutsch'},{code:'pt',label:'Português'},
+  {code:'ru',label:'Русский'},{code:'zh',label:'中文'},
+  {code:'ja',label:'日本語'},{code:'hi',label:'हिन्दी'},
+  {code:'bn',label:'বাংলা'}
+];
+function buildGlobeMenu(){
+  var m=document.getElementById('globeLangMenu');
+  if(!m)return;
+  var cur='ro';try{cur=localStorage.getItem('vxlang')||'ro';}catch(e){}
+  m.innerHTML='';
+  GLOBE_LANGS.forEach(function(lang){
+    var b=document.createElement('button');
+    b.className='globe-lang'+(lang.code===cur?' active':'');
+    b.textContent=lang.label;
+    b.onclick=function(){
+      try{localStorage.setItem('vxlang',lang.code);}catch(e){}
+      if(typeof applyLang==='function') applyLang(lang.code);
+      buildGlobeMenu();
+      closeGlobeLang();
+    };
+    m.appendChild(b);
+  });
+}
+function toggleGlobeLang(){
+  var m=document.getElementById('globeLangMenu');
+  if(m) m.classList.toggle('open');
+}
+function closeGlobeLang(){
+  var m=document.getElementById('globeLangMenu');
+  if(m) m.classList.remove('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.globe-wrap')) closeGlobeLang();
+});
+buildGlobeMenu();
+
 </script>
 
+<script src="i18n.js"></script>
 </body>
 </html>

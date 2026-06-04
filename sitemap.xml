@@ -11,4 +11,5 @@
   <url><loc>https://getvoxen.com/substante</loc><priority>0.7</priority></url>
   <url><loc>https://getvoxen.com/autoexcludere</loc><priority>0.7</priority></url>
   <url><loc>https://getvoxen.com/landing</loc><priority>0.6</priority></url>
+  <url><loc>https://getvoxen.com/settings</loc><priority>0.5</priority></url>
 </urlset>
