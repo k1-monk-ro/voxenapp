@@ -28,7 +28,7 @@
   --teal:#1D9E75;--amber:#EF9F27;--white:#F0EFF8;--text2:#8B88C3;
 }
 html{scroll-behavior:smooth}
-body{background:var(--void);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;min-height:100vh}
+body{background:var(--void);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;min-height:100vh;padding-bottom:90px}
 
 /* ── BACK NAV ── */
 .topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(13,11,26,.85);backdrop-filter:blur(16px);border-bottom:.5px solid var(--border)}
@@ -207,6 +207,15 @@ html {
   .topbar nav{width:100%;display:flex;justify-content:center}
   .topbar nav a{font-size:11px!important}
 }
+
+.globe-wrap{position:relative;display:inline-block}
+.globe-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px 6px;opacity:.6;transition:opacity .15s}
+.globe-btn:hover{opacity:1}
+.globe-menu{display:none;position:absolute;right:0;top:32px;background:var(--surface,#1A1630);border:.5px solid var(--border,#2E2850);border-radius:14px;padding:8px;z-index:50;min-width:140px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.globe-menu.open{display:block}
+.globe-lang{display:block;width:100%;padding:9px 14px;background:none;border:none;border-radius:8px;color:var(--text2,#8B88C3);font-family:'Syne',sans-serif;font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:all .1s}
+.globe-lang:hover{background:rgba(83,74,183,.1);color:var(--white,#F0EFF8)}
+.globe-lang.active{color:var(--purple,#534AB7);font-weight:700;background:rgba(83,74,183,.08)}
 </style>
 
 <!-- ═══ VOXEN i18n MODULE ═══ -->
@@ -1734,5 +1743,231 @@ buildGlobeMenu();
 
 </script>
 <script src="i18n.js"></script>
+
+<script>
+// ═══ VOXEN AI ENGINE — Real AI Companion ═══
+// Overrides static responses with Claude AI when available
+
+(function(){
+  // Conversation history for context
+  var conversationHistory = [];
+  try {
+    var saved = localStorage.getItem('voxen_ai_history');
+    if (saved) conversationHistory = JSON.parse(saved);
+    // Keep only last 10 exchanges
+    if (conversationHistory.length > 20) conversationHistory = conversationHistory.slice(-20);
+  } catch(e) {}
+
+  // Save the original triggerResponse
+  var originalTrigger = window.triggerResponse || function(){};
+
+  // Override triggerResponse with AI-powered version
+  window.triggerResponse = function() {
+    // 1. Run original (sets emotion display, orb, etc)
+    originalTrigger();
+
+    // 2. Get the transcript and context
+    var transcript = '';
+    try {
+      var ta = document.querySelector('textarea');
+      if (ta) transcript = ta.value;
+    } catch(e) {}
+    
+    if (!transcript || transcript.trim().length < 3) return;
+
+    // 3. Get profile
+    var profile = null;
+    try { profile = JSON.parse(localStorage.getItem('voxen_profile')); } catch(e) {}
+
+    // 4. Get detected emotion and risk state
+    var emotion = window.currentEmo || 'neutral';
+    var riskState = 'stable';
+    var voiceState = document.getElementById('voiceState');
+    if (voiceState) {
+      var stateText = voiceState.textContent.toLowerCase();
+      if (stateText.includes('tensiune') || stateText.includes('strain')) riskState = 'strained';
+      if (stateText.includes('siguranță') || stateText.includes('crisis')) riskState = 'crisis';
+    }
+
+    // 5. If crisis — don't call AI, protocol handles it
+    if (riskState === 'crisis') return;
+
+    // 6. Get language
+    var lang = 'ro';
+    try { lang = localStorage.getItem('vxlang') || 'ro'; } catch(e) {}
+
+    // 7. Show thinking state
+    var respText = document.getElementById('respText');
+    if (respText) {
+      respText.style.opacity = '0.5';
+      respText.textContent = lang === 'ro' ? 'Mă gândesc...' 
+        : lang === 'en' ? 'Thinking...'
+        : lang === 'es' ? 'Pensando...'
+        : lang === 'fr' ? 'Je réfléchis...'
+        : lang === 'de' ? 'Ich denke nach...'
+        : lang === 'pt' ? 'Pensando...'
+        : lang === 'ru' ? 'Думаю...'
+        : lang === 'zh' ? '思考中...'
+        : lang === 'ja' ? '考えています...'
+        : lang === 'hi' ? 'सोच रहा हूँ...'
+        : lang === 'bn' ? 'ভাবছি...'
+        : 'Thinking...';
+    }
+
+    // 8. Add user message to history
+    conversationHistory.push({ role: 'user', content: transcript });
+
+    // 9. Call AI function
+    fetch('/.netlify/functions/ai-companion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        transcript: transcript,
+        emotion: emotion,
+        riskState: riskState,
+        profile: profile,
+        history: conversationHistory.slice(-10), // Last 5 exchanges
+        language: lang,
+      }),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.response) {
+        // Show AI response
+        if (respText) {
+          respText.style.opacity = '1';
+          respText.textContent = data.response;
+        }
+        // Save to history
+        conversationHistory.push({ role: 'assistant', content: data.response });
+        try {
+          localStorage.setItem('voxen_ai_history', JSON.stringify(conversationHistory.slice(-20)));
+        } catch(e) {}
+        
+        // Mark as AI-powered
+        if (data.fallback) {
+          console.log('[Voxen] AI unavailable, using fallback response');
+        } else {
+          console.log('[Voxen] AI response generated successfully');
+        }
+      }
+    })
+    .catch(function(err) {
+      // Fallback — keep the static response that originalTrigger set
+      if (respText) respText.style.opacity = '1';
+      console.log('[Voxen] AI call failed, using local response:', err.message);
+    });
+  };
+
+  // Clear history button (for settings)
+  window.clearAIHistory = function() {
+    conversationHistory = [];
+    try { localStorage.removeItem('voxen_ai_history'); } catch(e) {}
+  };
+
+})();
+</script>
+
+
+<!-- Bara de siguranță -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:var(--surface,#1A1630);border-top:.5px solid var(--border,#2E2850);padding:14px 22px;display:flex;align-items:center;gap:12px;justify-content:center;z-index:20">
+  <span style="font-size:12px;color:var(--text2,#8B88C3)">Treci printr-un moment greu?</span>
+  <a href="tel:112" style="background:rgba(212,83,126,.16);color:#D4537E;border:.5px solid rgba(212,83,126,.4);border-radius:10px;padding:9px 16px;font-family:Syne,sans-serif;font-size:13px;font-weight:700;text-decoration:none">Ajutor acum</a>
+</div>
+
+
+<!-- Modal criză -->
+<div id="voxenCrisisModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(13,11,26,.95);align-items:center;justify-content:center;padding:24px">
+  <div style="max-width:420px;background:#201C38;border:.5px solid #2E2850;border-radius:22px;padding:36px;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">🛟</div>
+    <h2 id="crisisTitle" style="font-family:'Instrument Serif',Georgia,serif;font-size:26px;color:#F0EFF8;margin-bottom:12px">Vreau să te ajut chiar acum.</h2>
+    <p id="crisisBody" style="font-size:14px;color:#8B88C3;line-height:1.6;margin-bottom:24px">Ce simți e real și e greu. Dar există oameni pregătiți să te asculte chiar acum.</p>
+    <a href="tel:112" style="display:block;background:#D4537E;color:#fff;border-radius:14px;padding:16px;font-family:Syne,sans-serif;font-size:16px;font-weight:700;text-decoration:none;margin-bottom:10px">112 — Urgență</a>
+    <a href="tel:0800801200" style="display:block;background:rgba(83,74,183,.2);color:#AFA9EC;border:.5px solid #534AB7;border-radius:14px;padding:16px;font-family:Syne,sans-serif;font-size:14px;font-weight:600;text-decoration:none;margin-bottom:10px" id="crisisTelVerde">TelVerde Antisuicid — 0800 801 200</a>
+    <a href="mailto:sos@antisuicid.ro" style="display:block;color:#8B88C3;font-size:13px;text-decoration:none;padding:10px" id="crisisEmail">✉ sos@antisuicid.ro — 24/7</a>
+  </div>
+</div>
+
+
+<script>
+// ═══ VOXEN CRISIS DETECTION — Web Safety Module ═══
+(function(){
+  var LEXICON = [
+    {p:/\b(o să mă sinucid|am un plan să|vreau să mor|mă omor|îmi iau viața|nu mai vreau să trăiesc)\b/i, l:'imminent'},
+    {p:/\b(am pastilele pregătite|am scris un bilet|de data asta e pe bune)\b/i, l:'imminent'},
+    {p:/\b(vreau să dispar|mai bine nu mai eram|lumea ar fi mai bine fără mine)\b/i, l:'ideation'},
+    {p:/\b(nu mai are rost|la ce bun|de ce mai încerc|nu mai pot continua)\b/i, l:'ideation'},
+    {p:/\b(mă gândesc să termin|vreau să se termine tot|gata cu tot)\b/i, l:'ideation'},
+    {p:/\b(am recăzut|am băut iar|am consumat|am pierdut tot|m-am jucat iar)\b/i, l:'distress'},
+    {p:/\b(nu mai pot|sunt la pământ|e prea greu|nu mai suport|mă prăbușesc)\b/i, l:'distress'},
+    {p:/\b(sunt singur|nimeni nu mă|nimănui nu-i pasă|sunt gol pe dinăuntru)\b/i, l:'distress'},
+  ];
+  var SEV = {none:0, distress:1, ideation:2, imminent:3};
+  var RESPONSES = {
+    imminent: {t:'Vreau să te ajut chiar acum.', b:'Ce simți e real și e greu. Dar există oameni pregătiți să te asculte chiar acum. Te rog — sună pe cineva de mai jos.'},
+    ideation: {t:'Aud că treci prin ceva foarte greu.', b:'Nu trebuie să treci prin asta singur. Gândurile astea sunt un semnal că ai nevoie de sprijin real — și există.'},
+    distress: {t:'Pare o zi foarte grea.', b:'Ce simți acum e valid. Hai să ne asigurăm că ai sprijinul potrivit.'},
+  };
+
+  window.voxenDetectCrisis = function(text) {
+    if (!text || text.trim().length < 3) return {level:'none', matches:[]};
+    var maxLevel = 'none';
+    var matches = [];
+    LEXICON.forEach(function(entry) {
+      var m = text.match(entry.p);
+      if (m) {
+        matches.push(m[0]);
+        if (SEV[entry.l] > SEV[maxLevel]) maxLevel = entry.l;
+      }
+    });
+    return {level: maxLevel, matches: matches};
+  };
+
+  window.voxenShowCrisis = function(level) {
+    var modal = document.getElementById('voxenCrisisModal');
+    if (!modal) return;
+    var resp = RESPONSES[level] || RESPONSES.distress;
+    document.getElementById('crisisTitle').textContent = resp.t;
+    document.getElementById('crisisBody').textContent = resp.b;
+    modal.style.display = 'flex';
+  };
+
+  // Hook into analyzeRecording — intercept BEFORE triggerResponse
+  var origAnalyze = window.analyzeRecording;
+  if (typeof origAnalyze === 'function') {
+    window.analyzeRecording = function() {
+      // Get transcript
+      var ta = document.querySelector('textarea');
+      var transcript = ta ? ta.value : '';
+      
+      // Detect crisis
+      var crisis = voxenDetectCrisis(transcript);
+      
+      if (crisis.level === 'imminent' || crisis.level === 'ideation') {
+        // BLOCK normal flow — show crisis card
+        voxenShowCrisis(crisis.level);
+        return; // Don't proceed to normal analysis
+      }
+      
+      if (crisis.level === 'distress') {
+        // Allow normal flow but show gentle check-in after
+        origAnalyze.call(this);
+        // Override response with distress acknowledgment
+        setTimeout(function(){
+          var respText = document.getElementById('respText');
+          if (respText) {
+            respText.textContent = 'Aud că treci prin ceva greu. Nu trebuie să fii bine acum — sunt aici. Vrei să-mi spui mai multe?';
+          }
+        }, 100);
+        return;
+      }
+      
+      // Normal flow
+      origAnalyze.call(this);
+    };
+  }
+})();
+</script>
+
 </body>
 </html>

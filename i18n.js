@@ -1,219 +1,294 @@
-// ═══ VOXEN i18n v2 — COMPLETE TRANSLATIONS ═══
-// 11 languages × all pages × all content
-window.VOXEN_I18N={
+// ═══ VOXEN i18n v3 — TEXT REPLACEMENT ENGINE ═══
+// Traduce automat ORICE text vizibil din pagină
+// Nu necesită data-t — face match pe textul românesc
 
-// ════════════════════════════════════════
-// COMMON
-// ════════════════════════════════════════
-common:{
-back:{ro:'← Acasă',en:'← Home',es:'← Inicio',fr:'← Accueil',de:'← Start',pt:'← Início',ru:'← Главная',zh:'← 首页',ja:'← ホーム',hi:'← होम',bn:'← হোম'},
-companion:{ro:'Companion',en:'Companion',es:'Compañero',fr:'Compagnon',de:'Begleiter',pt:'Companheiro',ru:'Компаньон',zh:'同伴',ja:'コンパニオン',hi:'साथी',bn:'সঙ্গী'},
-emotional:{ro:'Emoțional',en:'Emotional',es:'Emocional',fr:'Émotionnel',de:'Emotional',pt:'Emocional',ru:'Эмоции',zh:'情感',ja:'感情',hi:'भावनात्मक',bn:'আবেগজনিত'},
-therapy:{ro:'Terapie',en:'Therapy',es:'Terapia',fr:'Thérapie',de:'Therapie',pt:'Terapia',ru:'Терапия',zh:'治疗',ja:'セラピー',hi:'थेरेपी',bn:'থেরাপি'},
-groups:{ro:'Grupuri',en:'Groups',es:'Grupos',fr:'Groupes',de:'Gruppen',pt:'Grupos',ru:'Группы',zh:'群组',ja:'グループ',hi:'समूह',bn:'গ্রুপ'},
-emergency:{ro:'Ajutor acum',en:'Help now',es:'Ayuda ahora',fr:'Aide maintenant',de:'Hilfe jetzt',pt:'Ajuda agora',ru:'Помощь',zh:'求助',ja:'助けて',hi:'मदद',bn:'সাহায্য'},
-crisis_q:{ro:'Treci printr-un moment greu?',en:'Going through a tough time?',es:'¿Pasando un mal momento?',fr:'Un moment difficile ?',de:'Schwere Zeit?',pt:'Momento difícil?',ru:'Тяжёлый момент?',zh:'困难时刻？',ja:'つらいですか？',hi:'कठिन समय?',bn:'কঠিন সময়?'},
-see_steps:{ro:'Vezi pașii ↓',en:'See steps ↓',es:'Ver pasos ↓',fr:'Voir les étapes ↓',de:'Schritte ↓',pt:'Ver passos ↓',ru:'Шаги ↓',zh:'查看步骤 ↓',ja:'ステップ ↓',hi:'चरण देखें ↓',bn:'পদক্ষেপ ↓'},
-resources:{ro:'RESURSE',en:'RESOURCES',es:'RECURSOS',fr:'RESSOURCES',de:'RESSOURCEN',pt:'RECURSOS',ru:'РЕСУРСЫ',zh:'资源',ja:'リソース',hi:'संसाधन',bn:'সম্পদ'},
-},
+(function(){
+var L='ro';try{L=localStorage.getItem('vxlang')||'ro';}catch(e){}
 
-// ════════════════════════════════════════
-// HOME
-// ════════════════════════════════════════
-home:{
-label:{ro:'ACASĂ',en:'HOME',es:'INICIO',fr:'ACCUEIL',de:'START',pt:'INÍCIO',ru:'ГЛАВНАЯ',zh:'首页',ja:'ホーム',hi:'होम',bn:'হোম'},
-gm:{ro:'Bună dimineața.',en:'Good morning.',es:'Buenos días.',fr:'Bonjour.',de:'Guten Morgen.',pt:'Bom dia.',ru:'Доброе утро.',zh:'早上好。',ja:'おはようございます。',hi:'सुप्रभात।',bn:'সুপ্রভাত।'},
-ga:{ro:'Bună ziua.',en:'Good afternoon.',es:'Buenas tardes.',fr:'Bon après-midi.',de:'Guten Tag.',pt:'Boa tarde.',ru:'Добрый день.',zh:'下午好。',ja:'こんにちは。',hi:'नमस्ते।',bn:'শুভ অপরাহ্ন।'},
-ge:{ro:'Bună seara.',en:'Good evening.',es:'Buenas noches.',fr:'Bonsoir.',de:'Guten Abend.',pt:'Boa noite.',ru:'Добрый вечер.',zh:'晚上好。',ja:'こんばんは。',hi:'शुभ संध्या।',bn:'শুভ সন্ধ্যা।'},
-sub:{ro:'Ai făcut primul pas — ești aici. Acum hai să facem al doilea.',en:'You took the first step — you\'re here. Now let\'s take the second.',es:'Diste el primer paso — estás aquí. Demos el segundo.',fr:'Tu as fait le premier pas. Faisons le deuxième.',de:'Du hast den ersten Schritt gemacht. Machen wir den zweiten.',pt:'Você deu o primeiro passo. Vamos dar o segundo.',ru:'Ты сделал первый шаг. Давай сделаем второй.',zh:'你迈出了第一步。让我们迈出第二步。',ja:'最初の一歩を踏み出しました。次へ進みましょう。',hi:'आपने पहला कदम उठाया। चलिए दूसरा उठाते हैं।',bn:'প্রথম পদক্ষেপ নিয়েছেন। দ্বিতীয়টি নিই।'},
-jt:{ro:'Spune-mi cum ești azi',en:'Tell me how you are today',es:'Dime cómo estás hoy',fr:'Dis-moi comment tu vas',de:'Sag mir wie es dir geht',pt:'Me diga como você está',ru:'Расскажи как ты',zh:'告诉我你今天怎么样',ja:'今日の調子を教えて',hi:'बताइए आज कैसे हैं',bn:'আজ কেমন আছেন বলুন'},
-js:{ro:'Un minut. Fără format. Voxen ascultă.',en:'One minute. No format. Voxen listens.',es:'Un minuto. Sin formato. Voxen escucha.',fr:'Une minute. Sans format. Voxen écoute.',de:'Eine Minute. Kein Format. Voxen hört zu.',pt:'Um minuto. Sem formato. Voxen ouve.',ru:'Минута. Без формата. Voxen слушает.',zh:'一分钟。无格式。Voxen倾听。',ja:'1分間。形式なし。Voxenが聴きます。',hi:'एक मिनट। Voxen सुनता है।',bn:'এক মিনিট। Voxen শোনে।'},
-sd:{ro:'zi pe drum',en:'day on path',es:'día en camino',fr:'jour en route',de:'Tag unterwegs',pt:'dia no caminho',ru:'день в пути',zh:'天',ja:'日目',hi:'दिन',bn:'দিন'},
-sj:{ro:'jurnale',en:'journals',es:'diarios',fr:'journaux',de:'Einträge',pt:'diários',ru:'записей',zh:'日志',ja:'件',hi:'जर्नल',bn:'জার্নাল'},
-ss:{ro:'pași',en:'steps',es:'pasos',fr:'pas',de:'Schritte',pt:'passos',ru:'шагов',zh:'步',ja:'歩',hi:'कदम',bn:'পদক্ষেপ'},
-plan:{ro:'PLANUL TĂU',en:'YOUR PLAN',es:'TU PLAN',fr:'TON PLAN',de:'DEIN PLAN',pt:'SEU PLANO',ru:'ТВОЙ ПЛАН',zh:'你的计划',ja:'プラン',hi:'आपकी योजना',bn:'পরিকল্পনা'},
-trig:{ro:'⚠ DECLANȘATORI',en:'⚠ TRIGGERS',es:'⚠ DESENCADENANTES',fr:'⚠ DÉCLENCHEURS',de:'⚠ AUSLÖSER',pt:'⚠ GATILHOS',ru:'⚠ ТРИГГЕРЫ',zh:'⚠ 触发因素',ja:'⚠ トリガー',hi:'⚠ ट्रिगर',bn:'⚠ ট্রিগার'},
-sup:{ro:'SPRIJINUL TĂU',en:'YOUR SUPPORT',es:'TU APOYO',fr:'TON SOUTIEN',de:'UNTERSTÜTZUNG',pt:'APOIO',ru:'ПОДДЕРЖКА',zh:'支持',ja:'サポート',hi:'सहारा',bn:'সহায়তা'},
-week:{ro:'→ PRIMII 7 PAȘI',en:'→ FIRST 7 STEPS',es:'→ PRIMEROS 7 PASOS',fr:'→ 7 PREMIERS PAS',de:'→ ERSTE 7 SCHRITTE',pt:'→ PRIMEIROS 7 PASSOS',ru:'→ ПЕРВЫЕ 7 ШАГОВ',zh:'→ 前7步',ja:'→ 最初の7ステップ',hi:'→ पहले 7 कदम',bn:'→ প্রথম ৭ পদক্ষেপ'},
-// Trigger plans
-tr_evening:{ro:'Serile târzii — pregătește o activitate de seară din timp.',en:'Late evenings — prepare an evening activity in advance.',es:'Las noches — prepara una actividad nocturna con antelación.',fr:'Les soirées — prépare une activité du soir à l\'avance.',de:'Späte Abende — plane eine Abendaktivität voraus.',pt:'Noites — prepare uma atividade noturna com antecedência.',ru:'Поздние вечера — подготовь занятие заранее.',zh:'晚间——提前准备晚间活动。',ja:'夜——事前に夜の活動を準備しましょう。',hi:'देर शाम — पहले से शाम की गतिविधि तैयार करें।',bn:'দেরি সন্ধ্যা — আগে থেকে সন্ধ্যার কার্যকলাপ প্রস্তুত করুন।'},
-tr_stress:{ro:'Stresul — deschide Voxen și vorbește 60 de secunde.',en:'Stress — open Voxen and talk for 60 seconds.',es:'Estrés — abre Voxen y habla 60 segundos.',fr:'Stress — ouvre Voxen et parle 60 secondes.',de:'Stress — öffne Voxen und sprich 60 Sekunden.',pt:'Estresse — abra Voxen e fale 60 segundos.',ru:'Стресс — открой Voxen и говори 60 секунд.',zh:'压力——打开Voxen说60秒。',ja:'ストレス——Voxenを開いて60秒話しましょう。',hi:'तनाव — Voxen खोलें और 60 सेकंड बोलें।',bn:'চাপ — Voxen খুলুন এবং ৬০ সেকেন্ড কথা বলুন।'},
-tr_loneliness:{ro:'Singurătatea — scrie un „salut" cuiva.',en:'Loneliness — text someone "hi".',es:'Soledad — manda un "hola" a alguien.',fr:'Solitude — envoie un "salut" à quelqu\'un.',de:'Einsamkeit — schreib jemandem "Hallo".',pt:'Solidão — mande um "oi" para alguém.',ru:'Одиночество — напиши кому-нибудь "привет".',zh:'孤独——给某人发一句"你好"。',ja:'孤独——誰かに「やあ」と送りましょう。',hi:'अकेलापन — किसी को "हाय" भेजें।',bn:'একাকীত্ব — কাউকে "হাই" পাঠান।'},
-tr_social:{ro:'Ieșirile sociale — decide dinainte ce faci.',en:'Social outings — decide what you\'ll do beforehand.',es:'Salidas sociales — decide de antemano qué harás.',fr:'Sorties — décide à l\'avance ce que tu feras.',de:'Ausgehen — entscheide vorher, was du tust.',pt:'Saídas sociais — decida antes o que fará.',ru:'Встречи — реши заранее, что будешь делать.',zh:'社交活动——提前决定你要做什么。',ja:'社交の場——事前に何をするか決めましょう。',hi:'सामाजिक मेलजोल — पहले से तय करें क्या करेंगे।',bn:'সামাজিক অনুষ্ঠান — আগে থেকে ঠিক করুন কী করবেন।'},
-// Week steps
-w1:{ro:'Înregistrează primul jurnal vocal.',en:'Record your first voice journal.',es:'Graba tu primer diario vocal.',fr:'Enregistre ton premier journal vocal.',de:'Nimm dein erstes Sprachtagebuch auf.',pt:'Grave seu primeiro diário vocal.',ru:'Запиши первый голосовой журнал.',zh:'录制你的第一个语音日记。',ja:'最初の音声ジャーナルを録音しましょう。',hi:'अपना पहला वॉयस जर्नल रिकॉर्ड करें।',bn:'আপনার প্রথম ভয়েস জার্নাল রেকর্ড করুন।'},
-w2:{ro:'Explorează modulul de recuperare.',en:'Explore the recovery module.',es:'Explora el módulo de recuperación.',fr:'Explore le module de guérison.',de:'Erkunde das Genesungsmodul.',pt:'Explore o módulo de recuperação.',ru:'Изучи модуль восстановления.',zh:'探索康复模块。',ja:'回復モジュールを探索しましょう。',hi:'रिकवरी मॉड्यूल एक्सप्लोर करें।',bn:'রিকভারি মডিউল অন্বেষণ করুন।'},
-w3:{ro:'Marchează prima ta victorie.',en:'Mark your first victory.',es:'Marca tu primera victoria.',fr:'Marque ta première victoire.',de:'Markiere deinen ersten Sieg.',pt:'Marque sua primeira vitória.',ru:'Отметь свою первую победу.',zh:'标记你的第一次胜利。',ja:'最初の勝利を記録しましょう。',hi:'अपनी पहली जीत दर्ज करें।',bn:'আপনার প্রথম বিজয় চিহ্নিত করুন।'},
-w4:{ro:'Identifică momentul cel mai greu.',en:'Identify your hardest moment.',es:'Identifica tu momento más difícil.',fr:'Identifie ton moment le plus dur.',de:'Finde deinen schwersten Moment.',pt:'Identifique seu momento mais difícil.',ru:'Определи самый трудный момент.',zh:'找出最困难的时刻。',ja:'一番つらい瞬間を特定しましょう。',hi:'सबसे कठिन पल पहचानें।',bn:'সবচেয়ে কঠিন মুহূর্ত চিহ্নিত করুন।'},
-w5:{ro:'Spune-i cuiva că ai început.',en:'Tell someone you\'ve started.',es:'Dile a alguien que empezaste.',fr:'Dis à quelqu\'un que tu as commencé.',de:'Sag jemandem, dass du angefangen hast.',pt:'Diga a alguém que você começou.',ru:'Скажи кому-нибудь, что ты начал.',zh:'告诉某人你已经开始了。',ja:'誰かに始めたことを伝えましょう。',hi:'किसी को बताएं कि आपने शुरुआत की।',bn:'কাউকে বলুন আপনি শুরু করেছেন।'},
-w6:{ro:'Ascultă-ți primul jurnal.',en:'Listen to your first journal.',es:'Escucha tu primer diario.',fr:'Écoute ton premier journal.',de:'Höre dein erstes Tagebuch.',pt:'Ouça seu primeiro diário.',ru:'Послушай свой первый журнал.',zh:'听听你的第一篇日记。',ja:'最初のジャーナルを聴きましょう。',hi:'अपना पहला जर्नल सुनें।',bn:'আপনার প্রথম জার্নাল শুনুন।'},
-// Conditional cards
-card_gambling:{ro:'Autoexcludere disponibilă',en:'Self-exclusion available',es:'Autoexclusión disponible',fr:'Auto-exclusion disponible',de:'Selbstsperre verfügbar',pt:'Autoexclusão disponível',ru:'Самоисключение доступно',zh:'可自我排除',ja:'自己排除可能',hi:'आत्म-बहिष्कार उपलब्ध',bn:'স্ব-বর্জন উপলব্ধ'},
-card_alcohol:{ro:'Primul pas: vorbește cu un medic',en:'First step: talk to a doctor',es:'Primer paso: habla con un médico',fr:'Premier pas : parle à un médecin',de:'Erster Schritt: sprich mit einem Arzt',pt:'Primeiro passo: fale com um médico',ru:'Первый шаг: поговори с врачом',zh:'第一步：与医生交谈',ja:'最初の一歩：医師に相談',hi:'पहला कदम: डॉक्टर से बात करें',bn:'প্রথম পদক্ষেপ: ডাক্তারের সাথে কথা বলুন'},
-card_substances:{ro:'Instrumente de recuperare',en:'Recovery tools',es:'Herramientas de recuperación',fr:'Outils de guérison',de:'Genesungswerkzeuge',pt:'Ferramentas de recuperação',ru:'Инструменты восстановления',zh:'康复工具',ja:'回復ツール',hi:'रिकवरी उपकरण',bn:'পুনরুদ্ধার সরঞ্জাম'},
-},
+// Scurtătură: T[ro_text] = {en:'...',es:'...',...}
+// Doar limbile cerute: en,es,fr,de,pt,ru,zh,ja,hi,bn
+var T={
+// ════ COMMON / NAV ════
+'← Acasă':{en:'← Home',es:'← Inicio',fr:'← Accueil',de:'← Start',pt:'← Início',ru:'← Главная',zh:'← 首页',ja:'← ホーム',hi:'← होम',bn:'← হোম'},
+'Companion':{en:'Companion',es:'Compañero',fr:'Compagnon',de:'Begleiter',pt:'Companheiro',ru:'Компаньон',zh:'同伴',ja:'コンパニオン',hi:'साथी',bn:'সঙ্গী'},
+'Emoțional':{en:'Emotional',es:'Emocional',fr:'Émotionnel',de:'Emotional',pt:'Emocional',ru:'Эмоции',zh:'情感',ja:'感情',hi:'भावनात्मक',bn:'আবেগজনিত'},
+'Terapie':{en:'Therapy',es:'Terapia',fr:'Thérapie',de:'Therapie',pt:'Terapia',ru:'Терапия',zh:'治疗',ja:'セラピー',hi:'थेरेपी',bn:'থেরাপি'},
+'Grupuri':{en:'Groups',es:'Grupos',fr:'Groupes',de:'Gruppen',pt:'Grupos',ru:'Группы',zh:'群组',ja:'グループ',hi:'समूह',bn:'গ্রুপ'},
+'Ajutor acum':{en:'Help now',es:'Ayuda ahora',fr:'Aide maintenant',de:'Hilfe jetzt',pt:'Ajuda agora',ru:'Помощь',zh:'立即求助',ja:'今すぐ助けて',hi:'अभी मदद',bn:'এখনই সাহায্য'},
+'Treci printr-un moment greu?':{en:'Going through a tough time?',es:'¿Pasando un mal momento?',fr:'Un moment difficile ?',de:'Schwere Zeit?',pt:'Momento difícil?',ru:'Тяжёлый момент?',zh:'正在经历困难？',ja:'つらい時期ですか？',hi:'कठिन समय?',bn:'কঠিন সময়?'},
+'Sari peste':{en:'Skip',es:'Saltar',fr:'Passer',de:'Überspringen',pt:'Pular',ru:'Пропустить',zh:'跳过',ja:'スキップ',hi:'छोड़ें',bn:'এড়িয়ে যান'},
+'Înapoi':{en:'Back',es:'Atrás',fr:'Retour',de:'Zurück',pt:'Voltar',ru:'Назад',zh:'返回',ja:'戻る',hi:'वापस',bn:'পিছনে'},
+'Continuă →':{en:'Continue →',es:'Continuar →',fr:'Continuer →',de:'Weiter →',pt:'Continuar →',ru:'Далее →',zh:'继续 →',ja:'続ける →',hi:'जारी रखें →',bn:'চালিয়ে যান →'},
+'Vezi cum':{en:'See how',es:'Ver cómo',fr:'Voir comment',de:'So geht\'s',pt:'Veja como',ru:'Как это',zh:'查看方法',ja:'方法を見る',hi:'कैसे देखें',bn:'কিভাবে দেখুন'},
+'Începem →':{en:'Let\'s start →',es:'Empecemos →',fr:'Commençons →',de:'Los geht\'s →',pt:'Começar →',ru:'Начнём →',zh:'开始 →',ja:'始めましょう →',hi:'शुरू करें →',bn:'শুরু করি →'},
+'Începe gratuit':{en:'Start free',es:'Empezar gratis',fr:'Commencer gratuit',de:'Kostenlos starten',pt:'Começar grátis',ru:'Начать бесплатно',zh:'免费开始',ja:'無料で始める',hi:'मुफ़्त शुरू करें',bn:'বিনামূল্যে শুরু'},
+'Începe cu Plus':{en:'Start with Plus',es:'Empezar con Plus',fr:'Commencer avec Plus',de:'Mit Plus starten',pt:'Começar com Plus',ru:'Начать с Plus',zh:'使用Plus开始',ja:'Plusで始める',hi:'Plus से शुरू करें',bn:'Plus দিয়ে শুরু'},
 
-// ════════════════════════════════════════
-// EMOTIONAL — COMPLETE
-// ════════════════════════════════════════
-emotional:{
-label:{ro:'SPRIJIN EMOȚIONAL',en:'EMOTIONAL SUPPORT',es:'APOYO EMOCIONAL',fr:'SOUTIEN ÉMOTIONNEL',de:'EMOTIONALE UNTERSTÜTZUNG',pt:'APOIO EMOCIONAL',ru:'ЭМОЦИОНАЛЬНАЯ ПОДДЕРЖКА',zh:'情感支持',ja:'感情的サポート',hi:'भावनात्मक सहारा',bn:'মানসিক সহায়তা'},
-ht:{ro:'Nu e lene.\nNu e vina ta.',en:'It\'s not laziness.\nIt\'s not your fault.',es:'No es pereza.\nNo es tu culpa.',fr:'Ce n\'est pas de la paresse.\nPas ta faute.',de:'Keine Faulheit.\nNicht deine Schuld.',pt:'Não é preguiça.\nNão é sua culpa.',ru:'Это не лень.\nНе твоя вина.',zh:'不是懒惰。\n不是你的错。',ja:'怠けではない。\nあなたのせいではない。',hi:'यह आलस नहीं।\nआपकी गलती नहीं।',bn:'অলসতা নয়।\nআপনার দোষ নয়।'},
-hs:{ro:'Blocajul emoțional e ceva prin care trec milioane de oameni. Nu trebuie rezolvat peste noapte.',en:'Emotional blockage is something millions go through. It doesn\'t need to be fixed overnight.',es:'El bloqueo emocional lo viven millones. No necesita resolverse de un día para otro.',fr:'Le blocage émotionnel touche des millions. Pas besoin de le résoudre du jour au lendemain.',de:'Emotionale Blockaden erleben Millionen. Es muss nicht über Nacht gelöst werden.',pt:'O bloqueio emocional atinge milhões. Não precisa ser resolvido da noite pro dia.',ru:'Эмоциональный блок — это нормально. Не нужно решать за ночь.',zh:'情感阻塞影响数百万人。不需要一夜之间解决。',ja:'感情的な行き詰まりは何百万人もが経験します。一晩で解決する必要はありません。',hi:'भावनात्मक अवरोध करोड़ों लोगों को होता है। रातोंरात ठीक नहीं करना है।',bn:'আবেগজনিত বাধা কোটি মানুষের হয়। রাতারাতি সমাধান করতে হবে না।'},
-// Psihoeducație
-bat_t:{ro:'Bateria internă e goală',en:'Your inner battery is drained',es:'Tu batería interna está agotada',fr:'Ta batterie interne est vide',de:'Deine innere Batterie ist leer',pt:'Sua bateria interna esgotou',ru:'Внутренняя батарея разряжена',zh:'内心的电池耗尽了',ja:'心の電池が切れています',hi:'आंतरिक बैटरी खत्म',bn:'অভ্যন্তরীণ ব্যাটারি শেষ'},
-bat_d:{ro:'Creierul intră în mod de economie: oprește motivația, plăcerea. Nu e lene — e supraviețuire.',en:'The brain enters economy mode: shuts down motivation, pleasure. It\'s not laziness — it\'s survival.',es:'El cerebro entra en modo ahorro: apaga motivación y placer. No es pereza — es supervivencia.',fr:'Le cerveau passe en mode économie : il coupe la motivation. Pas de la paresse — de la survie.',de:'Das Gehirn geht in den Sparmodus: Motivation und Freude werden abgeschaltet. Nicht Faulheit — Überleben.',pt:'O cérebro entra em modo economia: desliga motivação e prazer. Não é preguiça — é sobrevivência.',ru:'Мозг включает энергосбережение: отключает мотивацию. Не лень — выживание.',zh:'大脑进入节能模式：关闭动力和快乐。不是懒惰——是生存。',ja:'脳が省エネモードに：やる気と喜びを停止。怠けではなく生存本能です。',hi:'दिमाग बचत मोड में जाता है: प्रेरणा बंद कर देता है। आलस नहीं — जीवित रहना है।',bn:'মস্তিষ্ক সঞ্চয় মোডে যায়: অনুপ্রেরণা বন্ধ করে দেয়। অলসতা নয় — টিকে থাকা।'},
-cyc_t:{ro:'Cercul vicios',en:'The vicious cycle',es:'El círculo vicioso',fr:'Le cercle vicieux',de:'Der Teufelskreis',pt:'O ciclo vicioso',ru:'Порочный круг',zh:'恶性循环',ja:'悪循環',hi:'दुष्चक्र',bn:'দুষ্টচক্র'},
-cyc_d:{ro:'Nu ai energie → nu faci nimic → te simți mai rău. Se sparge cu un singur pas mic.',en:'No energy → you do nothing → you feel worse. Break it with one small step.',es:'Sin energía → no haces nada → te sientes peor. Rómpelo con un paso pequeño.',fr:'Pas d\'énergie → tu ne fais rien → tu te sens pire. Brise-le avec un petit pas.',de:'Keine Energie → du tust nichts → dir geht es schlechter. Durchbreche es mit einem kleinen Schritt.',pt:'Sem energia → não faz nada → se sente pior. Quebre com um passo pequeno.',ru:'Нет энергии → ничего не делаешь → хуже. Разорви одним маленьким шагом.',zh:'没有精力→什么都不做→感觉更糟。用一小步打破它。',ja:'エネルギーなし→何もしない→もっと悪く。小さな一歩で断ち切りましょう。',hi:'ऊर्जा नहीं → कुछ नहीं करते → और बुरा लगता है। एक छोटे कदम से तोड़ें।',bn:'শক্তি নেই → কিছু করেন না → আরও খারাপ লাগে। একটি ছোট পদক্ষেপে ভাঙুন।'},
-fro_t:{ro:'Emoțiile înghețate',en:'Frozen emotions',es:'Emociones congeladas',fr:'Émotions gelées',de:'Eingefrorene Gefühle',pt:'Emoções congeladas',ru:'Замороженные эмоции',zh:'冰冻的情绪',ja:'凍りついた感情',hi:'जमी भावनाएँ',bn:'জমাট আবেগ'},
-fro_d:{ro:'Nu simți "nimic" — simți "prea mult deodată". Se dezgheață cu timp și blândețe.',en:'You don\'t feel "nothing" — you feel "too much at once". It thaws with time and gentleness.',es:'No sientes "nada" — sientes "demasiado a la vez". Se descongela con tiempo y dulzura.',fr:'Tu ne ressens pas "rien" — tu ressens "trop d\'un coup". Ça fond avec le temps.',de:'Du fühlst nicht "nichts" — du fühlst "zu viel auf einmal". Es taut mit Zeit und Sanftheit.',pt:'Você não sente "nada" — sente "demais de uma vez". Descongela com tempo e gentileza.',ru:'Ты не чувствуешь "ничего" — ты чувствуешь "слишком много сразу". Оттаивает со временем.',zh:'你不是"什么都感觉不到"——是"一次感觉太多"。时间和温柔会融化它。',ja:'「何も感じない」のではなく「一度に多すぎる」。時間と優しさで溶けます。',hi:'"कुछ नहीं" नहीं — "एक साथ बहुत ज़्यादा" महसूस करते हैं। समय और कोमलता से पिघलता है।',bn:'"কিছুই না" নয় — "একসাথে অনেক বেশি" অনুভব করেন। সময় ও কোমলতায় গলে যায়।'},
-// Tools
-tools:{ro:'INSTRUMENTE',en:'TOOLS',es:'HERRAMIENTAS',fr:'OUTILS',de:'WERKZEUGE',pt:'FERRAMENTAS',ru:'ИНСТРУМЕНТЫ',zh:'工具',ja:'ツール',hi:'उपकरण',bn:'সরঞ্জাম'},
-t1_t:{ro:'Activarea comportamentală',en:'Behavioral activation',es:'Activación conductual',fr:'Activation comportementale',de:'Verhaltensaktivierung',pt:'Ativação comportamental',ru:'Поведенческая активация',zh:'行为激活',ja:'行動活性化',hi:'व्यवहार सक्रियण',bn:'আচরণগত সক্রিয়করণ'},
-t1_d:{ro:'Nu aștepți motivația — acționezi ca să apară. Energia vine DUPĂ.',en:'Don\'t wait for motivation — act to create it. Energy comes AFTER.',es:'No esperes motivación — actúa para crearla. La energía viene DESPUÉS.',fr:'N\'attends pas la motivation — agis pour la créer. L\'énergie vient APRÈS.',de:'Warte nicht auf Motivation — handle, um sie zu erzeugen. Energie kommt DANACH.',pt:'Não espere motivação — aja para criá-la. A energia vem DEPOIS.',ru:'Не жди мотивацию — действуй, чтобы она появилась. Энергия придёт ПОТОМ.',zh:'不要等待动力——行动创造动力。能量在行动之后到来。',ja:'やる気を待たずに行動しましょう。エネルギーは後からついてきます。',hi:'प्रेरणा का इंतज़ार न करें — कार्य करें। ऊर्जा बाद में आती है।',bn:'অনুপ্রেরণার অপেক্ষা করবেন না — কাজ করুন। শক্তি পরে আসবে।'},
-t2_t:{ro:'Jurnalul vocal de deblocare',en:'Voice journal for unblocking',es:'Diario vocal de desbloqueo',fr:'Journal vocal de déblocage',de:'Sprach-Tagebuch zum Entsperren',pt:'Diário vocal de desbloqueio',ru:'Голосовой журнал разблокировки',zh:'解锁语音日记',ja:'ブロック解除の音声ジャーナル',hi:'अनब्लॉकिंग वॉयस जर्नल',bn:'আনব্লকিং ভয়েস জার্নাল'},
-t3_t:{ro:'Igiena somnului',en:'Sleep hygiene',es:'Higiene del sueño',fr:'Hygiène du sommeil',de:'Schlafhygiene',pt:'Higiene do sono',ru:'Гигиена сна',zh:'睡眠卫生',ja:'睡眠衛生',hi:'नींद की स्वच्छता',bn:'ঘুমের স্বাস্থ্যবিধি'},
-t4_t:{ro:'Micro-conexiunea socială',en:'Social micro-connection',es:'Micro-conexión social',fr:'Micro-connexion sociale',de:'Soziale Mikro-Verbindung',pt:'Micro-conexão social',ru:'Микро-связь социальная',zh:'社交微连接',ja:'社会的マイクロコネクション',hi:'सामाजिक सूक्ष्म-संबंध',bn:'সামাজিক মাইক্রো-সংযোগ'},
-t5_t:{ro:'Ancorarea în prezent',en:'Grounding in the present',es:'Anclaje en el presente',fr:'Ancrage dans le présent',de:'Erdung im Moment',pt:'Ancoragem no presente',ru:'Заземление в настоящем',zh:'当下锚定',ja:'今ここに留まる',hi:'वर्तमान में जुड़ाव',bn:'বর্তমানে নোঙর'},
-triage:{ro:'Când merită ajutor profesional',en:'When to seek professional help',es:'Cuándo buscar ayuda profesional',fr:'Quand chercher de l\'aide professionnelle',de:'Wann professionelle Hilfe suchen',pt:'Quando buscar ajuda profissional',ru:'Когда обратиться к специалисту',zh:'何时寻求专业帮助',ja:'専門家の助けを求めるとき',hi:'पेशेवर मदद कब लें',bn:'পেশাদার সাহায্য কখন নেবেন'},
-triage_sub:{ro:'Dacă recunoști 2+ semne de peste 2 săptămâni:',en:'If you recognize 2+ signs for over 2 weeks:',es:'Si reconoces 2+ señales por más de 2 semanas:',fr:'Si tu reconnais 2+ signes depuis plus de 2 semaines :',de:'Wenn du 2+ Zeichen seit über 2 Wochen erkennst:',pt:'Se reconhece 2+ sinais por mais de 2 semanas:',ru:'Если узнаёшь 2+ признака более 2 недель:',zh:'如果你发现2个以上持续超过2周的迹象：',ja:'2週間以上続く2つ以上の兆候がある場合：',hi:'अगर 2 हफ्ते से 2+ संकेत दिखें:',bn:'যদি ২ সপ্তাহের বেশি ২+ লক্ষণ দেখেন:'},
-disc:{ro:'Voxen este un instrument de sprijin emoțional. Nu înlocuiește evaluarea unui psiholog. În urgențe, sună la 112.',en:'Voxen is an emotional support tool. It doesn\'t replace a psychologist. In emergencies, call 112.',es:'Voxen es una herramienta de apoyo emocional. No reemplaza un psicólogo. En emergencias, llama al 112.',fr:'Voxen est un outil de soutien émotionnel. Ne remplace pas un psychologue. Urgences : 112.',de:'Voxen ist ein emotionales Unterstützungstool. Kein Ersatz für einen Psychologen. Notfall: 112.',pt:'Voxen é uma ferramenta de apoio emocional. Não substitui um psicólogo. Emergências: 112.',ru:'Voxen — инструмент поддержки. Не заменяет психолога. Экстренно: 112.',zh:'Voxen是情感支持工具。不能替代心理医生。紧急情况：112。',ja:'Voxenは感情サポートツールです。心理士の代わりではありません。緊急時：112。',hi:'Voxen भावनात्मक सहारा है। मनोवैज्ञानिक का विकल्प नहीं। आपातकाल: 112।',bn:'Voxen মানসিক সহায়তা সরঞ্জাম। মনোবিজ্ঞানীর বিকল্প নয়। জরুরি: 112।'},
-},
+// ════ HOME ════
+'Acasă':{en:'Home',es:'Inicio',fr:'Accueil',de:'Start',pt:'Início',ru:'Главная',zh:'首页',ja:'ホーム',hi:'होम',bn:'হোম'},
+'Bună dimineața.':{en:'Good morning.',es:'Buenos días.',fr:'Bonjour.',de:'Guten Morgen.',pt:'Bom dia.',ru:'Доброе утро.',zh:'早上好。',ja:'おはようございます。',hi:'सुप्रभात।',bn:'সুপ্রভাত।'},
+'Bună ziua.':{en:'Good afternoon.',es:'Buenas tardes.',fr:'Bon après-midi.',de:'Guten Tag.',pt:'Boa tarde.',ru:'Добрый день.',zh:'下午好。',ja:'こんにちは。',hi:'नमस्ते।',bn:'শুভ অপরাহ্ন।'},
+'Bună seara.':{en:'Good evening.',es:'Buenas noches.',fr:'Bonsoir.',de:'Guten Abend.',pt:'Boa noite.',ru:'Добрый вечер.',zh:'晚上好。',ja:'こんばんは。',hi:'शुभ संध्या।',bn:'শুভ সন্ধ্যা।'},
+'Bună.':{en:'Hello.',es:'Hola.',fr:'Salut.',de:'Hallo.',pt:'Olá.',ru:'Привет.',zh:'你好。',ja:'こんにちは。',hi:'नमस्ते।',bn:'হ্যালো।'},
+'Ai făcut primul pas — ești aici. Acum hai să facem al doilea.':{en:'You took the first step — you\'re here. Let\'s take the second.',es:'Diste el primer paso — estás aquí. Demos el segundo.',fr:'Tu as fait le premier pas. Faisons le deuxième.',de:'Du hast den ersten Schritt getan. Machen wir den zweiten.',pt:'Você deu o primeiro passo. Vamos dar o segundo.',ru:'Первый шаг сделан. Давай сделаем второй.',zh:'你迈出了第一步。让我们迈出第二步。',ja:'最初の一歩を踏み出しました。次へ進みましょう。',hi:'पहला कदम उठाया। दूसरा उठाते हैं।',bn:'প্রথম পদক্ষেপ নিয়েছেন। দ্বিতীয়টি নিই।'},
+'Spune-mi cum ești azi':{en:'Tell me how you are today',es:'Dime cómo estás hoy',fr:'Dis-moi comment tu vas',de:'Sag mir wie es dir geht',pt:'Me diga como você está',ru:'Расскажи как ты сегодня',zh:'告诉我你今天怎么样',ja:'今日の調子を教えて',hi:'बताइए आज कैसे हैं',bn:'আজ কেমন আছেন বলুন'},
+'Un minut. Fără format, fără judecată. Voxen ascultă.':{en:'One minute. No format, no judgment. Voxen listens.',es:'Un minuto. Sin formato, sin juicio. Voxen escucha.',fr:'Une minute. Sans format, sans jugement. Voxen écoute.',de:'Eine Minute. Kein Format, kein Urteil. Voxen hört zu.',pt:'Um minuto. Sem formato, sem julgamento. Voxen ouve.',ru:'Минута. Без формата, без осуждения. Voxen слушает.',zh:'一分钟。无格式，无评判。Voxen倾听。',ja:'1分間。形式なし、判断なし。Voxenが聴きます。',hi:'एक मिनट। कोई प्रारूप नहीं। Voxen सुनता है।',bn:'এক মিনিট। ফরম্যাট নেই। Voxen শোনে।'},
+'Planul tău de recuperare':{en:'Your recovery plan',es:'Tu plan de recuperación',fr:'Ton plan de guérison',de:'Dein Genesungsplan',pt:'Seu plano de recuperação',ru:'Твой план восстановления',zh:'你的康复计划',ja:'あなたの回復プラン',hi:'आपकी रिकवरी योजना',bn:'আপনার পুনরুদ্ধার পরিকল্পনা'},
+'⚠ Când vine pofta':{en:'⚠ When cravings hit',es:'⚠ Cuando llega el antojo',fr:'⚠ Quand l\'envie arrive',de:'⚠ Wenn das Verlangen kommt',pt:'⚠ Quando a vontade vem',ru:'⚠ Когда тянет',zh:'⚠ 当渴望来临',ja:'⚠ 渇望が来たとき',hi:'⚠ जब लालसा आए',bn:'⚠ যখন আকাঙ্ক্ষা আসে'},
+'→ Săptămâna asta':{en:'→ This week',es:'→ Esta semana',fr:'→ Cette semaine',de:'→ Diese Woche',pt:'→ Esta semana',ru:'→ На этой неделе',zh:'→ 本周',ja:'→ 今週',hi:'→ इस हफ्ते',bn:'→ এই সপ্তাহে'},
+'Companion AI':{en:'AI Companion',es:'Compañero IA',fr:'Compagnon IA',de:'KI-Begleiter',pt:'Companheiro IA',ru:'ИИ Компаньон',zh:'AI同伴',ja:'AIコンパニオン',hi:'AI साथी',bn:'AI সঙ্গী'},
+'Blocaj emoțional':{en:'Emotional blockage',es:'Bloqueo emocional',fr:'Blocage émotionnel',de:'Emotionale Blockade',pt:'Bloqueio emocional',ru:'Эмоциональный блок',zh:'情感阻塞',ja:'感情的ブロック',hi:'भावनात्मक अवरोध',bn:'আবেগজনিত বাধা'},
+'Autoexcludere disponibilă':{en:'Self-exclusion available',es:'Autoexclusión disponible',fr:'Auto-exclusion disponible',de:'Selbstsperre verfügbar',pt:'Autoexclusão disponível',ru:'Самоисключение доступно',zh:'可自我排除',ja:'自己排除可能',hi:'आत्म-बहिष्कार उपलब्ध',bn:'স্ব-বর্জন উপলব্ধ'},
+'Primul pas: vorbește cu un medic':{en:'First step: talk to a doctor',es:'Primer paso: habla con un médico',fr:'Parle d\'abord à un médecin',de:'Erster Schritt: sprich mit einem Arzt',pt:'Primeiro: fale com um médico',ru:'Первый шаг: поговори с врачом',zh:'第一步：与医生交谈',ja:'最初の一歩：医師に相談',hi:'पहला कदम: डॉक्टर से बात करें',bn:'প্রথমে ডাক্তারের সাথে কথা বলুন'},
+'Instrumente de recuperare':{en:'Recovery tools',es:'Herramientas de recuperación',fr:'Outils de guérison',de:'Genesungswerkzeuge',pt:'Ferramentas de recuperação',ru:'Инструменты восстановления',zh:'康复工具',ja:'回復ツール',hi:'रिकवरी उपकरण',bn:'পুনরুদ্ধার সরঞ্জাম'},
+'Ghid recuperare alcool →':{en:'Alcohol recovery guide →',es:'Guía recuperación alcohol →',fr:'Guide guérison alcool →',de:'Alkohol-Genesungsleitfaden →',pt:'Guia de recuperação álcool →',ru:'Руководство по алкоголю →',zh:'酒精康复指南 →',ja:'アルコール回復ガイド →',hi:'शराब मुक्ति गाइड →',bn:'মদ্যপান মুক্তি গাইড →'},
+'Ghid recuperare substanțe →':{en:'Substance recovery guide →',es:'Guía recuperación sustancias →',fr:'Guide guérison substances →',de:'Substanz-Genesungsleitfaden →',pt:'Guia recuperação substâncias →',ru:'Руководство по веществам →',zh:'物质康复指南 →',ja:'薬物回復ガイド →',hi:'नशा मुक्ति गाइड →',bn:'মাদক মুক্তি গাইড →'},
 
-// ════════════════════════════════════════
-// ALCOOL — COMPLETE
-// ════════════════════════════════════════
-alcool:{
-label:{ro:'RECUPERARE ALCOOL',en:'ALCOHOL RECOVERY',es:'RECUPERACIÓN ALCOHOL',fr:'GUÉRISON ALCOOL',de:'ALKOHOL-GENESUNG',pt:'RECUPERAÇÃO ÁLCOOL',ru:'ОТ АЛКОГОЛЯ',zh:'酒精康复',ja:'アルコール回復',hi:'शराब से मुक्ति',bn:'মদ্যপান মুক্তি'},
-ht:{ro:'Primul pas nu e\nsă te oprești.',en:'The first step isn\'t\nto stop.',es:'El primer paso no es\nparar.',fr:'Le premier pas n\'est pas\nde s\'arrêter.',de:'Der erste Schritt ist nicht\naufzuhören.',pt:'O primeiro passo não é\nparar.',ru:'Первый шаг —\nне остановиться.',zh:'第一步不是\n停下来。',ja:'最初の一歩は\n止めることではない。',hi:'पहला कदम\nरुकना नहीं है।',bn:'প্রথম পদক্ষেপ\nথামা নয়।'},
-hs:{ro:'Primul pas e să vorbești cu un medic. Oprirea bruscă poate fi periculoasă.',en:'First step is talking to a doctor. Stopping suddenly can be dangerous.',es:'El primer paso es hablar con un médico. Parar de repente es peligroso.',fr:'Parle d\'abord à un médecin. L\'arrêt brutal peut être dangereux.',de:'Sprich zuerst mit einem Arzt. Plötzliches Aufhören kann gefährlich sein.',pt:'Fale primeiro com um médico. Parar de repente pode ser perigoso.',ru:'Сначала поговори с врачом. Резкая остановка опасна.',zh:'先和医生谈谈。突然停止可能很危险。',ja:'まず医師に相談しましょう。突然の断酒は危険です。',hi:'पहले डॉक्टर से बात करें। अचानक छोड़ना खतरनाक हो सकता है।',bn:'প্রথমে ডাক্তারের সাথে কথা বলুন। হঠাৎ ছাড়া বিপজ্জনক।'},
-alert:{ro:'Oprirea bruscă e periculoasă',en:'Sudden stopping is dangerous',es:'Parar de repente es peligroso',fr:'L\'arrêt brutal est dangereux',de:'Plötzliches Aufhören ist gefährlich',pt:'Parar de repente é perigoso',ru:'Резкая остановка опасна',zh:'突然停止很危险',ja:'突然の断酒は危険です',hi:'अचानक छोड़ना खतरनाक है',bn:'হঠাৎ ছাড়া বিপজ্জনক'},
-alert_d:{ro:'Sevrajul alcoolic poate provoca convulsii și delirium tremens. Nu te opri brusc fără supraveghere medicală.',en:'Alcohol withdrawal can cause seizures and delirium tremens. Don\'t stop suddenly without medical supervision.',es:'La abstinencia puede causar convulsiones y delirium tremens. No pares sin supervisión médica.',fr:'Le sevrage peut causer des convulsions et le delirium tremens. Ne t\'arrête pas sans suivi médical.',de:'Alkoholentzug kann Krämpfe und Delirium tremens verursachen. Nicht ohne ärztliche Aufsicht aufhören.',pt:'A abstinência pode causar convulsões e delirium tremens. Não pare sem supervisão médica.',ru:'Алкогольная абстиненция может вызвать судороги. Не останавливайся без врача.',zh:'酒精戒断可能导致癫痫和谵妄。不要在没有医疗监督的情况下突然停止。',ja:'アルコール離脱は発作やせん妄を引き起こす可能性があります。医師の監督なしに突然やめないでください。',hi:'शराब छोड़ने से दौरे पड़ सकते हैं। डॉक्टर की देखरेख के बिना अचानक न छोड़ें।',bn:'মদ্যপান ছাড়ায় খিঁচুনি হতে পারে। ডাক্তারের তত্ত্বাবধান ছাড়া হঠাৎ ছাড়বেন না।'},
-t1:{ro:'Evaluarea medicală',en:'Medical evaluation',es:'Evaluación médica',fr:'Évaluation médicale',de:'Medizinische Bewertung',pt:'Avaliação médica',ru:'Медицинская оценка',zh:'医学评估',ja:'医学的評価',hi:'चिकित्सा मूल्यांकन',bn:'চিকিৎসা মূল্যায়ন'},
-t2:{ro:'Jurnalul vocal de consum',en:'Voice consumption journal',es:'Diario vocal de consumo',fr:'Journal vocal de consommation',de:'Sprach-Konsumtagebuch',pt:'Diário vocal de consumo',ru:'Голосовой журнал потребления',zh:'语音消费日记',ja:'音声消費ジャーナル',hi:'वॉयस खपत जर्नल',bn:'ভয়েস সেবন জার্নাল'},
-t3:{ro:'Tehnica "joacă filmul până la capăt"',en:'"Play the movie to the end" technique',es:'Técnica "reproduce la película hasta el final"',fr:'Technique "joue le film jusqu\'au bout"',de:'Technik "Spiel den Film bis zum Ende"',pt:'Técnica "passe o filme até o final"',ru:'Техника "прокрути фильм до конца"',zh:'"把电影放到最后"技巧',ja:'「映画を最後まで再生する」テクニック',hi:'"फिल्म अंत तक चलाएं" तकनीक',bn:'"শেষ পর্যন্ত ছবি চালান" কৌশল'},
-t4:{ro:'Alcoolicii Anonimi',en:'Alcoholics Anonymous',es:'Alcohólicos Anónimos',fr:'Alcooliques Anonymes',de:'Anonyme Alkoholiker',pt:'Alcoólicos Anônimos',ru:'Анонимные Алкоголики',zh:'匿名戒酒会',ja:'アルコホーリクス・アノニマス',hi:'अल्कोहोलिक्स एनोनिमस',bn:'অ্যালকোহলিক্স অ্যানোনিমাস'},
-commit:{ro:'Azi aleg altfel.',en:'Today I choose differently.',es:'Hoy elijo diferente.',fr:'Aujourd\'hui je choisis autrement.',de:'Heute wähle ich anders.',pt:'Hoje escolho diferente.',ru:'Сегодня выбираю иначе.',zh:'今天我做不同的选择。',ja:'今日は違う選択をします。',hi:'आज मैं अलग चुनता हूँ।',bn:'আজ ভিন্নভাবে বেছে নিই।'},
-mark_d1:{ro:'Marchez ziua 1',en:'Mark day 1',es:'Marcar día 1',fr:'Marquer jour 1',de:'Tag 1 markieren',pt:'Marcar dia 1',ru:'Отметить день 1',zh:'标记第1天',ja:'1日目を記録',hi:'दिन 1 चिह्नित करें',bn:'দিন ১ চিহ্নিত করুন'},
-days:{ro:'zile fără alcool',en:'days alcohol-free',es:'días sin alcohol',fr:'jours sans alcool',de:'Tage ohne Alkohol',pt:'dias sem álcool',ru:'дней без алкоголя',zh:'天不饮酒',ja:'日間禁酒',hi:'दिन शराब के बिना',bn:'দিন মদ ছাড়া'},
-disc:{ro:'Voxen nu oferă sfat medical. Tratamentul necesită supraveghere medicală. În urgențe, sună la 112.',en:'Voxen does not provide medical advice. Treatment requires medical supervision. In emergencies, call 112.',es:'Voxen no ofrece consejo médico. El tratamiento requiere supervisión médica. Emergencias: 112.',fr:'Voxen ne donne pas de conseil médical. Le traitement nécessite un suivi médical. Urgences : 112.',de:'Voxen bietet keine medizinische Beratung. Behandlung erfordert ärztliche Aufsicht. Notfall: 112.',pt:'Voxen não oferece conselho médico. O tratamento requer supervisão médica. Emergências: 112.',ru:'Voxen не даёт медицинских советов. Лечение требует врачебного наблюдения. Экстренно: 112.',zh:'Voxen不提供医疗建议。治疗需要医疗监督。紧急情况：112。',ja:'Voxenは医療アドバイスを提供しません。治療には医師の監督が必要です。緊急時：112。',hi:'Voxen चिकित्सा सलाह नहीं देता। उपचार के लिए चिकित्सा देखरेख ज़रूरी है। आपातकाल: 112।',bn:'Voxen চিকিৎসা পরামর্শ দেয় না। চিকিৎসায় ডাক্তারের তত্ত্বাবধান প্রয়োজন। জরুরি: 112।'},
-},
+// ════ EMOTIONAL ════
+'🌫️ Sprijin emoțional':{en:'🌫️ Emotional support',es:'🌫️ Apoyo emocional',fr:'🌫️ Soutien émotionnel',de:'🌫️ Emotionale Unterstützung',pt:'🌫️ Apoio emocional',ru:'🌫️ Эмоциональная поддержка',zh:'🌫️ 情感支持',ja:'🌫️ 感情的サポート',hi:'🌫️ भावनात्मक सहारा',bn:'🌫️ মানসিক সহায়তা'},
+'Nu e lene.':{en:'It\'s not laziness.',es:'No es pereza.',fr:'Pas de la paresse.',de:'Keine Faulheit.',pt:'Não é preguiça.',ru:'Это не лень.',zh:'不是懒惰。',ja:'怠けではない。',hi:'यह आलस नहीं।',bn:'অলসতা নয়।'},
+'Nu e vina ta.':{en:'It\'s not your fault.',es:'No es tu culpa.',fr:'Pas ta faute.',de:'Nicht deine Schuld.',pt:'Não é sua culpa.',ru:'Не твоя вина.',zh:'不是你的错。',ja:'あなたのせいではない。',hi:'आपकी गलती नहीं।',bn:'আপনার দোষ নয়।'},
+'Înțelege ce ți se întâmplă':{en:'Understand what\'s happening',es:'Entiende qué te pasa',fr:'Comprends ce qui t\'arrive',de:'Verstehe was passiert',pt:'Entenda o que acontece',ru:'Пойми что происходит',zh:'了解发生了什么',ja:'何が起きているか理解する',hi:'समझें क्या हो रहा है',bn:'বুঝুন কী হচ্ছে'},
+'Bateria internă e goală':{en:'Your inner battery is drained',es:'Tu batería interna está agotada',fr:'Ta batterie interne est vide',de:'Deine innere Batterie ist leer',pt:'Sua bateria interna esgotou',ru:'Внутренняя батарея разряжена',zh:'内心电池耗尽',ja:'心の電池切れ',hi:'आंतरिक बैटरी खत्म',bn:'অভ্যন্তরীণ ব্যাটারি শেষ'},
+'Cercul vicios al inactivității':{en:'The vicious cycle of inactivity',es:'El círculo vicioso de la inactividad',fr:'Le cercle vicieux de l\'inactivité',de:'Der Teufelskreis der Inaktivität',pt:'O ciclo vicioso da inatividade',ru:'Порочный круг бездействия',zh:'不活动的恶性循环',ja:'不活動の悪循環',hi:'निष्क्रियता का दुष्चक्र',bn:'নিষ্ক্রিয়তার দুষ্টচক্র'},
+'Emoțiile înghețate':{en:'Frozen emotions',es:'Emociones congeladas',fr:'Émotions gelées',de:'Eingefrorene Gefühle',pt:'Emoções congeladas',ru:'Замороженные эмоции',zh:'冰冻的情绪',ja:'凍りついた感情',hi:'जमी भावनाएँ',bn:'জমাট আবেগ'},
+'Instrumente':{en:'Tools',es:'Herramientas',fr:'Outils',de:'Werkzeuge',pt:'Ferramentas',ru:'Инструменты',zh:'工具',ja:'ツール',hi:'उपकरण',bn:'সরঞ্জাম'},
+'Activarea comportamentală':{en:'Behavioral activation',es:'Activación conductual',fr:'Activation comportementale',de:'Verhaltensaktivierung',pt:'Ativação comportamental',ru:'Поведенческая активация',zh:'行为激活',ja:'行動活性化',hi:'व्यवहार सक्रियण',bn:'আচরণগত সক্রিয়করণ'},
+'Jurnalul vocal de deblocare':{en:'Voice journal for unblocking',es:'Diario vocal de desbloqueo',fr:'Journal vocal de déblocage',de:'Sprach-Tagebuch',pt:'Diário vocal de desbloqueio',ru:'Голосовой журнал',zh:'解锁语音日记',ja:'音声ジャーナル',hi:'वॉयस जर्नल',bn:'ভয়েস জার্নাল'},
+'Igiena somnului':{en:'Sleep hygiene',es:'Higiene del sueño',fr:'Hygiène du sommeil',de:'Schlafhygiene',pt:'Higiene do sono',ru:'Гигиена сна',zh:'睡眠卫生',ja:'睡眠衛生',hi:'नींद की स्वच्छता',bn:'ঘুমের স্বাস্থ্যবিধি'},
+'Micro-conexiunea socială':{en:'Social micro-connection',es:'Micro-conexión social',fr:'Micro-connexion sociale',de:'Soziale Mikro-Verbindung',pt:'Micro-conexão social',ru:'Микро-связь',zh:'社交微连接',ja:'ソーシャルマイクロコネクション',hi:'सामाजिक सूक्ष्म-संबंध',bn:'সামাজিক মাইক্রো-সংযোগ'},
+'Ancorarea în prezent':{en:'Grounding in the present',es:'Anclaje en el presente',fr:'Ancrage dans le présent',de:'Erdung im Moment',pt:'Ancoragem no presente',ru:'Заземление',zh:'当下锚定',ja:'今ここに留まる',hi:'वर्तमान में जुड़ाव',bn:'বর্তমানে নোঙর'},
+'Când merită ajutor profesional':{en:'When to seek professional help',es:'Cuándo buscar ayuda profesional',fr:'Quand chercher de l\'aide',de:'Wann professionelle Hilfe',pt:'Quando buscar ajuda',ru:'Когда обратиться к специалисту',zh:'何时寻求专业帮助',ja:'専門家の助けを求めるとき',hi:'पेशेवर मदद कब लें',bn:'পেশাদার সাহায্য কখন নেবেন'},
+'Fundamental':{en:'Fundamental',es:'Fundamental',fr:'Fondamental',de:'Grundlegend',pt:'Fundamental',ru:'Базовый',zh:'基础',ja:'基本',hi:'मौलिक',bn:'মৌলিক'},
+'Cu Voxen':{en:'With Voxen',es:'Con Voxen',fr:'Avec Voxen',de:'Mit Voxen',pt:'Com Voxen',ru:'С Voxen',zh:'使用Voxen',ja:'Voxenで',hi:'Voxen के साथ',bn:'Voxen দিয়ে'},
+'Bază':{en:'Basic',es:'Base',fr:'Base',de:'Basis',pt:'Base',ru:'База',zh:'基础',ja:'基本',hi:'आधार',bn:'ভিত্তি'},
+'Relații':{en:'Relationships',es:'Relaciones',fr:'Relations',de:'Beziehungen',pt:'Relações',ru:'Отношения',zh:'关系',ja:'人間関係',hi:'संबंध',bn:'সম্পর্ক'},
+'Mindfulness':{en:'Mindfulness',es:'Mindfulness',fr:'Pleine conscience',de:'Achtsamkeit',pt:'Mindfulness',ru:'Осознанность',zh:'正念',ja:'マインドフルネス',hi:'माइंडफुलनेस',bn:'মাইন্ডফুলনেস'},
 
-// ════════════════════════════════════════
-// SUBSTANȚE — COMPLETE
-// ════════════════════════════════════════
-substante:{
-label:{ro:'RECUPERARE SUBSTANȚE',en:'SUBSTANCE RECOVERY',es:'RECUPERACIÓN SUSTANCIAS',fr:'GUÉRISON SUBSTANCES',de:'SUBSTANZ-GENESUNG',pt:'RECUPERAÇÃO SUBSTÂNCIAS',ru:'ОТ ВЕЩЕСТВ',zh:'物质康复',ja:'薬物回復',hi:'नशा मुक्ति',bn:'মাদক মুক্তি'},
-ht:{ro:'Nu ești ce ai\nconsumat.',en:'You are not what\nyou consumed.',es:'No eres lo que\nconsumiste.',fr:'Tu n\'es pas ce que\ntu as consommé.',de:'Du bist nicht, was\ndu konsumiert hast.',pt:'Você não é o que\nconsumiu.',ru:'Ты — не то, что\nупотреблял.',zh:'你不是你所\n消费的。',ja:'あなたは摂取した\nものではない。',hi:'आप वो नहीं\nजो सेवन किया।',bn:'আপনি যা সেবন\nকরেছেন তা নন।'},
-hs:{ro:'Dependența nu e un defect de caracter — e o boală cu tratament.',en:'Addiction isn\'t a character flaw — it\'s a treatable disease.',es:'La adicción no es un defecto de carácter — es una enfermedad tratable.',fr:'L\'addiction n\'est pas un défaut — c\'est une maladie traitable.',de:'Sucht ist kein Charakterfehler — es ist eine behandelbare Krankheit.',pt:'Dependência não é defeito de caráter — é uma doença tratável.',ru:'Зависимость — не дефект характера, а болезнь с лечением.',zh:'成瘾不是性格缺陷——是可以治疗的疾病。',ja:'依存症は性格の欠陥ではありません——治療可能な病気です。',hi:'लत चरित्र दोष नहीं — इलाज योग्य बीमारी है।',bn:'আসক্তি চরিত্রের দোষ নয় — চিকিৎসাযোগ্য রোগ।'},
-alert:{ro:'Supradoza e urgență medicală',en:'Overdose is a medical emergency',es:'Sobredosis es emergencia médica',fr:'Surdosage = urgence médicale',de:'Überdosis ist medizinischer Notfall',pt:'Overdose é emergência médica',ru:'Передозировка — неотложная помощь',zh:'药物过量是医疗紧急情况',ja:'過剰摂取は医療緊急事態',hi:'ओवरडोज़ मेडिकल इमरजेंसी है',bn:'অতিমাত্রা চিকিৎসা জরুরি'},
-alert_d:{ro:'Dacă cineva nu răspunde sau are respirație slabă — sună 112. Echipa medicală NU raportează poliției.',en:'If someone is unresponsive or breathing weakly — call 112. The medical team does NOT report to police.',es:'Si alguien no responde o respira débilmente — llama al 112. El equipo médico NO reporta a la policía.',fr:'Si quelqu\'un ne répond pas ou respire faiblement — appelle le 112. L\'équipe médicale ne prévient PAS la police.',de:'Wenn jemand nicht reagiert oder schwach atmet — ruf 112 an. Das Ärzteteam meldet NICHT der Polizei.',pt:'Se alguém não responde ou respira fraco — ligue 112. A equipe médica NÃO reporta à polícia.',ru:'Если человек не отвечает или слабо дышит — звони 112. Врачи НЕ сообщают полиции.',zh:'如果有人没有反应或呼吸微弱——拨打112。医疗团队不会报警。',ja:'誰かが反応しない、呼吸が弱い場合——112に電話。医療チームは警察に通報しません。',hi:'अगर कोई जवाब न दे या सांस कमज़ोर हो — 112 पर कॉल करें। मेडिकल टीम पुलिस को नहीं बताती।',bn:'কেউ সাড়া না দিলে বা দুর্বল শ্বাস নিলে — 112 কল করুন। মেডিকেল টিম পুলিশকে জানায় না।'},
-t1:{ro:'Evaluarea medicală',en:'Medical evaluation',es:'Evaluación médica',fr:'Évaluation médicale',de:'Medizinische Bewertung',pt:'Avaliação médica',ru:'Медицинская оценка',zh:'医学评估',ja:'医学的評価',hi:'चिकित्सा मूल्यांकन',bn:'চিকিৎসা মূল্যায়ন'},
-t2:{ro:'Reducerea riscurilor',en:'Harm reduction',es:'Reducción de daños',fr:'Réduction des risques',de:'Schadensminderung',pt:'Redução de danos',ru:'Снижение вреда',zh:'减少伤害',ja:'ハームリダクション',hi:'नुकसान कम करना',bn:'ক্ষতি হ্রাস'},
-t3:{ro:'Jurnalul vocal de poftă',en:'Craving voice journal',es:'Diario vocal de antojos',fr:'Journal vocal d\'envie',de:'Verlangen-Sprachtagebuch',pt:'Diário vocal de fissura',ru:'Голосовой журнал тяги',zh:'渴望语音日记',ja:'渇望の音声ジャーナル',hi:'लालसा वॉयस जर्नल',bn:'আকাঙ্ক্ষা ভয়েস জার্নাল'},
-t4:{ro:'Planul de urgență',en:'Emergency plan',es:'Plan de emergencia',fr:'Plan d\'urgence',de:'Notfallplan',pt:'Plano de emergência',ru:'План экстренной помощи',zh:'紧急计划',ja:'緊急プラン',hi:'आपातकालीन योजना',bn:'জরুরি পরিকল্পনা'},
-disc:{ro:'Reducerea riscurilor nu încurajează consumul — protejează viața. În urgențe, sună 112.',en:'Harm reduction doesn\'t encourage use — it protects life. In emergencies, call 112.',es:'La reducción de daños no fomenta el consumo — protege la vida. Emergencias: 112.',fr:'La réduction des risques ne encourage pas la consommation — elle protège la vie. Urgences : 112.',de:'Schadensminderung fördert nicht den Konsum — sie schützt Leben. Notfall: 112.',pt:'Redução de danos não incentiva o uso — protege a vida. Emergências: 112.',ru:'Снижение вреда не поощряет употребление — защищает жизнь. Экстренно: 112.',zh:'减少伤害不鼓励使用——保护生命。紧急情况：112。',ja:'ハームリダクションは使用を促進しません——命を守ります。緊急時：112。',hi:'नुकसान कम करना सेवन को प्रोत्साहित नहीं करता — जीवन की रक्षा करता है। आपातकाल: 112।',bn:'ক্ষতি হ্রাস সেবনকে উৎসাহিত করে না — জীবন রক্ষা করে। জরুরি: 112।'},
-},
+// ════ ALCOOL ════
+'🍷 Recuperare alcool':{en:'🍷 Alcohol recovery',es:'🍷 Recuperación alcohol',fr:'🍷 Guérison alcool',de:'🍷 Alkohol-Genesung',pt:'🍷 Recuperação álcool',ru:'🍷 От алкоголя',zh:'🍷 酒精康复',ja:'🍷 アルコール回復',hi:'🍷 शराब से मुक्ति',bn:'🍷 মদ্যপান মুক্তি'},
+'Primul pas nu e':{en:'The first step isn\'t',es:'El primer paso no es',fr:'Le premier pas n\'est pas',de:'Der erste Schritt ist nicht',pt:'O primeiro passo não é',ru:'Первый шаг — не',zh:'第一步不是',ja:'最初の一歩は',hi:'पहला कदम',bn:'প্রথম পদক্ষেপ'},
+'să te oprești.':{en:'to stop.',es:'parar.',fr:'de s\'arrêter.',de:'aufzuhören.',pt:'parar.',ru:'остановиться.',zh:'停下来。',ja:'止めることではない。',hi:'रुकना नहीं है।',bn:'থামা নয়।'},
+'Oprirea bruscă a alcoolului poate fi periculoasă':{en:'Sudden alcohol withdrawal can be dangerous',es:'Dejar el alcohol de repente puede ser peligroso',fr:'L\'arrêt brutal de l\'alcool peut être dangereux',de:'Plötzlicher Alkoholentzug kann gefährlich sein',pt:'Parar o álcool de repente pode ser perigoso',ru:'Резкий отказ от алкоголя может быть опасен',zh:'突然戒酒可能很危险',ja:'突然の断酒は危険',hi:'अचानक शराब छोड़ना खतरनाक हो सकता है',bn:'হঠাৎ মদ ছাড়া বিপজ্জনক হতে পারে'},
+'Evaluarea medicală':{en:'Medical evaluation',es:'Evaluación médica',fr:'Évaluation médicale',de:'Medizinische Bewertung',pt:'Avaliação médica',ru:'Медицинская оценка',zh:'医学评估',ja:'医学的評価',hi:'चिकित्सा मूल्यांकन',bn:'চিকিৎসা মূল্যায়ন'},
+'Primul pas':{en:'First step',es:'Primer paso',fr:'Premier pas',de:'Erster Schritt',pt:'Primeiro passo',ru:'Первый шаг',zh:'第一步',ja:'最初の一歩',hi:'पहला कदम',bn:'প্রথম পদক্ষেপ'},
+'Jurnalul vocal de consum':{en:'Voice consumption journal',es:'Diario vocal de consumo',fr:'Journal vocal de consommation',de:'Sprach-Konsumtagebuch',pt:'Diário vocal de consumo',ru:'Голосовой журнал потребления',zh:'语音消费日记',ja:'音声消費ジャーナル',hi:'वॉयस खपत जर्नल',bn:'ভয়েস সেবন জার্নাল'},
+'Anti-poftă':{en:'Anti-craving',es:'Anti-antojo',fr:'Anti-envie',de:'Anti-Verlangen',pt:'Anti-fissura',ru:'Против тяги',zh:'抗渴望',ja:'抗渇望',hi:'लालसा-रोधी',bn:'আকাঙ্ক্ষা-বিরোধী'},
+'Comunitate':{en:'Community',es:'Comunidad',fr:'Communauté',de:'Gemeinschaft',pt:'Comunidade',ru:'Сообщество',zh:'社区',ja:'コミュニティ',hi:'समुदाय',bn:'সম্প্রদায়'},
+'Alcoolicii Anonimi (AA)':{en:'Alcoholics Anonymous (AA)',es:'Alcohólicos Anónimos (AA)',fr:'Alcooliques Anonymes (AA)',de:'Anonyme Alkoholiker (AA)',pt:'Alcoólicos Anônimos (AA)',ru:'Анонимные Алкоголики (АА)',zh:'匿名戒酒会 (AA)',ja:'アルコホーリクス・アノニマス (AA)',hi:'अल्कोहोलिक्स एनोनिमस (AA)',bn:'অ্যালকোহলিক্স অ্যানোনিমাস (AA)'},
+'Azi aleg altfel.':{en:'Today I choose differently.',es:'Hoy elijo diferente.',fr:'Aujourd\'hui je choisis autrement.',de:'Heute wähle ich anders.',pt:'Hoje escolho diferente.',ru:'Сегодня выбираю иначе.',zh:'今天我选择不同。',ja:'今日は違う選択を。',hi:'आज मैं अलग चुनता हूँ।',bn:'আজ ভিন্নভাবে বেছে নিই।'},
+'Marchez ziua 1':{en:'Mark day 1',es:'Marcar día 1',fr:'Marquer jour 1',de:'Tag 1 markieren',pt:'Marcar dia 1',ru:'Отметить день 1',zh:'标记第1天',ja:'1日目を記録',hi:'दिन 1 चिह्नित करें',bn:'দিন ১ চিহ্নিত'},
+'zile fără alcool':{en:'days alcohol-free',es:'días sin alcohol',fr:'jours sans alcool',de:'Tage ohne Alkohol',pt:'dias sem álcool',ru:'дней без алкоголя',zh:'天不饮酒',ja:'日間禁酒',hi:'दिन शराब के बिना',bn:'দিন মদ ছাড়া'},
+'Resurse verificate România':{en:'Verified resources',es:'Recursos verificados',fr:'Ressources vérifiées',de:'Verifizierte Ressourcen',pt:'Recursos verificados',ru:'Проверенные ресурсы',zh:'已验证的资源',ja:'確認済みリソース',hi:'सत्यापित संसाधन',bn:'যাচাইকৃত সম্পদ'},
+'Ajutor real,':{en:'Real help,',es:'Ayuda real,',fr:'Aide réelle,',de:'Echte Hilfe,',pt:'Ajuda real,',ru:'Реальная помощь,',zh:'真正的帮助，',ja:'本当の助け、',hi:'असली मदद,',bn:'আসল সাহায্য,'},
+'nu link-uri moarte.':{en:'not dead links.',es:'no enlaces muertos.',fr:'pas de liens morts.',de:'keine toten Links.',pt:'sem links mortos.',ru:'не мёртвые ссылки.',zh:'不是死链接。',ja:'デッドリンクではなく。',hi:'मृत लिंक नहीं।',bn:'ডেড লিঙ্ক নয়।'},
+'Momentul tău':{en:'Your moment',es:'Tu momento',fr:'Ton moment',de:'Dein Moment',pt:'Seu momento',ru:'Твой момент',zh:'你的时刻',ja:'あなたの瞬間',hi:'आपका पल',bn:'আপনার মুহূর্ত'},
 
-// ════════════════════════════════════════
-// AUTOEXCLUDERE — COMPLETE
-// ════════════════════════════════════════
-autoexcludere:{
-label:{ro:'AUTOEXCLUDERE',en:'SELF-EXCLUSION',es:'AUTOEXCLUSIÓN',fr:'AUTO-EXCLUSION',de:'SELBSTSPERRE',pt:'AUTOEXCLUSÃO',ru:'САМОИСКЛЮЧЕНИЕ',zh:'自我排除',ja:'自己排除',hi:'आत्म-बहिष्कार',bn:'স্ব-বর্জন'},
-ht:{ro:'Oprește-te azi.\nNu mâine.',en:'Stop today.\nNot tomorrow.',es:'Para hoy.\nNo mañana.',fr:'Arrête aujourd\'hui.\nPas demain.',de:'Hör heute auf.\nNicht morgen.',pt:'Pare hoje.\nNão amanhã.',ru:'Остановись сегодня.\nНе завтра.',zh:'今天停止。\n不是明天。',ja:'今日やめよう。\n明日ではなく。',hi:'आज रुकें।\nकल नहीं।',bn:'আজ থামুন।\nকাল নয়।'},
-hs:{ro:'Autoexcluderea e cel mai puternic instrument legal. Îți blochezi accesul prin lege, nu prin voință.',en:'Self-exclusion is the strongest legal tool. You block access by law, not willpower.',es:'La autoexclusión es la herramienta legal más fuerte. Bloqueas acceso por ley, no por voluntad.',fr:'L\'auto-exclusion est l\'outil légal le plus puissant. Tu bloques l\'accès par la loi.',de:'Selbstsperre ist das stärkste legale Instrument. Du sperrst den Zugang per Gesetz.',pt:'Autoexclusão é a ferramenta legal mais forte. Você bloqueia acesso por lei.',ru:'Самоисключение — самый сильный легальный инструмент. Блокируешь доступ по закону.',zh:'自我排除是最强大的法律工具。通过法律阻止访问。',ja:'自己排除は最も強力な法的ツール。法律でアクセスを遮断します。',hi:'आत्म-बहिष्कार सबसे शक्तिशाली कानूनी उपकरण है। कानून से पहुंच रोकें।',bn:'স্ব-বর্জন সবচেয়ে শক্তিশালী আইনি সরঞ্জাম। আইনের মাধ্যমে প্রবেশ বন্ধ করুন।'},
-channels:{ro:'4 CĂI OFICIALE',en:'4 OFFICIAL CHANNELS',es:'4 CANALES OFICIALES',fr:'4 VOIES OFFICIELLES',de:'4 OFFIZIELLE WEGE',pt:'4 CANAIS OFICIAIS',ru:'4 ОФИЦИАЛЬНЫХ КАНАЛА',zh:'4个官方渠道',ja:'4つの公式チャネル',hi:'4 आधिकारिक चैनल',bn:'৪টি সরকারি চ্যানেল'},
-ch1:{ro:'La sediul ONJN',en:'At ONJN headquarters',es:'En la sede ONJN',fr:'Au siège ONJN',de:'Am ONJN-Sitz',pt:'Na sede ONJN',ru:'В офисе ONJN',zh:'在ONJN总部',ja:'ONJN本部で',hi:'ONJN मुख्यालय में',bn:'ONJN সদর দফতরে'},
-ch2:{ro:'Prin e-mail',en:'By email',es:'Por correo',fr:'Par email',de:'Per E-Mail',pt:'Por email',ru:'По email',zh:'通过电子邮件',ja:'メールで',hi:'ईमेल से',bn:'ইমেইলে'},
-ch3:{ro:'Prin notar/avocat',en:'Through notary/lawyer',es:'Por notario/abogado',fr:'Par notaire/avocat',de:'Über Notar/Anwalt',pt:'Por tabelião/advogado',ru:'Через нотариуса/адвоката',zh:'通过公证人/律师',ja:'公証人/弁護士を通じて',hi:'नोटरी/वकील के माध्यम से',bn:'নোটারি/আইনজীবীর মাধ্যমে'},
-ch4:{ro:'Direct la operator',en:'Directly at operator',es:'Directo al operador',fr:'Direct chez l\'opérateur',de:'Direkt beim Betreiber',pt:'Direto no operador',ru:'Напрямую у оператора',zh:'直接在运营商处',ja:'オペレーターに直接',hi:'सीधे ऑपरेटर पर',bn:'সরাসরি অপারেটরে'},
-operators:{ro:'OPERATORI ONLINE',en:'ONLINE OPERATORS',es:'OPERADORES ONLINE',fr:'OPÉRATEURS EN LIGNE',de:'ONLINE-BETREIBER',pt:'OPERADORES ONLINE',ru:'ОНЛАЙН-ОПЕРАТОРЫ',zh:'在线运营商',ja:'オンラインオペレーター',hi:'ऑनलाइन ऑपरेटर',bn:'অনলাইন অপারেটর'},
-commit:{ro:'Azi iau decizia.',en:'Today I decide.',es:'Hoy decido.',fr:'Aujourd\'hui je décide.',de:'Heute entscheide ich.',pt:'Hoje eu decido.',ru:'Сегодня решаю.',zh:'今天我做决定。',ja:'今日決めます。',hi:'आज फैसला करता हूँ।',bn:'আজ সিদ্ধান্ত নিই।'},
-days:{ro:'zile de la decizia ta',en:'days since your decision',es:'días desde tu decisión',fr:'jours depuis ta décision',de:'Tage seit Entscheidung',pt:'dias desde sua decisão',ru:'дней с решения',zh:'天自决定以来',ja:'日間（決断から）',hi:'दिन फैसले से',bn:'দিন সিদ্ধান্তের পর'},
-checkin:{ro:'Check-in de angajament',en:'Commitment check-in',es:'Check-in de compromiso',fr:'Suivi d\'engagement',de:'Engagement-Check',pt:'Check-in de compromisso',ru:'Проверка обязательства',zh:'承诺检查',ja:'コミットメントチェック',hi:'प्रतिबद्धता चेक-इन',bn:'প্রতিশ্রুতি চেক-ইন'},
-maintained:{ro:'Am menținut',en:'I maintained',es:'Mantuve',fr:'J\'ai tenu',de:'Ich habe gehalten',pt:'Mantive',ru:'Удержался',zh:'我坚持了',ja:'維持しました',hi:'मैंने बनाए रखा',bn:'আমি বজায় রেখেছি'},
-relapsed:{ro:'Am cedat',en:'I relapsed',es:'Recaí',fr:'J\'ai cédé',de:'Ich bin rückfällig',pt:'Recaí',ru:'Сорвался',zh:'我复发了',ja:'再発しました',hi:'मैं फिसल गया',bn:'আমি পিছলে গেছি'},
-relapse_msg:{ro:'O recădere nu șterge drumul. Nu e rușine — hai să vorbim despre ce s-a întâmplat.',en:'A relapse doesn\'t erase the journey. No shame — let\'s talk about what happened.',es:'Una recaída no borra el camino. Sin vergüenza — hablemos de lo que pasó.',fr:'Une rechute n\'efface pas le chemin. Pas de honte — parlons de ce qui s\'est passé.',de:'Ein Rückfall löscht nicht den Weg. Keine Schande — reden wir darüber.',pt:'Uma recaída não apaga o caminho. Sem vergonha — vamos falar sobre o que aconteceu.',ru:'Срыв не стирает путь. Без стыда — давай поговорим.',zh:'复发不会抹去旅程。不必羞耻——让我们谈谈发生了什么。',ja:'再発は旅を消しません。恥ではありません——何があったか話しましょう。',hi:'दोबारा गिरना रास्ता नहीं मिटाता। शर्म नहीं — बात करें क्या हुआ।',bn:'পুনরায় পতন পথ মুছে দেয় না। লজ্জা নয় — কী হয়েছে কথা বলি।'},
-},
+// ════ SUBSTANȚE ════
+'💊 Recuperare substanțe':{en:'💊 Substance recovery',es:'💊 Recuperación sustancias',fr:'💊 Guérison substances',de:'💊 Substanz-Genesung',pt:'💊 Recuperação substâncias',ru:'💊 От веществ',zh:'💊 物质康复',ja:'💊 薬物回復',hi:'💊 नशा मुक्ति',bn:'💊 মাদক মুক্তি'},
+'Nu ești ce ai':{en:'You are not what',es:'No eres lo que',fr:'Tu n\'es pas ce que',de:'Du bist nicht, was',pt:'Você não é o que',ru:'Ты — не то, что',zh:'你不是你所',ja:'あなたは',hi:'आप वो नहीं',bn:'আপনি যা'},
+'consumat.':{en:'you consumed.',es:'consumiste.',fr:'tu as consommé.',de:'du konsumiert hast.',pt:'consumiu.',ru:'употреблял.',zh:'消费的。',ja:'摂取したものではない。',hi:'सेवन किया वो नहीं हैं।',bn:'সেবন করেছেন তা নন।'},
+'Supradoza e o urgență medicală':{en:'Overdose is a medical emergency',es:'La sobredosis es una emergencia médica',fr:'Le surdosage est une urgence médicale',de:'Überdosis ist ein medizinischer Notfall',pt:'Overdose é uma emergência médica',ru:'Передозировка — неотложная помощь',zh:'药物过量是医疗紧急情况',ja:'過剰摂取は医療緊急事態',hi:'ओवरडोज़ मेडिकल इमरजेंसी है',bn:'অতিমাত্রা চিকিৎসা জরুরি'},
+'Reducerea riscurilor':{en:'Harm reduction',es:'Reducción de daños',fr:'Réduction des risques',de:'Schadensminderung',pt:'Redução de danos',ru:'Снижение вреда',zh:'减少伤害',ja:'ハームリダクション',hi:'नुकसान कम करना',bn:'ক্ষতি হ্রাস'},
+'Harm reduction':{en:'Harm reduction',es:'Reducción de daños',fr:'Réduction des risques',de:'Schadensminderung',pt:'Redução de danos',ru:'Снижение вреда',zh:'减少伤害',ja:'ハームリダクション',hi:'नुकसान कम करना',bn:'ক্ষতি হ্রাস'},
+'Jurnalul vocal de poftă':{en:'Craving voice journal',es:'Diario vocal de antojos',fr:'Journal vocal d\'envie',de:'Verlangen-Sprachtagebuch',pt:'Diário vocal de fissura',ru:'Голосовой журнал тяги',zh:'渴望语音日记',ja:'渇望の音声ジャーナル',hi:'लालसा वॉयस जर्नल',bn:'আকাঙ্ক্ষা ভয়েস জার্নাল'},
+'Planul de urgență personal':{en:'Personal emergency plan',es:'Plan de emergencia personal',fr:'Plan d\'urgence personnel',de:'Persönlicher Notfallplan',pt:'Plano de emergência pessoal',ru:'Личный план экстренной помощи',zh:'个人紧急计划',ja:'個人緊急プラン',hi:'व्यक्तिगत आपातकालीन योजना',bn:'ব্যক্তিগত জরুরি পরিকল্পনা'},
+'Comunitate terapeutică':{en:'Therapeutic community',es:'Comunidad terapéutica',fr:'Communauté thérapeutique',de:'Therapeutische Gemeinschaft',pt:'Comunidade terapêutica',ru:'Терапевтическое сообщество',zh:'治疗社区',ja:'治療コミュニティ',hi:'चिकित्सा समुदाय',bn:'থেরাপিউটিক সম্প্রদায়'},
+'Rezidențial':{en:'Residential',es:'Residencial',fr:'Résidentiel',de:'Stationär',pt:'Residencial',ru:'Стационар',zh:'住院',ja:'入院',hi:'आवासीय',bn:'আবাসিক'},
+'Pregătire':{en:'Preparation',es:'Preparación',fr:'Préparation',de:'Vorbereitung',pt:'Preparação',ru:'Подготовка',zh:'准备',ja:'準備',hi:'तैयारी',bn:'প্রস্তুতি'},
 
-// ════════════════════════════════════════
-// SETTINGS — COMPLETE
-// ════════════════════════════════════════
-settings:{
-title:{ro:'Setări',en:'Settings',es:'Ajustes',fr:'Paramètres',de:'Einstellungen',pt:'Configurações',ru:'Настройки',zh:'设置',ja:'設定',hi:'सेटिंग्स',bn:'সেটিংস'},
-sub:{ro:'Profilul tău, contul, limba și datele.',en:'Your profile, account, language and data.',es:'Tu perfil, cuenta, idioma y datos.',fr:'Profil, compte, langue et données.',de:'Profil, Konto, Sprache und Daten.',pt:'Perfil, conta, idioma e dados.',ru:'Профиль, аккаунт, язык и данные.',zh:'个人资料、帐户、语言和数据。',ja:'プロフィール、アカウント、言語、データ。',hi:'प्रोफ़ाइल, खाता, भाषा और डेटा।',bn:'প্রোফাইল, অ্যাকাউন্ট, ভাষা এবং ডেটা।'},
-account:{ro:'Cont',en:'Account',es:'Cuenta',fr:'Compte',de:'Konto',pt:'Conta',ru:'Аккаунт',zh:'账户',ja:'アカウント',hi:'खाता',bn:'অ্যাকাউন্ট'},
-profile:{ro:'Profilul tău',en:'Your profile',es:'Tu perfil',fr:'Ton profil',de:'Dein Profil',pt:'Seu perfil',ru:'Твой профиль',zh:'个人资料',ja:'プロフィール',hi:'प्रोफ़ाइल',bn:'প্রোফাইল'},
-lang:{ro:'Limba',en:'Language',es:'Idioma',fr:'Langue',de:'Sprache',pt:'Idioma',ru:'Язык',zh:'语言',ja:'言語',hi:'भाषा',bn:'ভাষা'},
-explore:{ro:'Explorează',en:'Explore',es:'Explorar',fr:'Explorer',de:'Erkunden',pt:'Explorar',ru:'Исследуй',zh:'探索',ja:'探索',hi:'एक्सप्लोर',bn:'অন্বেষণ'},
-data:{ro:'Date și confidențialitate',en:'Data & privacy',es:'Datos y privacidad',fr:'Données et confidentialité',de:'Daten & Datenschutz',pt:'Dados e privacidade',ru:'Данные и конфиденциальность',zh:'数据与隐私',ja:'データとプライバシー',hi:'डेटा और गोपनीयता',bn:'ডেটা ও গোপনীয়তা'},
-about:{ro:'Despre',en:'About',es:'Acerca de',fr:'À propos',de:'Über',pt:'Sobre',ru:'О приложении',zh:'关于',ja:'について',hi:'के बारे में',bn:'সম্পর্কে'},
-export_btn:{ro:'Exportă datele mele',en:'Export my data',es:'Exportar mis datos',fr:'Exporter mes données',de:'Daten exportieren',pt:'Exportar dados',ru:'Экспорт данных',zh:'导出数据',ja:'データエクスポート',hi:'डेटा निर्यात करें',bn:'ডেটা রপ্তানি'},
-delete_btn:{ro:'Șterge toate datele',en:'Delete all data',es:'Eliminar datos',fr:'Supprimer les données',de:'Alle Daten löschen',pt:'Excluir dados',ru:'Удалить данные',zh:'删除数据',ja:'データ削除',hi:'सभी डेटा हटाएं',bn:'সব ডেটা মুছুন'},
-save_cta:{ro:'Salvează-ți progresul',en:'Save your progress',es:'Guarda tu progreso',fr:'Sauvegarde ta progression',de:'Fortschritt speichern',pt:'Salve seu progresso',ru:'Сохрани прогресс',zh:'保存进度',ja:'進捗を保存',hi:'प्रगति सहेजें',bn:'অগ্রগতি সংরক্ষণ'},
-save_desc:{ro:'Creează un cont ca să nu-ți pierzi jurnalele, planul și progresul.',en:'Create an account so you don\'t lose your journals, plan and progress.',es:'Crea una cuenta para no perder tus diarios, plan y progreso.',fr:'Crée un compte pour ne pas perdre tes journaux et ta progression.',de:'Erstelle ein Konto, damit du Tagebücher und Fortschritt nicht verlierst.',pt:'Crie uma conta para não perder diários, plano e progresso.',ru:'Создай аккаунт, чтобы не потерять журналы и прогресс.',zh:'创建帐户以保存日记、计划和进度。',ja:'ジャーナルとプランを失わないようアカウントを作成してください。',hi:'जर्नल और प्रगति न खोने के लिए खाता बनाएं।',bn:'জার্নাল ও অগ্রগতি হারাতে না চাইলে অ্যাকাউন্ট তৈরি করুন।'},
-struggle_label:{ro:'Mă lupt cu',en:'I struggle with',es:'Lucho con',fr:'Je me bats avec',de:'Ich kämpfe mit',pt:'Luto contra',ru:'Борюсь с',zh:'我在与之斗争',ja:'私が戦っているのは',hi:'मैं जूझ रहा हूँ',bn:'আমি লড়াই করছি'},
-stage_label:{ro:'Unde sunt pe drum',en:'Where I am on the path',es:'Dónde estoy en el camino',fr:'Où j\'en suis',de:'Wo ich bin',pt:'Onde estou no caminho',ru:'Где я на пути',zh:'我在路上的位置',ja:'道のどこにいるか',hi:'रास्ते पर कहाँ हूँ',bn:'পথে কোথায় আছি'},
-triggers_label:{ro:'Declanșatorii mei',en:'My triggers',es:'Mis desencadenantes',fr:'Mes déclencheurs',de:'Meine Auslöser',pt:'Meus gatilhos',ru:'Мои триггеры',zh:'我的触发因素',ja:'私のトリガー',hi:'मेरे ट्रिगर',bn:'আমার ট্রিগার'},
-support_label:{ro:'Sprijinul meu',en:'My support',es:'Mi apoyo',fr:'Mon soutien',de:'Meine Unterstützung',pt:'Meu apoio',ru:'Моя поддержка',zh:'我的支持',ja:'私のサポート',hi:'मेरा सहारा',bn:'আমার সহায়তা'},
-reminder_label:{ro:'Reminder',en:'Reminder',es:'Recordatorio',fr:'Rappel',de:'Erinnerung',pt:'Lembrete',ru:'Напоминание',zh:'提醒',ja:'リマインダー',hi:'रिमाइंडर',bn:'রিমাইন্ডার'},
-},
+// ════ AUTOEXCLUDERE ════
+'🛑 Autoexcludere gambling':{en:'🛑 Gambling self-exclusion',es:'🛑 Autoexclusión juego',fr:'🛑 Auto-exclusion jeu',de:'🛑 Glücksspiel-Selbstsperre',pt:'🛑 Autoexclusão jogo',ru:'🛑 Самоисключение',zh:'🛑 赌博自我排除',ja:'🛑 ギャンブル自己排除',hi:'🛑 जुआ आत्म-बहिष्कार',bn:'🛑 জুয়া স্ব-বর্জন'},
+'Oprește-te azi.':{en:'Stop today.',es:'Para hoy.',fr:'Arrête aujourd\'hui.',de:'Hör heute auf.',pt:'Pare hoje.',ru:'Остановись сегодня.',zh:'今天停止。',ja:'今日やめよう。',hi:'आज रुकें।',bn:'আজ থামুন।'},
+'Nu mâine.':{en:'Not tomorrow.',es:'No mañana.',fr:'Pas demain.',de:'Nicht morgen.',pt:'Não amanhã.',ru:'Не завтра.',zh:'不是明天。',ja:'明日ではなく。',hi:'कल नहीं।',bn:'কাল নয়।'},
+'Cum te autoexcluzi — 4 căi oficiale':{en:'How to self-exclude — 4 official channels',es:'Cómo autoexcluirte — 4 canales oficiales',fr:'Comment s\'auto-exclure — 4 voies officielles',de:'Wie du dich selbst sperrst — 4 offizielle Wege',pt:'Como se autoexcluir — 4 canais oficiais',ru:'Как самоисключиться — 4 канала',zh:'如何自我排除——4个官方渠道',ja:'自己排除の方法——4つの公式チャネル',hi:'आत्म-बहिष्कार कैसे करें — 4 चैनल',bn:'স্ব-বর্জন কিভাবে — ৪টি চ্যানেল'},
+'zile de la decizia ta':{en:'days since your decision',es:'días desde tu decisión',fr:'jours depuis ta décision',de:'Tage seit Entscheidung',pt:'dias desde sua decisão',ru:'дней с решения',zh:'天自决定以来',ja:'日間（決断から）',hi:'दिन फैसले से',bn:'দিন সিদ্ধান্তের পর'},
+'Am depus cererea':{en:'I filed the request',es:'Presenté la solicitud',fr:'J\'ai déposé la demande',de:'Antrag eingereicht',pt:'Enviei o pedido',ru:'Подал заявку',zh:'我提交了申请',ja:'申請しました',hi:'मैंने अनुरोध दायर किया',bn:'আমি আবেদন জমা দিয়েছি'},
+'Azi iau decizia.':{en:'Today I decide.',es:'Hoy decido.',fr:'Aujourd\'hui je décide.',de:'Heute entscheide ich.',pt:'Hoje eu decido.',ru:'Сегодня решаю.',zh:'今天我做决定。',ja:'今日決めます。',hi:'आज फैसला करता हूँ।',bn:'আজ সিদ্ধান্ত নিই।'},
 
-// ════════════════════════════════════════
-// ONBOARDING — COMPLETE
-// ════════════════════════════════════════
-onboarding:{
-wl:{ro:'BUN VENIT',en:'WELCOME',es:'BIENVENIDO',fr:'BIENVENUE',de:'WILLKOMMEN',pt:'BEM-VINDO',ru:'ДОБРО ПОЖАЛОВАТЬ',zh:'欢迎',ja:'ようこそ',hi:'स्वागत',bn:'স্বাগতম'},
-wt:{ro:'Hai să-ți configurăm\ndrumul tău.',en:'Let\'s set up\nyour path.',es:'Configuremos\ntu camino.',fr:'Configurons\nton chemin.',de:'Richten wir deinen\nWeg ein.',pt:'Vamos configurar\nseu caminho.',ru:'Настроим\nтвой путь.',zh:'设置\n你的路径。',ja:'あなたの道を\n設定しましょう。',hi:'चलिए आपका\nरास्ता तय करें।',bn:'চলুন আপনার\nপথ সেট করি।'},
-ws:{ro:'Cinci întrebări scurte. Nu există răspunsuri greșite — totul rămâne privat.',en:'Five short questions. No wrong answers — everything stays private.',es:'Cinco preguntas cortas. Sin respuestas incorrectas — todo es privado.',fr:'Cinq questions courtes. Pas de mauvaises réponses — tout reste privé.',de:'Fünf kurze Fragen. Keine falschen Antworten — alles bleibt privat.',pt:'Cinco perguntas curtas. Sem respostas erradas — tudo é privado.',ru:'Пять коротких вопросов. Нет неправильных ответов — всё приватно.',zh:'五个简短问题。没有错误答案——保持隐私。',ja:'5つの短い質問。間違いなし——すべてプライベート。',hi:'पाँच छोटे सवाल। गलत जवाब नहीं — सब निजी।',bn:'পাঁচটি সংক্ষিপ্ত প্রশ্ন। ভুল উত্তর নেই — সব ব্যক্তিগত।'},
-start:{ro:'Începem →',en:'Let\'s start →',es:'Empecemos →',fr:'Commençons →',de:'Los geht\'s →',pt:'Começar →',ru:'Начнём →',zh:'开始 →',ja:'始めましょう →',hi:'शुरू करें →',bn:'শুরু করি →'},
-skip:{ro:'Sari peste',en:'Skip',es:'Saltar',fr:'Passer',de:'Überspringen',pt:'Pular',ru:'Пропустить',zh:'跳过',ja:'スキップ',hi:'छोड़ें',bn:'এড়িয়ে যান'},
-step:{ro:'PASUL',en:'STEP',es:'PASO',fr:'ÉTAPE',de:'SCHRITT',pt:'PASSO',ru:'ШАГ',zh:'步骤',ja:'ステップ',hi:'चरण',bn:'ধাপ'},
-of:{ro:'DIN',en:'OF',es:'DE',fr:'SUR',de:'VON',pt:'DE',ru:'ИЗ',zh:'共',ja:'中',hi:'में से',bn:'এর'},
-next:{ro:'Continuă →',en:'Continue →',es:'Continuar →',fr:'Continuer →',de:'Weiter →',pt:'Continuar →',ru:'Далее →',zh:'继续 →',ja:'続ける →',hi:'जारी रखें →',bn:'চালিয়ে যান →'},
-back:{ro:'Înapoi',en:'Back',es:'Atrás',fr:'Retour',de:'Zurück',pt:'Voltar',ru:'Назад',zh:'返回',ja:'戻る',hi:'वापस',bn:'পিছনে'},
-// Questions
-q1:{ro:'Cu ce anume\nte lupți acum?',en:'What are you\nstruggling with?',es:'¿Con qué\nluchas?',fr:'Avec quoi\ntu te bats ?',de:'Womit kämpfst\ndu?',pt:'Com o que\nluta?',ru:'С чем ты\nборешься?',zh:'你在与\n什么斗争？',ja:'何と\n戦っていますか？',hi:'आप किससे\nजूझ रहे हैं?',bn:'আপনি কিসের\nসাথে লড়ছেন?'},
-q2:{ro:'Unde te afli\npe drum?',en:'Where are you\non the path?',es:'¿Dónde estás\nen el camino?',fr:'Où en es-tu\ndu chemin ?',de:'Wo bist du\nauf dem Weg?',pt:'Onde está\nno caminho?',ru:'Где ты\nна пути?',zh:'你在路上\n的哪里？',ja:'道のどこに\nいますか？',hi:'रास्ते पर\nकहाँ हैं?',bn:'পথে\nকোথায়?'},
-q3:{ro:'Ce momente\nîți sunt grele?',en:'Which moments\nare hardest?',es:'¿Qué momentos\nson difíciles?',fr:'Quels moments\nsont durs ?',de:'Welche Momente\nsind schwer?',pt:'Quais momentos\nsão difíceis?',ru:'Какие моменты\nтруднее всего?',zh:'哪些时刻\n最困难？',ja:'どの瞬間が\n一番つらい？',hi:'कौन से पल\nकठिन हैं?',bn:'কোন মুহূর্তগুলো\nকঠিন?'},
-q4:{ro:'Cine e\nalături de tine?',en:'Who is\nby your side?',es:'¿Quién está\na tu lado?',fr:'Qui est\nà tes côtés ?',de:'Wer ist\nan deiner Seite?',pt:'Quem está\nao seu lado?',ru:'Кто\nрядом с тобой?',zh:'谁在\n你身边？',ja:'誰が\nそばにいますか？',hi:'कौन\nआपके साथ है?',bn:'কে আপনার\nপাশে আছে?'},
-q5:{ro:'Când vrei un\nreminder blând?',en:'When do you want\na gentle reminder?',es:'¿Cuándo quieres\nun recordatorio?',fr:'Quand veux-tu\nun rappel ?',de:'Wann möchtest du\neine Erinnerung?',pt:'Quando quer\num lembrete?',ru:'Когда хочешь\nнапоминание?',zh:'你想何时收到\n温柔的提醒？',ja:'いつリマインダーが\n欲しいですか？',hi:'कब एक\nरिमाइंडर चाहते हैं?',bn:'কখন একটি\nরিমাইন্ডার চান?'},
-// Options
-o_alcohol:{ro:'Alcool',en:'Alcohol',es:'Alcohol',fr:'Alcool',de:'Alkohol',pt:'Álcool',ru:'Алкоголь',zh:'酒精',ja:'アルコール',hi:'शराब',bn:'মদ'},
-o_substances:{ro:'Substanțe',en:'Substances',fr:'Substances',de:'Substanzen',es:'Sustancias',pt:'Substâncias',ru:'Вещества',zh:'物质',ja:'薬物',hi:'नशीले पदार्थ',bn:'মাদক'},
-o_gambling:{ro:'Jocuri de noroc',en:'Gambling',es:'Juegos de azar',fr:'Jeux de hasard',de:'Glücksspiel',pt:'Jogos de azar',ru:'Азартные игры',zh:'赌博',ja:'ギャンブル',hi:'जुआ',bn:'জুয়া'},
-o_depression:{ro:'Depresie sau blocaj emoțional',en:'Depression or emotional blockage',es:'Depresión o bloqueo emocional',fr:'Dépression ou blocage émotionnel',de:'Depression oder emotionale Blockade',pt:'Depressão ou bloqueio emocional',ru:'Депрессия или эмоциональный блок',zh:'抑郁或情感障碍',ja:'うつ病または感情的ブロック',hi:'अवसाद या भावनात्मक अवरोध',bn:'বিষণ্ণতা বা আবেগজনিত বাধা'},
-o_other:{ro:'Altceva',en:'Something else',es:'Otra cosa',fr:'Autre chose',de:'Etwas anderes',pt:'Outra coisa',ru:'Другое',zh:'其他',ja:'その他',hi:'कुछ और',bn:'অন্য কিছু'},
-o_thinking:{ro:'Încă mă gândesc',en:'Still thinking',es:'Aún pensando',fr:'J\'y réfléchis',de:'Denke noch nach',pt:'Ainda pensando',ru:'Ещё думаю',zh:'还在考虑',ja:'まだ考え中',hi:'अभी सोच रहा हूँ',bn:'এখনো ভাবছি'},
-o_early:{ro:'La început',en:'At the beginning',es:'Al principio',fr:'Au début',de:'Am Anfang',pt:'No começo',ru:'В начале',zh:'在开始',ja:'始めたばかり',hi:'शुरुआत में',bn:'শুরুতে'},
-o_months:{ro:'De câteva luni',en:'A few months in',es:'Unos meses',fr:'Quelques mois',de:'Seit Monaten',pt:'Alguns meses',ru:'Несколько месяцев',zh:'几个月了',ja:'数ヶ月',hi:'कुछ महीने',bn:'কয়েক মাস'},
-o_relapse:{ro:'După o recădere',en:'After a relapse',es:'Tras una recaída',fr:'Après une rechute',de:'Nach Rückfall',pt:'Após recaída',ru:'После срыва',zh:'复发之后',ja:'再発後',hi:'दोबारा गिरने के बाद',bn:'পুনরায় পতনের পর'},
-cele:{ro:'Ai făcut ceva important.',en:'You did something important.',es:'Hiciste algo importante.',fr:'Tu as fait quelque chose d\'important.',de:'Du hast etwas Wichtiges getan.',pt:'Fez algo importante.',ru:'Ты сделал важное.',zh:'你做了重要的事。',ja:'大切なことをしました。',hi:'आपने महत्वपूर्ण किया।',bn:'গুরুত্বপূর্ণ কিছু করেছেন।'},
-cele_sub:{ro:'Iată ce ai realizat în ultimele 2 minute:',en:'Here\'s what you achieved in the last 2 minutes:',es:'Esto lograste en 2 minutos:',fr:'Voilà ce que tu as accompli en 2 minutes :',de:'Das hast du in 2 Minuten erreicht:',pt:'O que você alcançou em 2 minutos:',ru:'Вот что ты сделал за 2 минуты:',zh:'以下是你在2分钟内完成的：',ja:'2分間で達成したこと：',hi:'2 मिनट में आपने ये किया:',bn:'2 মিনিটে আপনি যা অর্জন করেছেন:'},
-auth:{ro:'Salvează-ți progresul.',en:'Save your progress.',es:'Guarda tu progreso.',fr:'Sauvegarde.',de:'Fortschritt speichern.',pt:'Salve seu progresso.',ru:'Сохрани прогресс.',zh:'保存进度。',ja:'進捗を保存。',hi:'प्रगति सहेजें।',bn:'অগ্রগতি সংরক্ষণ করুন।'},
-no_account:{ro:'Continuă fără cont →',en:'Continue without account →',es:'Continuar sin cuenta →',fr:'Continuer sans compte →',de:'Ohne Konto →',pt:'Sem conta →',ru:'Без аккаунта →',zh:'不注册继续 →',ja:'アカウントなし →',hi:'बिना खाते के →',bn:'অ্যাকাউন্ট ছাড়া →'},
-},
+// ════ SETTINGS ════
+'Setări':{en:'Settings',es:'Ajustes',fr:'Paramètres',de:'Einstellungen',pt:'Configurações',ru:'Настройки',zh:'设置',ja:'設定',hi:'सेटिंग्स',bn:'সেটিংস'},
+'Profilul tău, contul, limba și datele.':{en:'Your profile, account, language and data.',es:'Tu perfil, cuenta, idioma y datos.',fr:'Profil, compte, langue et données.',de:'Profil, Konto, Sprache und Daten.',pt:'Perfil, conta, idioma e dados.',ru:'Профиль, аккаунт, язык и данные.',zh:'资料、帐户、语言和数据。',ja:'プロフィール、アカウント、言語、データ。',hi:'प्रोफ़ाइल, खाता, भाषा और डेटा।',bn:'প্রোফাইল, অ্যাকাউন্ট, ভাষা ও ডেটা।'},
+'Cont':{en:'Account',es:'Cuenta',fr:'Compte',de:'Konto',pt:'Conta',ru:'Аккаунт',zh:'账户',ja:'アカウント',hi:'खाता',bn:'অ্যাকাউন্ট'},
+'Profilul tău':{en:'Your profile',es:'Tu perfil',fr:'Ton profil',de:'Dein Profil',pt:'Seu perfil',ru:'Твой профиль',zh:'个人资料',ja:'プロフィール',hi:'प्रोफ़ाइल',bn:'প্রোফাইল'},
+'Limba':{en:'Language',es:'Idioma',fr:'Langue',de:'Sprache',pt:'Idioma',ru:'Язык',zh:'语言',ja:'言語',hi:'भाषा',bn:'ভাষা'},
+'Explorează':{en:'Explore',es:'Explorar',fr:'Explorer',de:'Erkunden',pt:'Explorar',ru:'Исследуй',zh:'探索',ja:'探索',hi:'एक्सप्लोर',bn:'অন্বেষণ'},
+'Date și confidențialitate':{en:'Data & privacy',es:'Datos y privacidad',fr:'Données et confidentialité',de:'Daten & Datenschutz',pt:'Dados e privacidade',ru:'Данные и конфиденциальность',zh:'数据与隐私',ja:'データとプライバシー',hi:'डेटा और गोपनीयता',bn:'ডেটা ও গোপনীয়তা'},
+'Despre':{en:'About',es:'Acerca de',fr:'À propos',de:'Über',pt:'Sobre',ru:'О приложении',zh:'关于',ja:'について',hi:'के बारे में',bn:'সম্পর্কে'},
+'Exportă datele mele':{en:'Export my data',es:'Exportar mis datos',fr:'Exporter mes données',de:'Daten exportieren',pt:'Exportar dados',ru:'Экспорт данных',zh:'导出数据',ja:'データエクスポート',hi:'डेटा निर्यात',bn:'ডেটা রপ্তানি'},
+'Șterge toate datele':{en:'Delete all data',es:'Eliminar datos',fr:'Supprimer les données',de:'Alle Daten löschen',pt:'Excluir dados',ru:'Удалить данные',zh:'删除数据',ja:'データ削除',hi:'सभी डेटा हटाएं',bn:'সব ডেটা মুছুন'},
+'🔒 Salvează-ți progresul':{en:'🔒 Save your progress',es:'🔒 Guarda tu progreso',fr:'🔒 Sauvegarde ta progression',de:'🔒 Fortschritt speichern',pt:'🔒 Salve seu progresso',ru:'🔒 Сохрани прогресс',zh:'🔒 保存进度',ja:'🔒 進捗を保存',hi:'🔒 प्रगति सहेजें',bn:'🔒 অগ্রগতি সংরক্ষণ'},
+'Creează cont →':{en:'Create account →',es:'Crear cuenta →',fr:'Créer un compte →',de:'Konto erstellen →',pt:'Criar conta →',ru:'Создать аккаунт →',zh:'创建帐户 →',ja:'アカウント作成 →',hi:'खाता बनाएं →',bn:'অ্যাকাউন্ট তৈরি →'},
+'Mă lupt cu':{en:'I struggle with',es:'Lucho con',fr:'Je me bats avec',de:'Ich kämpfe mit',pt:'Luto contra',ru:'Борюсь с',zh:'我在与之斗争',ja:'戦っているのは',hi:'मैं जूझ रहा हूँ',bn:'আমি লড়ছি'},
+'Unde sunt pe drum':{en:'Where I am',es:'Dónde estoy',fr:'Où j\'en suis',de:'Wo ich bin',pt:'Onde estou',ru:'Где я на пути',zh:'我在哪里',ja:'どこにいるか',hi:'कहाँ हूँ',bn:'কোথায় আছি'},
+'Declanșatorii mei':{en:'My triggers',es:'Mis desencadenantes',fr:'Mes déclencheurs',de:'Meine Auslöser',pt:'Meus gatilhos',ru:'Мои триггеры',zh:'我的触发因素',ja:'トリガー',hi:'मेरे ट्रिगर',bn:'আমার ট্রিগার'},
+'Sprijinul meu':{en:'My support',es:'Mi apoyo',fr:'Mon soutien',de:'Meine Unterstützung',pt:'Meu apoio',ru:'Моя поддержка',zh:'我的支持',ja:'サポート',hi:'मेरा सहारा',bn:'আমার সহায়তা'},
+'Reminder':{en:'Reminder',es:'Recordatorio',fr:'Rappel',de:'Erinnerung',pt:'Lembrete',ru:'Напоминание',zh:'提醒',ja:'リマインダー',hi:'रिमाइंडर',bn:'রিমাইন্ডার'},
+'Ghid recuperare alcool':{en:'Alcohol recovery guide',es:'Guía recuperación alcohol',fr:'Guide guérison alcool',de:'Alkohol-Leitfaden',pt:'Guia recuperação álcool',ru:'Руководство по алкоголю',zh:'酒精康复指南',ja:'アルコール回復ガイド',hi:'शराब मुक्ति गाइड',bn:'মদ মুক্তি গাইড'},
+'Ghid recuperare substanțe':{en:'Substance recovery guide',es:'Guía sustancias',fr:'Guide substances',de:'Substanz-Leitfaden',pt:'Guia substâncias',ru:'Руководство по веществам',zh:'物质康复指南',ja:'薬物回復ガイド',hi:'नशा मुक्ति गाइड',bn:'মাদক মুক্তি গাইড'},
+'Autoexcludere jocuri de noroc':{en:'Gambling self-exclusion',es:'Autoexclusión juego',fr:'Auto-exclusion jeu',de:'Glücksspiel-Selbstsperre',pt:'Autoexclusão jogo',ru:'Самоисключение',zh:'赌博自我排除',ja:'ギャンブル自己排除',hi:'जुआ आत्म-बहिष्कार',bn:'জুয়া স্ব-বর্জন'},
+'Blocaj emoțional / depresie':{en:'Emotional blockage / depression',es:'Bloqueo emocional / depresión',fr:'Blocage émotionnel / dépression',de:'Emotionale Blockade / Depression',pt:'Bloqueio emocional / depressão',ru:'Эмоциональный блок / депрессия',zh:'情感阻塞/抑郁',ja:'感情的ブロック/うつ',hi:'भावनात्मक अवरोध / अवसाद',bn:'আবেগজনিত বাধা / বিষণ্ণতা'},
+'Terapie zonală':{en:'Local therapy',es:'Terapia zonal',fr:'Thérapie locale',de:'Lokale Therapie',pt:'Terapia local',ru:'Зональная терапия',zh:'区域治疗',ja:'ゾーンセラピー',hi:'क्षेत्रीय थेरेपी',bn:'আঞ্চলিক থেরাপি'},
+'Despre Voxen':{en:'About Voxen',es:'Acerca de Voxen',fr:'À propos de Voxen',de:'Über Voxen',pt:'Sobre Voxen',ru:'О Voxen',zh:'关于Voxen',ja:'Voxenについて',hi:'Voxen के बारे में',bn:'Voxen সম্পর্কে'},
+'Gata':{en:'Done',es:'Listo',fr:'Terminé',de:'Fertig',pt:'Pronto',ru:'Готово',zh:'完成',ja:'完了',hi:'हो गया',bn:'সম্পন্ন'},
+'JSON pe dispozitiv':{en:'JSON on device',es:'JSON en dispositivo',fr:'JSON sur appareil',de:'JSON auf Gerät',pt:'JSON no dispositivo',ru:'JSON на устройстве',zh:'设备上的JSON',ja:'デバイス上のJSON',hi:'डिवाइस पर JSON',bn:'ডিভাইসে JSON'},
+'Pornește de la zero':{en:'Start from scratch',es:'Empezar de cero',fr:'Recommencer à zéro',de:'Von vorne anfangen',pt:'Começar do zero',ru:'Начать с нуля',zh:'从零开始',ja:'ゼロから始める',hi:'शून्य से शुरू',bn:'শূন্য থেকে শুরু'},
 
+// ════ HOME extras ════
+'zi pe drum':{en:'day on path',es:'día en camino',fr:'jour en route',de:'Tag unterwegs',pt:'dia no caminho',ru:'день в пути',zh:'天在路上',ja:'日目',hi:'दिन',bn:'দিন'},
+'jurnale':{en:'journals',es:'diarios',fr:'journaux',de:'Einträge',pt:'diários',ru:'записей',zh:'日志',ja:'件',hi:'जर्नल',bn:'জার্নাল'},
+'pași făcuți':{en:'steps done',es:'pasos hechos',fr:'pas faits',de:'Schritte',pt:'passos feitos',ru:'шагов',zh:'步',ja:'歩',hi:'कदम',bn:'পদক্ষেপ'},
+'Harta ta de declanșatori':{en:'Your trigger map',es:'Tu mapa de desencadenantes',fr:'Ta carte des déclencheurs',de:'Deine Auslöser-Karte',pt:'Seu mapa de gatilhos',ru:'Карта триггеров',zh:'触发因素地图',ja:'トリガーマップ',hi:'ट्रिगर मैप',bn:'ট্রিগার ম্যাপ'},
+'↻ În fiecare zi':{en:'↻ Every day',es:'↻ Cada día',fr:'↻ Chaque jour',de:'↻ Jeden Tag',pt:'↻ Todo dia',ru:'↻ Каждый день',zh:'↻ 每天',ja:'↻ 毎日',hi:'↻ हर दिन',bn:'↻ প্রতিদিন'},
+'Rutina ta':{en:'Your routine',es:'Tu rutina',fr:'Ta routine',de:'Deine Routine',pt:'Sua rotina',ru:'Твой распорядок',zh:'你的日程',ja:'ルーティン',hi:'दिनचर्या',bn:'রুটিন'},
+'Primii 7 pași':{en:'First 7 steps',es:'Primeros 7 pasos',fr:'7 premiers pas',de:'Erste 7 Schritte',pt:'Primeiros 7 passos',ru:'Первые 7 шагов',zh:'前7步',ja:'最初の7歩',hi:'पहले 7 कदम',bn:'প্রথম ৭ পদক্ষেপ'},
+'Sprijinul tău':{en:'Your support',es:'Tu apoyo',fr:'Ton soutien',de:'Deine Unterstützung',pt:'Seu apoio',ru:'Поддержка',zh:'你的支持',ja:'サポート',hi:'सहारा',bn:'সহায়তা'},
+'Ghid autoexcludere →':{en:'Self-exclusion guide →',es:'Guía autoexclusión →',fr:'Guide auto-exclusion →',de:'Selbstsperre-Leitfaden →',pt:'Guia autoexclusão →',ru:'Руководство →',zh:'自我排除指南 →',ja:'自己排除ガイド →',hi:'आत्म-बहिष्कार गाइड →',bn:'স্ব-বর্জন গাইড →'},
+'Zilele 1–2':{en:'Days 1–2',es:'Días 1–2',fr:'Jours 1–2',de:'Tage 1–2',pt:'Dias 1–2',ru:'Дни 1–2',zh:'第1-2天',ja:'1-2日目',hi:'दिन 1-2',bn:'দিন ১-২'},
+'Ziua 3':{en:'Day 3',es:'Día 3',fr:'Jour 3',de:'Tag 3',pt:'Dia 3',ru:'День 3',zh:'第3天',ja:'3日目',hi:'दिन 3',bn:'দিন ৩'},
+'Ziua 4':{en:'Day 4',es:'Día 4',fr:'Jour 4',de:'Tag 4',pt:'Dia 4',ru:'День 4',zh:'第4天',ja:'4日目',hi:'दिन 4',bn:'দিন ৪'},
+'Ziua 5':{en:'Day 5',es:'Día 5',fr:'Jour 5',de:'Tag 5',pt:'Dia 5',ru:'День 5',zh:'第5天',ja:'5日目',hi:'दिन 5',bn:'দিন ৫'},
+'Ziua 6':{en:'Day 6',es:'Día 6',fr:'Jour 6',de:'Tag 6',pt:'Dia 6',ru:'День 6',zh:'第6天',ja:'6日目',hi:'दिन 6',bn:'দিন ৬'},
+'Ziua 7':{en:'Day 7',es:'Día 7',fr:'Jour 7',de:'Tag 7',pt:'Dia 7',ru:'День 7',zh:'第7天',ja:'7日目',hi:'दिन 7',bn:'দিন ৭'},
+'Înregistrează primul jurnal vocal.':{en:'Record your first voice journal.',es:'Graba tu primer diario vocal.',fr:'Enregistre ton premier journal vocal.',de:'Nimm dein erstes Sprachtagebuch auf.',pt:'Grave seu primeiro diário vocal.',ru:'Запиши первый голосовой журнал.',zh:'录制第一个语音日记。',ja:'最初の音声ジャーナルを録音。',hi:'पहला वॉयस जर्नल रिकॉर्ड करें।',bn:'প্রথম ভয়েস জার্নাল রেকর্ড করুন।'},
+'Explorează modulul de recuperare.':{en:'Explore the recovery module.',es:'Explora el módulo de recuperación.',fr:'Explore le module de guérison.',de:'Erkunde das Genesungsmodul.',pt:'Explore o módulo de recuperação.',ru:'Изучи модуль восстановления.',zh:'探索康复模块。',ja:'回復モジュールを探索。',hi:'रिकवरी मॉड्यूल एक्सप्लोर करें।',bn:'রিকভারি মডিউল অন্বেষণ।'},
+'Marchează prima ta victorie.':{en:'Mark your first victory.',es:'Marca tu primera victoria.',fr:'Marque ta première victoire.',de:'Markiere deinen ersten Sieg.',pt:'Marque sua primeira vitória.',ru:'Отметь первую победу.',zh:'标记第一次胜利。',ja:'最初の勝利を記録。',hi:'पहली जीत दर्ज करें।',bn:'প্রথম বিজয় চিহ্নিত করুন।'},
+'Identifică momentul cel mai greu.':{en:'Identify your hardest moment.',es:'Identifica tu momento más difícil.',fr:'Identifie ton moment le plus dur.',de:'Finde deinen schwersten Moment.',pt:'Identifique o momento mais difícil.',ru:'Найди самый трудный момент.',zh:'找出最困难的时刻。',ja:'一番つらい瞬間を特定。',hi:'सबसे कठिन पल पहचानें।',bn:'কঠিনতম মুহূর্ত চিহ্নিত করুন。'},
+'Spune-i cuiva că ai început.':{en:'Tell someone you started.',es:'Dile a alguien que empezaste.',fr:'Dis à quelqu\'un que tu as commencé.',de:'Sag jemandem dass du begonnen hast.',pt:'Diga a alguém que começou.',ru:'Скажи кому-нибудь что начал.',zh:'告诉某人你开始了。',ja:'始めたことを誰かに。',hi:'किसी को बताएं शुरू किया।',bn:'কাউকে বলুন শুরু করেছেন।'},
+'Ascultă-ți primul jurnal.':{en:'Listen to your first journal.',es:'Escucha tu primer diario.',fr:'Écoute ton premier journal.',de:'Höre dein erstes Tagebuch.',pt:'Ouça seu primeiro diário.',ru:'Послушай первый журнал.',zh:'听第一篇日记。',ja:'最初のジャーナルを聴いて。',hi:'पहला जर्नल सुनें。',bn:'প্রথম জার্নাল শুনুন。'},
+
+// ════ EMOTIONAL extras ════
+'explicat simplu.':{en:'explained simply.',es:'explicado simple.',fr:'expliqué simplement.',de:'einfach erklärt.',pt:'explicado simples.',ru:'простым языком.',zh:'简单解释。',ja:'わかりやすく。',hi:'सरल भाषा में।',bn:'সহজ ভাষায়。'},
+'Pași mici care':{en:'Small steps that',es:'Pequeños pasos que',fr:'De petits pas qui',de:'Kleine Schritte die',pt:'Pequenos passos que',ru:'Маленькие шаги',zh:'小步骤',ja:'小さなステップ',hi:'छोटे कदम जो',bn:'ছোট পদক্ষেপ যা'},
+'sparg inerția.':{en:'break the inertia.',es:'rompen la inercia.',fr:'brisent l\'inertie.',de:'die Trägheit brechen.',pt:'quebram a inércia.',ru:'ломают инерцию.',zh:'打破惰性。',ja:'惰性を打ち破る。',hi:'जड़ता तोड़ते हैं।',bn:'জড়তা ভাঙে。'},
+'Vezi pașii ↓':{en:'See steps ↓',es:'Ver pasos ↓',fr:'Voir les étapes ↓',de:'Schritte ↓',pt:'Ver passos ↓',ru:'Шаги ↓',zh:'查看步骤 ↓',ja:'ステップ ↓',hi:'चरण देखें ↓',bn:'পদক্ষেপ ↓'},
+
+// ════ ALCOOL extras ════
+'Pași concreți,':{en:'Concrete steps,',es:'Pasos concretos,',fr:'Des pas concrets,',de:'Konkrete Schritte,',pt:'Passos concretos,',ru:'Конкретные шаги,',zh:'具体步骤，',ja:'具体的なステップ、',hi:'ठोस कदम,',bn:'কংক্রিট পদক্ষেপ,'},
+'în ordinea corectă.':{en:'in the right order.',es:'en el orden correcto.',fr:'dans le bon ordre.',de:'in der richtigen Reihenfolge.',pt:'na ordem certa.',ru:'в правильном порядке.',zh:'按正确顺序。',ja:'正しい順序で。',hi:'सही क्रम में।',bn:'সঠিক ক্রমে。'},
+'Momentul tău':{en:'Your moment',es:'Tu momento',fr:'Ton moment',de:'Dein Moment',pt:'Seu momento',ru:'Твой момент',zh:'你的时刻',ja:'あなたの瞬間',hi:'आपका पल',bn:'আপনার মুহূর্ত'},
+'Resurse verificate România':{en:'Verified resources',es:'Recursos verificados',fr:'Ressources vérifiées',de:'Verifizierte Ressourcen',pt:'Recursos verificados',ru:'Проверенные ресурсы',zh:'已验证资源',ja:'確認済みリソース',hi:'सत्यापित संसाधन',bn:'যাচাইকৃত সম্পদ'},
+'Ajutor real,':{en:'Real help,',es:'Ayuda real,',fr:'Aide réelle,',de:'Echte Hilfe,',pt:'Ajuda real,',ru:'Реальная помощь,',zh:'真正的帮助，',ja:'本当の助け、',hi:'असली मदद,',bn:'আসল সাহায্য,'},
+'nu link-uri moarte.':{en:'not dead links.',es:'no enlaces muertos.',fr:'pas de liens morts.',de:'keine toten Links.',pt:'sem links mortos.',ru:'не мёртвые ссылки.',zh:'不是死链接。',ja:'デッドリンクではなく。',hi:'मृत लिंक नहीं।',bn:'ডেড লিঙ্ক নয়。'},
+
+// ════ SUBSTANȚE extras ════
+'Pași reali,':{en:'Real steps,',es:'Pasos reales,',fr:'Des vrais pas,',de:'Echte Schritte,',pt:'Passos reais,',ru:'Реальные шаги,',zh:'真正的步骤，',ja:'本当のステップ、',hi:'असली कदम,',bn:'আসল পদক্ষেপ,'},
+'fără judecată.':{en:'without judgment.',es:'sin juicio.',fr:'sans jugement.',de:'ohne Urteil.',pt:'sem julgamento.',ru:'без осуждения.',zh:'不评判。',ja:'判断なし。',hi:'बिना आलोचना।',bn:'বিচার ছাড়া。'},
+'Comunitate terapeutică':{en:'Therapeutic community',es:'Comunidad terapéutica',fr:'Communauté thérapeutique',de:'Therapeutische Gemeinschaft',pt:'Comunidade terapêutica',ru:'Терапевтическое сообщество',zh:'治疗社区',ja:'治療コミュニティ',hi:'चिकित्सा समुदाय',bn:'থেরাপিউটিক সম্প্রদায়'},
+'Rezidențial':{en:'Residential',es:'Residencial',fr:'Résidentiel',de:'Stationär',pt:'Residencial',ru:'Стационар',zh:'住院',ja:'入院',hi:'आवासीय',bn:'আবাসিক'},
+'Pregătire':{en:'Preparation',es:'Preparación',fr:'Préparation',de:'Vorbereitung',pt:'Preparação',ru:'Подготовка',zh:'准备',ja:'準備',hi:'तैयारी',bn:'প্রস্তুতি'},
+'Planul de urgență personal':{en:'Personal emergency plan',es:'Plan de emergencia personal',fr:'Plan d\'urgence personnel',de:'Persönlicher Notfallplan',pt:'Plano de emergência pessoal',ru:'Личный план помощи',zh:'个人紧急计划',ja:'個人緊急プラン',hi:'व्यक्तिगत आपातकालीन योजना',bn:'ব্যক্তিগত জরুরি পরিকল্পনা'},
+
+// ════ AUTOEXCLUDERE extras ════
+'Ce trebuie să știi':{en:'What you need to know',es:'Lo que necesitas saber',fr:'Ce qu\'il faut savoir',de:'Was du wissen musst',pt:'O que precisa saber',ru:'Что нужно знать',zh:'你需要知道的',ja:'知っておくべきこと',hi:'आपको क्या जानना चाहिए',bn:'আপনার কী জানা দরকার'},
+'Cel mai rapid':{en:'Fastest',es:'Más rápido',fr:'Le plus rapide',de:'Am schnellsten',pt:'Mais rápido',ru:'Самый быстрый',zh:'最快',ja:'最速',hi:'सबसे तेज़',bn:'সবচেয়ে দ্রুত'},
+'De acasă':{en:'From home',es:'Desde casa',fr:'De chez toi',de:'Von zuhause',pt:'De casa',ru:'Из дома',zh:'从家里',ja:'自宅から',hi:'घर से',bn:'বাড়ি থেকে'},
+'Cu asistență':{en:'With assistance',es:'Con asistencia',fr:'Avec assistance',de:'Mit Unterstützung',pt:'Com assistência',ru:'С помощью',zh:'有协助',ja:'アシスタンス付き',hi:'सहायता के साथ',bn:'সহায়তা সহ'},
+'Atenție':{en:'Caution',es:'Atención',fr:'Attention',de:'Achtung',pt:'Atenção',ru:'Внимание',zh:'注意',ja:'注意',hi:'ध्यान',bn:'মনোযোগ'},
+'Am depus cererea':{en:'I filed the request',es:'Presenté la solicitud',fr:'J\'ai déposé la demande',de:'Antrag eingereicht',pt:'Enviei o pedido',ru:'Подал заявку',zh:'我提交了申请',ja:'申請しました',hi:'मैंने अनुरोध दायर किया',bn:'আমি আবেদন জমা দিয়েছি'},
+'Azi iau decizia.':{en:'Today I decide.',es:'Hoy decido.',fr:'Aujourd\'hui je décide.',de:'Heute entscheide ich.',pt:'Hoje eu decido.',ru:'Сегодня решаю.',zh:'今天我做决定。',ja:'今日決めます。',hi:'आज फैसला करता हूँ।',bn:'আজ সিদ্ধান্ত নিই。'},
+'Joc responsabil →':{en:'Responsible gaming →',es:'Juego responsable →',fr:'Jeu responsable →',de:'Verantwortungsvolles Spielen →',pt:'Jogo responsável →',ru:'Ответственная игра →',zh:'负责任游戏 →',ja:'責任あるゲーム →',hi:'जिम्मेदार गेमिंग →',bn:'দায়িত্বশীল গেমিং →'},
+'Cum te autoexcluzi — 4 căi oficiale':{en:'How to self-exclude — 4 official channels',es:'Cómo autoexcluirte — 4 canales',fr:'Comment s\'auto-exclure — 4 voies',de:'Selbstsperre — 4 Wege',pt:'Como se autoexcluir — 4 canais',ru:'Самоисключение — 4 канала',zh:'自我排除——4个渠道',ja:'自己排除——4つの方法',hi:'आत्म-बहिष्कार — 4 चैनल',bn:'স্ব-বর্জন — ৪টি চ্যানেল'},
+
+// ════ SETTINGS extras ════
+'Creează cont →':{en:'Create account →',es:'Crear cuenta →',fr:'Créer un compte →',de:'Konto erstellen →',pt:'Criar conta →',ru:'Создать аккаунт →',zh:'创建帐户 →',ja:'アカウント作成 →',hi:'खाता बनाएं →',bn:'অ্যাকাউন্ট তৈরি →'},
+'🔒 Salvează-ți progresul':{en:'🔒 Save your progress',es:'🔒 Guarda tu progreso',fr:'🔒 Sauvegarde ta progression',de:'🔒 Fortschritt speichern',pt:'🔒 Salve seu progresso',ru:'🔒 Сохрани прогресс',zh:'🔒 保存进度',ja:'🔒 進捗を保存',hi:'🔒 प्रगति सहेजें',bn:'🔒 অগ্রগতি সংরক্ষণ'},
+'Mă lupt cu':{en:'I struggle with',es:'Lucho con',fr:'Je me bats avec',de:'Ich kämpfe mit',pt:'Luto contra',ru:'Борюсь с',zh:'我在与之斗争',ja:'戦っているのは',hi:'मैं जूझ रहा हूँ',bn:'আমি লড়ছি'},
+'Unde sunt pe drum':{en:'Where I am',es:'Dónde estoy',fr:'Où j\'en suis',de:'Wo ich bin',pt:'Onde estou',ru:'Где я на пути',zh:'我在哪里',ja:'どこにいるか',hi:'कहाँ हूँ',bn:'কোথায় আছি'},
+'Declanșatorii mei':{en:'My triggers',es:'Mis desencadenantes',fr:'Mes déclencheurs',de:'Meine Auslöser',pt:'Meus gatilhos',ru:'Мои триггеры',zh:'触发因素',ja:'トリガー',hi:'मेरे ट्रिगर',bn:'আমার ট্রিগার'},
+'Sprijinul meu':{en:'My support',es:'Mi apoyo',fr:'Mon soutien',de:'Meine Unterstützung',pt:'Meu apoio',ru:'Моя поддержка',zh:'我的支持',ja:'サポート',hi:'मेरा सहारा',bn:'আমার সহায়তা'},
+'Ghid recuperare alcool':{en:'Alcohol recovery guide',es:'Guía recuperación alcohol',fr:'Guide guérison alcool',de:'Alkohol-Leitfaden',pt:'Guia recuperação álcool',ru:'Руководство по алкоголю',zh:'酒精康复指南',ja:'アルコール回復ガイド',hi:'शराब मुक्ति गाइड',bn:'মদ মুক্তি গাইড'},
+'Ghid recuperare substanțe':{en:'Substance recovery guide',es:'Guía sustancias',fr:'Guide substances',de:'Substanz-Leitfaden',pt:'Guia substâncias',ru:'Руководство по веществам',zh:'物质康复指南',ja:'薬物回復ガイド',hi:'नशा मुक्ति गाइड',bn:'মাদক মুক্তি গাইড'},
+'Autoexcludere jocuri de noroc':{en:'Gambling self-exclusion',es:'Autoexclusión juego',fr:'Auto-exclusion jeu',de:'Glücksspiel-Selbstsperre',pt:'Autoexclusão jogo',ru:'Самоисключение',zh:'赌博自我排除',ja:'ギャンブル自己排除',hi:'जुआ आत्म-बहिष्कार',bn:'জুয়া স্ব-বর্জন'},
+'Blocaj emoțional / depresie':{en:'Emotional blockage / depression',es:'Bloqueo emocional / depresión',fr:'Blocage émotionnel / dépression',de:'Emotionale Blockade / Depression',pt:'Bloqueio emocional / depressão',ru:'Эмоциональный блок / депрессия',zh:'情感阻塞/抑郁',ja:'感情ブロック/うつ',hi:'भावनात्मक अवरोध / अवसाद',bn:'আবেগ বাধা / বিষণ্ণতা'},
+'Terapie zonală':{en:'Local therapy',es:'Terapia local',fr:'Thérapie locale',de:'Lokale Therapie',pt:'Terapia local',ru:'Зональная терапия',zh:'区域治疗',ja:'ゾーンセラピー',hi:'क्षेत्रीय थेरेपी',bn:'আঞ্চলিক থেরাপি'},
+'Despre Voxen':{en:'About Voxen',es:'Acerca de Voxen',fr:'À propos de Voxen',de:'Über Voxen',pt:'Sobre Voxen',ru:'О Voxen',zh:'关于Voxen',ja:'Voxenについて',hi:'Voxen के बारे में',bn:'Voxen সম্পর্কে'},
+'Gata':{en:'Done',es:'Listo',fr:'Terminé',de:'Fertig',pt:'Pronto',ru:'Готово',zh:'完成',ja:'完了',hi:'हो गया',bn:'সম্পন্ন'},
+'JSON pe dispozitiv':{en:'JSON on device',es:'JSON en dispositivo',fr:'JSON sur appareil',de:'JSON auf Gerät',pt:'JSON no dispositivo',ru:'JSON на устройстве',zh:'设备上的JSON',ja:'デバイスのJSON',hi:'डिवाइस पर JSON',bn:'ডিভাইসে JSON'},
+'Pornește de la zero':{en:'Start from scratch',es:'Empezar de cero',fr:'Recommencer à zéro',de:'Von vorne anfangen',pt:'Começar do zero',ru:'Начать с нуля',zh:'从零开始',ja:'ゼロから始める',hi:'शून्य से शुरू',bn:'শূন্য থেকে শুরু'},
+
+// ════ ONBOARDING extras ════
+'BUN VENIT':{en:'WELCOME',es:'BIENVENIDO',fr:'BIENVENUE',de:'WILLKOMMEN',pt:'BEM-VINDO',ru:'ДОБРО ПОЖАЛОВАТЬ',zh:'欢迎',ja:'ようこそ',hi:'स्वागत',bn:'স্বাগতম'},
+'Hai să-ți configurăm':{en:'Let\'s set up',es:'Configuremos',fr:'Configurons',de:'Lass uns einrichten',pt:'Vamos configurar',ru:'Давай настроим',zh:'让我们设置',ja:'設定しましょう',hi:'चलिए तैयार करें',bn:'চলুন সেট করি'},
+'drumul tău.':{en:'your path.',es:'tu camino.',fr:'ton chemin.',de:'deinen Weg.',pt:'seu caminho.',ru:'твой путь.',zh:'你的路径。',ja:'あなたの道を。',hi:'आपका रास्ता।',bn:'আপনার পথ。'},
+'Alcool':{en:'Alcohol',es:'Alcohol',fr:'Alcool',de:'Alkohol',pt:'Álcool',ru:'Алкоголь',zh:'酒精',ja:'アルコール',hi:'शराब',bn:'মদ'},
+'Substanțe':{en:'Substances',es:'Sustancias',fr:'Substances',de:'Substanzen',pt:'Substâncias',ru:'Вещества',zh:'物质',ja:'薬物',hi:'नशीले पदार्थ',bn:'মাদক'},
+'Jocuri de noroc':{en:'Gambling',es:'Juegos de azar',fr:'Jeux de hasard',de:'Glücksspiel',pt:'Jogos de azar',ru:'Азартные игры',zh:'赌博',ja:'ギャンブル',hi:'जुआ',bn:'জুয়া'},
+'Depresie sau blocaj emoțional':{en:'Depression or emotional blockage',es:'Depresión o bloqueo emocional',fr:'Dépression ou blocage émotionnel',de:'Depression oder emotionale Blockade',pt:'Depressão ou bloqueio emocional',ru:'Депрессия или блок',zh:'抑郁或情感障碍',ja:'うつ病または感情ブロック',hi:'अवसाद या भावनात्मक अवरोध',bn:'বিষণ্ণতা বা আবেগ বাধা'},
+'Altceva':{en:'Something else',es:'Otra cosa',fr:'Autre chose',de:'Etwas anderes',pt:'Outra coisa',ru:'Другое',zh:'其他',ja:'その他',hi:'कुछ और',bn:'অন্য কিছু'},
+'Vreau să reduc sau să mă opresc':{en:'I want to reduce or stop',es:'Quiero reducir o parar',fr:'Je veux réduire ou arrêter',de:'Ich will reduzieren oder aufhören',pt:'Quero reduzir ou parar',ru:'Хочу уменьшить или остановиться',zh:'我想减少或停止',ja:'減らすかやめたい',hi:'कम करना या रोकना चाहता हूँ',bn:'কমাতে বা থামাতে চাই'},
+'Recuperare din consum de substanțe':{en:'Recovery from substance use',es:'Recuperación del consumo de sustancias',fr:'Guérison de la consommation de substances',de:'Erholung vom Substanzkonsum',pt:'Recuperação do uso de substâncias',ru:'Восстановление от употребления',zh:'物质使用康复',ja:'薬物使用からの回復',hi:'नशे से मुक्ति',bn:'মাদক সেবন থেকে পুনরুদ্ধার'},
+'Pariuri, cazinou, jocuri online':{en:'Betting, casino, online games',es:'Apuestas, casino, juegos online',fr:'Paris, casino, jeux en ligne',de:'Wetten, Casino, Online-Spiele',pt:'Apostas, cassino, jogos online',ru:'Ставки, казино, онлайн-игры',zh:'投注、赌场、在线游戏',ja:'賭け、カジノ、オンラインゲーム',hi:'सट्टा, कैसीनो, ऑनलाइन गेम',bn:'বাজি, ক্যাসিনো, অনলাইন গেম'},
+'Încă mă gândesc':{en:'Still thinking',es:'Aún pensando',fr:'J\'y réfléchis',de:'Denke noch nach',pt:'Ainda pensando',ru:'Ещё думаю',zh:'还在考虑',ja:'まだ考え中',hi:'अभी सोच रहा',bn:'এখনো ভাবছি'},
+'La început':{en:'At the beginning',es:'Al principio',fr:'Au début',de:'Am Anfang',pt:'No começo',ru:'В начале',zh:'在开始',ja:'始めたばかり',hi:'शुरुआत में',bn:'শুরুতে'},
+'De câteva luni':{en:'A few months in',es:'Unos meses',fr:'Quelques mois',de:'Seit Monaten',pt:'Alguns meses',ru:'Несколько месяцев',zh:'几个月了',ja:'数ヶ月',hi:'कुछ महीने',bn:'কয়েক মাস'},
+'După o recădere':{en:'After a relapse',es:'Tras una recaída',fr:'Après une rechute',de:'Nach Rückfall',pt:'Após recaída',ru:'После срыва',zh:'复发之后',ja:'再発後',hi:'दोबारा गिरने के बाद',bn:'পুনরায় পতনের পর'},
+'Serile':{en:'Evenings',es:'Las noches',fr:'Les soirées',de:'Abende',pt:'Noites',ru:'Вечера',zh:'晚上',ja:'夜',hi:'शाम',bn:'সন্ধ্যা'},
+'Stresul':{en:'Stress',es:'Estrés',fr:'Stress',de:'Stress',pt:'Estresse',ru:'Стресс',zh:'压力',ja:'ストレス',hi:'तनाव',bn:'চাপ'},
+'Singurătatea':{en:'Loneliness',es:'Soledad',fr:'Solitude',de:'Einsamkeit',pt:'Solidão',ru:'Одиночество',zh:'孤独',ja:'孤独',hi:'अकेलापन',bn:'একাকীত্ব'},
+'Ieșirile':{en:'Going out',es:'Salidas',fr:'Sorties',de:'Ausgehen',pt:'Saídas',ru:'Встречи',zh:'外出',ja:'外出',hi:'बाहर जाना',bn:'বাইরে যাওয়া'},
+'Plictiseala':{en:'Boredom',es:'Aburrimiento',fr:'Ennui',de:'Langeweile',pt:'Tédio',ru:'Скука',zh:'无聊',ja:'退屈',hi:'बोरियत',bn:'একঘেয়েমি'},
+'Izolarea':{en:'Isolation',es:'Aislamiento',fr:'Isolement',de:'Isolation',pt:'Isolamento',ru:'Изоляция',zh:'隔离',ja:'孤立',hi:'अलगाव',bn:'বিচ্ছিন্নতা'},
+'Am pe cineva':{en:'I have someone',es:'Tengo a alguien',fr:'J\'ai quelqu\'un',de:'Ich habe jemanden',pt:'Tenho alguém',ru:'Есть кто-то',zh:'有人陪伴',ja:'誰かがいる',hi:'कोई है मेरे साथ',bn:'কেউ আছে'},
+'Am un terapeut':{en:'I have a therapist',es:'Tengo un terapeuta',fr:'J\'ai un thérapeute',de:'Ich habe einen Therapeuten',pt:'Tenho um terapeuta',ru:'Есть терапевт',zh:'有治疗师',ja:'セラピストがいる',hi:'एक थेरेपिस्ट है',bn:'থেরাপিস্ট আছে'},
+'Un grup':{en:'A group',es:'Un grupo',fr:'Un groupe',de:'Eine Gruppe',pt:'Um grupo',ru:'Группа',zh:'一个小组',ja:'グループ',hi:'एक समूह',bn:'একটি গ্রুপ'},
+'Singur, deocamdată':{en:'Alone, for now',es:'Solo, por ahora',fr:'Seul, pour l\'instant',de:'Allein, vorerst',pt:'Sozinho, por enquanto',ru:'Один, пока что',zh:'目前独自一人',ja:'今のところ一人',hi:'अभी अकेले',bn:'আপাতত একা'},
+'Dimineața':{en:'Morning',es:'Mañana',fr:'Matin',de:'Morgens',pt:'Manhã',ru:'Утром',zh:'早上',ja:'朝',hi:'सुबह',bn:'সকাল'},
+'Seara':{en:'Evening',es:'Noche',fr:'Soir',de:'Abends',pt:'Noite',ru:'Вечером',zh:'晚上',ja:'夜',hi:'शाम',bn:'সন্ধ্যা'},
+'Noaptea târziu':{en:'Late at night',es:'Tarde en la noche',fr:'Tard le soir',de:'Spät nachts',pt:'De madrugada',ru:'Поздно ночью',zh:'深夜',ja:'深夜',hi:'देर रात',bn:'গভীর রাতে'},
+'Oricând — decid eu pe moment':{en:'Anytime — I decide in the moment',es:'Cuando sea — decido en el momento',fr:'N\'importe quand — je décide sur le moment',de:'Jederzeit — ich entscheide spontan',pt:'A qualquer hora — decido no momento',ru:'В любое время — решаю сам',zh:'随时——我自己决定',ja:'いつでも——その時決める',hi:'कभी भी — मैं उस वक्त तय करूं',bn:'যেকোনো সময় — আমি সেই মুহূর্তে ঠিক করি'},
+'Ai făcut ceva important.':{en:'You did something important.',es:'Hiciste algo importante.',fr:'Tu as fait quelque chose d\'important.',de:'Du hast etwas Wichtiges getan.',pt:'Fez algo importante.',ru:'Ты сделал важное.',zh:'你做了重要的事。',ja:'大切なことをしました。',hi:'आपने महत्वपूर्ण किया।',bn:'গুরুত্বপূর্ণ কিছু করেছেন。'},
+'Salvează-ți progresul.':{en:'Save your progress.',es:'Guarda tu progreso.',fr:'Sauvegarde.',de:'Fortschritt speichern.',pt:'Salve seu progresso.',ru:'Сохрани прогресс.',zh:'保存进度。',ja:'進捗を保存。',hi:'प्रगति सहेजें。',bn:'অগ্রগতি সংরক্ষণ।'},
+'Continuă cu Email':{en:'Continue with Email',es:'Continuar con Email',fr:'Continuer avec Email',de:'Mit E-Mail fortfahren',pt:'Continuar com Email',ru:'Продолжить с Email',zh:'通过邮箱继续',ja:'メールで続ける',hi:'ईमेल से जारी',bn:'ইমেইল দিয়ে চালিয়ে যান'},
+'Continuă cu Apple':{en:'Continue with Apple',es:'Continuar con Apple',fr:'Continuer avec Apple',de:'Mit Apple fortfahren',pt:'Continuar com Apple',ru:'Продолжить с Apple',zh:'通过Apple继续',ja:'Appleで続ける',hi:'Apple से जारी',bn:'Apple দিয়ে চালিয়ে যান'},
+'Continuă cu Google':{en:'Continue with Google',es:'Continuar con Google',fr:'Continuer avec Google',de:'Mit Google fortfahren',pt:'Continuar com Google',ru:'Продолжить с Google',zh:'通过Google继续',ja:'Googleで続ける',hi:'Google से जारी',bn:'Google দিয়ে চালিয়ে যান'},
+'Continuă fără cont →':{en:'Continue without account →',es:'Continuar sin cuenta →',fr:'Continuer sans compte →',de:'Ohne Konto →',pt:'Sem conta →',ru:'Без аккаунта →',zh:'不注册继续 →',ja:'アカウントなし →',hi:'बिना खाते के →',bn:'অ্যাকাউন্ট ছাড়া →'},
 };
 
-// ═══ i18n ENGINE ═══
-window.i18nApply=function(pageKey){
-  var lang='ro';
-  try{lang=localStorage.getItem('vxlang')||'ro';}catch(e){}
-  var pageT=window.VOXEN_I18N[pageKey]||{};
-  var commonT=window.VOXEN_I18N.common||{};
-  document.querySelectorAll('[data-t]').forEach(function(el){
-    var key=el.getAttribute('data-t');
-    var src=pageT[key]||commonT[key];
-    if(src&&src[lang]){
-      if(el.tagName==='INPUT'||el.tagName==='TEXTAREA')el.placeholder=src[lang];
-      else el.textContent=src[lang];
+// ═══ TEXT REPLACEMENT ENGINE ═══
+function translatePage(){
+  if(L==='ro')return;
+  var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
+  var nodes=[];
+  while(walker.nextNode())nodes.push(walker.currentNode);
+  nodes.forEach(function(node){
+    var text=node.textContent.trim();
+    if(!text||text.length<2)return;
+    if(T[text]&&T[text][L]){
+      node.textContent=node.textContent.replace(text,T[text][L]);
     }
   });
-  document.querySelectorAll('[data-t-html]').forEach(function(el){
-    var key=el.getAttribute('data-t-html');
-    var src=pageT[key]||commonT[key];
-    if(src&&src[lang])el.innerHTML=src[lang];
+  // Also translate data-t elements (backward compat)
+  document.querySelectorAll('[data-t]').forEach(function(el){
+    var key=el.getAttribute('data-t');
+    if(T[key]&&T[key][L])el.textContent=T[key][L];
   });
-  document.documentElement.lang=lang==='zh'?'zh-CN':lang;
+}
+
+// Run on load + on language change
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',translatePage);
+}else{
+  translatePage();
+}
+
+// Re-translate when language changes via globe menu
+window.addEventListener('voxen-lang-change',translatePage);
+
+// Override globe menu to fire event
+var origSet=window.localStorage.setItem.bind(window.localStorage);
+try{
+  var _origSetItem=Storage.prototype.setItem;
+  Storage.prototype.setItem=function(k,v){
+    _origSetItem.call(this,k,v);
+    if(k==='vxlang'){
+      L=v;
+      translatePage();
+    }
+  
+
+
 };
+}catch(e){}
+
+})();
