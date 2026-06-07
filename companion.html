@@ -976,7 +976,6 @@ window.voxenHooks = window.voxenHooks || [];
         <div class="emo-chip" onclick="setEmo('angry')">😤 <span data-t="comp_emo_angry">Furios</span></div>
         <div class="emo-chip" onclick="setEmo('confused')">😕 <span data-t="comp_emo_confused">Confuz</span></div>
       </div>
-      <button class="trigger-btn" onclick="triggerResponse()"><span data-t="comp_btn_gen">Generează răspuns empatic →</span></button>
     </div>
 
     <div class="response-panel">
@@ -1766,14 +1765,13 @@ buildGlobeMenu();
     // 1. Run original (sets emotion display, orb, etc)
     originalTrigger();
 
-    // 2. Get the transcript and context
+    // 2. Get the transcript if user typed (demo/text mode)
     var transcript = '';
     try {
       var ta = document.querySelector('textarea');
       if (ta) transcript = ta.value;
     } catch(e) {}
-    
-    if (!transcript || transcript.trim().length < 3) return;
+    var hasText = transcript && transcript.trim().length >= 3;
 
     // 3. Get profile
     var profile = null;
@@ -1792,9 +1790,25 @@ buildGlobeMenu();
     // 5. If crisis — don't call AI, protocol handles it
     if (riskState === 'crisis') return;
 
+    // 5b. If user TYPED crisis language, detect it from text and show crisis card
+    if (hasText && typeof window.voxenDetectCrisis === 'function') {
+      var crisis = window.voxenDetectCrisis(transcript);
+      if (crisis.level === 'imminent' || crisis.level === 'ideation') {
+        if (typeof window.voxenShowCrisis === 'function') window.voxenShowCrisis(crisis.level);
+        return; // do NOT call AI during crisis
+      }
+    }
+
     // 6. Get language
     var lang = 'ro';
     try { lang = localStorage.getItem('vxlang') || 'ro'; } catch(e) {}
+
+    // 7. Build the message for the AI.
+    //    Voice mode (no transcript): the AI responds to the DETECTED EMOTION.
+    //    Text mode (typed): the AI responds to the words.
+    var userMessage = hasText
+      ? transcript
+      : '[Utilizatorul tocmai a vorbit cu tine prin jurnal vocal. Nu am cuvintele exacte, dar din analiza vocii am detectat starea emoțională: ' + emotion + '. Răspunde-i empatic, pornind de la cum sună — nu de la ce a spus. Deschide o conversație blândă.]';
 
     // 7. Show thinking state
     var respText = document.getElementById('respText');
@@ -1814,15 +1828,15 @@ buildGlobeMenu();
         : 'Thinking...';
     }
 
-    // 8. Add user message to history
-    conversationHistory.push({ role: 'user', content: transcript });
+    // 8. Add user message to history (only real typed text — not the voice placeholder)
+    if (hasText) conversationHistory.push({ role: 'user', content: transcript });
 
     // 9. Call AI function
     fetch('/.netlify/functions/ai-companion', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        transcript: transcript,
+        transcript: userMessage,
         emotion: emotion,
         riskState: riskState,
         profile: profile,
