@@ -1216,6 +1216,12 @@ function getEmo(key) {
   };
 }
 
+// Returns the contextual "when/how" description for an emotion (used as subtitle)
+function getWhen(key) {
+  const e = getEmo(key);
+  return e ? e.when : '';
+}
+
 const EMOS = new Proxy({}, { get: (_,k) => getEmo(k) });
 
 let currentEmo = 'neutral';
@@ -1223,6 +1229,7 @@ let history = [];
 
 function setEmo(emo) {
   currentEmo = emo;
+  window.currentEmo = emo;
   document.querySelectorAll('.emo-chip').forEach(c=>c.classList.remove('active'));
   document.querySelectorAll('.emo-chip').forEach(c=>{if(c.textContent.includes(EMOS[emo]?.e))c.classList.add('active');});
   document.getElementById('voiceState').textContent = `Emoție selectată: ${EMOS[emo].name}`;
@@ -1490,6 +1497,7 @@ function analyzeRecording() {
   
   // Trigger response with detected emotion
   currentEmo = detectedEmotion;
+  window.currentEmo = detectedEmotion;
   triggerResponse();
 }
 
@@ -1775,8 +1783,9 @@ buildGlobeMenu();
 
   // Override triggerResponse with AI-powered version
   window.triggerResponse = function() {
-    // 1. Run original (sets emotion display, orb, etc)
-    originalTrigger();
+    // 1. Run original (sets emotion display, orb, etc) — defensively,
+    //    so any error there can never block the AI response below.
+    try { originalTrigger(); } catch(e) { console.error('[Voxen] triggerResponse display error:', e); }
 
     // 2. Get the transcript if user typed (demo/text mode)
     var transcript = '';
