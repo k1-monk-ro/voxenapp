@@ -80,21 +80,40 @@ ${history && history.length > 0 ? history.map(h => `[${h.role}]: ${h.content}`).
 9. Use their language naturally — including colloquialisms appropriate to the context.
 10. Every response must make the person feel HEARD, not analyzed.`;
 
-    // Build messages array
+    // Build messages array from history, ensuring a valid alternating sequence
+    // that ends with the current user turn and starts with a user message.
     const messages = [];
-
-    // Add conversation history if available
     if (history && history.length > 0) {
       history.forEach(h => {
-        messages.push({ role: h.role, content: h.content });
+        if (h && (h.role === 'user' || h.role === 'assistant') && h.content) {
+          messages.push({ role: h.role, content: h.content });
+        }
       });
     }
 
-    // Add current user message
-    messages.push({
-      role: 'user',
-      content: transcript || '(the user recorded audio but no transcript is available yet)'
-    });
+    // Append the current user message ONLY if the history doesn't already end
+    // with a user turn (the frontend may have already pushed it). This prevents
+    // two consecutive 'user' messages, which the Claude API rejects with a 400.
+    const lastMsg = messages[messages.length - 1];
+    if (!lastMsg || lastMsg.role !== 'user') {
+      messages.push({
+        role: 'user',
+        content: transcript || '(the user recorded audio but no transcript is available yet)'
+      });
+    }
+
+    // The API requires the first message to be from 'user' — drop any leading assistant turns
+    while (messages.length > 0 && messages[0].role !== 'user') {
+      messages.shift();
+    }
+
+    // Safety net — never send an empty conversation
+    if (messages.length === 0) {
+      messages.push({
+        role: 'user',
+        content: transcript || '(the user recorded audio but no transcript is available yet)'
+      });
+    }
 
     // Call Claude API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -105,7 +124,7 @@ ${history && history.length > 0 ? history.map(h => `[${h.role}]: ${h.content}`).
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 300,
         system: systemPrompt,
         messages: messages,
@@ -118,7 +137,8 @@ ${history && history.length > 0 ? history.map(h => `[${h.role}]: ${h.content}`).
       return { statusCode: 200, headers, body: JSON.stringify({
         response: getFallbackResponse(emotion, language),
         fallback: true,
-        error: 'AI temporarily unavailable'
+        error: 'AI temporarily unavailable',
+        debug: { status: response.status, detail: errText.slice(0, 300) }
       })};
     }
 
@@ -154,12 +174,26 @@ ${history && history.length > 0 ? history.map(h => `[${h.role}]: ${h.content}`).
 function getFallbackResponse(emotion, lang) {
   const fallbacks = {
     ro: {
-      stable: 'Sunt aici. Spune-mi ce e pe sufletul tău.',
+      tired: 'Te aud obosit. Nu trebuie să spui mult azi. Ce te-a epuizat cel mai tare?',
+      sad: 'Aud ceva greu în voce. Sunt aici, fără grabă. Ce te apasă acum?',
+      anxious: 'Aud o tensiune. Respiră un moment cu mine. Ce te neliniștește?',
+      angry: 'Aud frustrare — e ok să fii furios. Despre ce e vorba?',
+      happy: 'Suni mai luminos azi. Ce ți-a făcut bine?',
+      excited: 'E energie în vocea ta. Spune-mi ce te-a aprins.',
+      confused: 'Pare că lucrurile sunt încâlcite acum. Ce te frământă?',
+      neutral: 'Sunt aici și te ascult. Spune-mi ce e pe sufletul tău.',
       strained: 'Te aud. Nu trebuie să fii bine chiar acum — sunt aici.',
       default: 'Sunt aici și te ascult. Spune-mi mai multe.',
     },
     en: {
-      stable: 'I\'m here. Tell me what\'s on your mind.',
+      tired: 'You sound tired. You don\'t have to say much today. What drained you most?',
+      sad: 'I hear something heavy. I\'m here, no rush. What\'s weighing on you?',
+      anxious: 'I hear tension. Breathe with me a moment. What\'s unsettling you?',
+      angry: 'I hear frustration — it\'s okay to be angry. What\'s it about?',
+      happy: 'You sound brighter today. What felt good?',
+      excited: 'There\'s energy in your voice. Tell me what sparked it.',
+      confused: 'Things sound tangled right now. What\'s on your mind?',
+      neutral: 'I\'m here and listening. Tell me what\'s on your mind.',
       strained: 'I hear you. You don\'t have to be okay right now — I\'m here.',
       default: 'I\'m here and I\'m listening. Tell me more.',
     },

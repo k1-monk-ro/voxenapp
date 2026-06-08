@@ -1441,39 +1441,52 @@ function analyzeRecording() {
     pitchVar = Math.sqrt(variance);
   }
   
-  // Detect emotion from prosody signals — praguri recalibrate
-  // Bazat pe: pitch mediu normal 85-255Hz, energie normală 0.01-0.06
+  // Detect emotion — SCORING MODEL (no dead zone; always picks best match)
   let detectedEmotion = 'neutral';
-  
-  // Scor relativ — compară cu mediile tipice, nu praguri absolute
-  const pitchIsLow = avgPitch > 0 && avgPitch < 140;
-  const pitchIsHigh = avgPitch > 200;
-  const energyIsLow = avgEnergy < 0.025;
-  const energyIsHigh = avgEnergy > 0.045;
-  const manyPauses = pauseRatio > 0.4;
-  const fewPauses = pauseRatio < 0.25;
-  const monotone = pitchVar < 18;
-  const expressive = pitchVar > 22;
-  
-  if (energyIsLow && manyPauses) detectedEmotion = 'tired';
-  else if (pitchIsLow && monotone && manyPauses) detectedEmotion = 'sad';
-  else if (pitchIsLow && energyIsLow) detectedEmotion = 'sad';
-  else if (energyIsHigh && expressive && fewPauses) detectedEmotion = 'happy';
-  else if (pitchIsHigh && fewPauses && expressive) detectedEmotion = 'excited';
-  else if (fewPauses && expressive && energyIsHigh) detectedEmotion = 'anxious';
-  else if (energyIsHigh && pitchIsHigh) detectedEmotion = 'angry';
-  else if (manyPauses && monotone) detectedEmotion = 'confused';
-  else if (energyIsLow) detectedEmotion = 'tired';
-  else if (expressive && !manyPauses) detectedEmotion = 'happy';
-  else if (monotone) detectedEmotion = 'sad';
-  // Dacă nimic nu se potrivește, neutral — dar acum se ajunge aici mult mai rar
+
+  // Only stay neutral if there's essentially no audio captured
+  const hasSignal = prosodyData.totalSamples > 3 && avgEnergy > 0.006;
+
+  if (hasSignal) {
+    // Feature flags vs typical speech ranges (recalibrated for web mic levels)
+    const eLow  = avgEnergy < 0.020;
+    const eMid  = avgEnergy >= 0.020 && avgEnergy < 0.042;
+    const eHigh = avgEnergy >= 0.042;
+    const pLow  = avgPitch > 0 && avgPitch < 150;
+    const pMid  = avgPitch >= 150 && avgPitch <= 205;
+    const pHigh = avgPitch > 205;
+    const pauseHi = pauseRatio > 0.42;
+    const pauseLo = pauseRatio < 0.28;
+    const mono  = pitchVar > 0 && pitchVar < 20;
+    const expr  = pitchVar > 26;
+
+    // Each emotion scores by how well the voice matches its profile
+    const scores = {
+      tired:    (eLow?2:0) + (pauseHi?2:0) + (mono?1:0) + (pLow?1:0),
+      sad:      (pLow?2:0) + (mono?1:0) + (pauseHi?1:0) + (eLow?1:0),
+      happy:    (eHigh?2:0) + (expr?2:0) + (pauseLo?1:0),
+      excited:  (pHigh?2:0) + (eHigh?1:0) + (expr?1:0) + (pauseLo?1:0),
+      anxious:  (expr?2:0) + (pauseLo?1:0) + (eHigh?1:0) + (pHigh?1:0),
+      angry:    (eHigh?2:0) + (pHigh?2:0) + (pauseLo?1:0),
+      confused: (pauseHi?2:0) + (mono?1:0) + (pMid?1:0),
+      neutral:  (eMid?2:0) + (pMid?1:0) + ((!expr && !mono)?1:0),
+    };
+
+    // Pick the highest-scoring emotion (neutral baseline kept low)
+    let best = 'neutral', bestScore = 0;
+    for (const k in scores) {
+      if (scores[k] > bestScore) { bestScore = scores[k]; best = k; }
+    }
+    // If everything tied at 0 but there IS speech, default to calm-engaged (neutral)
+    detectedEmotion = bestScore > 0 ? best : 'neutral';
+  }
+
+  console.log('Voxen prosody:', { avgPitch: Math.round(avgPitch), avgEnergy: avgEnergy.toFixed(4), pauseRatio: pauseRatio.toFixed(2), pitchVar: Math.round(pitchVar), totalSamples: prosodyData.totalSamples, pitchSamples: prosodyData.pitchSamples.length, detected: detectedEmotion });
   
   // Display REAL metrics
   document.getElementById('mTempo').textContent = avgPitch > 0 ? Math.round(avgPitch) + ' Hz' : '—';
   document.getElementById('mEnergy').textContent = (avgEnergy * 100).toFixed(1);
   document.getElementById('mConf').textContent = Math.round((1 - pauseRatio) * 100) + '%';
-  
-  console.log('Real prosody:', { avgPitch, avgEnergy, pauseRatio, pitchVar, duration, detected: detectedEmotion });
   
   // Trigger response with detected emotion
   currentEmo = detectedEmotion;
@@ -1810,8 +1823,10 @@ buildGlobeMenu();
       ? transcript
       : '[Utilizatorul tocmai a vorbit cu tine prin jurnal vocal. Nu am cuvintele exacte, dar din analiza vocii am detectat starea emoțională: ' + emotion + '. Răspunde-i empatic, pornind de la cum sună — nu de la ce a spus. Deschide o conversație blândă.]';
 
-    // 7. Show thinking state
+    // 7. Show thinking state — but SAVE the local response first, so we can
+    //    restore it if the AI is unreachable (not deployed / no API key / offline).
     var respText = document.getElementById('respText');
+    var localResponse = respText ? respText.textContent : '';
     if (respText) {
       respText.style.opacity = '0.5';
       respText.textContent = lang === 'ro' ? 'Mă gândesc...' 
@@ -1846,7 +1861,7 @@ buildGlobeMenu();
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (data.response) {
+      if (data && data.response) {
         // Show AI response
         if (respText) {
           respText.style.opacity = '1';
@@ -1857,18 +1872,23 @@ buildGlobeMenu();
         try {
           localStorage.setItem('voxen_ai_history', JSON.stringify(conversationHistory.slice(-20)));
         } catch(e) {}
-        
-        // Mark as AI-powered
-        if (data.fallback) {
-          console.log('[Voxen] AI unavailable, using fallback response');
-        } else {
-          console.log('[Voxen] AI response generated successfully');
+        if (data.fallback) console.log('[Voxen] AI fallback response');
+        else console.log('[Voxen] AI response generated');
+      } else {
+        // Empty response — restore the local emotion-based response
+        if (respText) {
+          respText.style.opacity = '1';
+          respText.textContent = localResponse;
         }
       }
     })
     .catch(function(err) {
-      // Fallback — keep the static response that originalTrigger set
-      if (respText) respText.style.opacity = '1';
+      // AI unreachable (not deployed / no API key / offline) —
+      // restore the local emotion-based response so the user always gets a reply.
+      if (respText) {
+        respText.style.opacity = '1';
+        respText.textContent = localResponse;
+      }
       console.log('[Voxen] AI call failed, using local response:', err.message);
     });
   };
