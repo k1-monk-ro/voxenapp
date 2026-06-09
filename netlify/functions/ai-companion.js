@@ -18,7 +18,7 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
-  const API_KEY = process.env.ANTHROPIC_API_KEY;
+  const API_KEY = (process.env.ANTHROPIC_API_KEY || '').trim();
   if (!API_KEY) {
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'API key not configured' }) };
   }
