@@ -998,7 +998,6 @@ window.voxenHooks = window.voxenHooks || [];
         <div class="resp-tag"><span data-t="comp_resp_tag">VOXEN SIMTE</span></div>
         <div class="resp-text" id="respText" data-t="comp_resp_default">Bună seara. Cum a fost azi?<span class="cursor"></span></div>
       </div>
-      <div id="voxenDebug" style="font-size:11px;color:#7F77DD;font-family:monospace;padding:8px 12px;opacity:0.7;text-align:center;"></div>
       <div class="metrics-row">
         <div class="metric"><div class="metric-val" id="mTempo">—</div><div class="metric-label"><span data-t="comp_m_tempo">Tempo vocal</span></div></div>
         <div class="metric"><div class="metric-val" id="mEnergy">—</div><div class="metric-label"><span data-t="comp_m_energy">Energie</span></div></div>
@@ -1857,8 +1856,6 @@ buildGlobeMenu();
     if (hasText) conversationHistory.push({ role: 'user', content: transcript });
 
     // 9. Call AI function
-    var dbg = document.getElementById('voxenDebug');
-    if (dbg) dbg.textContent = 'debug: emoție=' + emotion + ' · apelez AI...';
     fetch('/.netlify/functions/ai-companion', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1871,22 +1868,9 @@ buildGlobeMenu();
         language: lang,
       }),
     })
-    .then(function(r) {
-      console.log('[Voxen] AI function HTTP status:', r.status);
-      if (dbg) dbg.textContent = 'debug: AI status ' + r.status;
-      if (!r.ok) {
-        return r.text().then(function(t) {
-          console.error('[Voxen] AI function NOT OK. Body:', t.slice(0, 500));
-          if (dbg) dbg.textContent = 'debug: AI status ' + r.status + ' · ' + t.slice(0, 120);
-          throw new Error('HTTP ' + r.status);
-        });
-      }
-      return r.json();
-    })
+    .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (data && data.debug) console.warn('[Voxen] AI server debug:', data.debug);
       if (data && data.response) {
-        if (dbg) dbg.textContent = data.fallback ? 'debug: AI fallback server (' + (data.debug ? JSON.stringify(data.debug) : 'fără cheie?') + ')' : 'debug: ✓ răspuns AI real';
         // Show AI response
         if (respText) {
           respText.style.opacity = '1';
@@ -1914,8 +1898,6 @@ buildGlobeMenu();
         respText.style.opacity = '1';
         respText.textContent = localResponse;
       }
-      var dbg2 = document.getElementById('voxenDebug');
-      if (dbg2 && dbg2.textContent.indexOf('status') === -1) dbg2.textContent = 'debug: AI inaccesibil — ' + err.message + ' (funcția nu e deployată?)';
       console.log('[Voxen] AI call failed, using local response:', err.message);
     });
   };

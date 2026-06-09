@@ -210,7 +210,7 @@ var T={
 // ════ ONBOARDING extras ════
 'BUN VENIT':{en:'WELCOME',es:'BIENVENIDO',fr:'BIENVENUE',de:'WILLKOMMEN',pt:'BEM-VINDO',ru:'ДОБРО ПОЖАЛОВАТЬ',zh:'欢迎',ja:'ようこそ',hi:'स्वागत',bn:'স্বাগতম'},
 'Hai să-ți configurăm':{en:'Let\'s set up',es:'Configuremos',fr:'Configurons',de:'Lass uns einrichten',pt:'Vamos configurar',ru:'Давай настроим',zh:'让我们设置',ja:'設定しましょう',hi:'चलिए तैयार करें',bn:'চলুন সেট করি'},
-'drumul tău.':{en:'your path.',es:'tu camino.',fr:'ton chemin.',de:'deinen Weg.',pt:'seu caminho.',ru:'твой путь.',zh:'你的路径。',ja:'あなたの道を。',hi:'आपका रास्ता।',bn:'আপনার পথ。'},
+'drumul.':{en:'your path.',es:'tu camino.',fr:'ton chemin.',de:'deinen Weg.',pt:'seu caminho.',ru:'твой путь.',zh:'你的路径。',ja:'あなたの道を。',hi:'आपका रास्ता।',bn:'আপনার পথ。'},
 'Alcool':{en:'Alcohol',es:'Alcohol',fr:'Alcool',de:'Alkohol',pt:'Álcool',ru:'Алкоголь',zh:'酒精',ja:'アルコール',hi:'शराब',bn:'মদ'},
 'Substanțe':{en:'Substances',es:'Sustancias',fr:'Substances',de:'Substanzen',pt:'Substâncias',ru:'Вещества',zh:'物质',ja:'薬物',hi:'नशीले पदार्थ',bn:'মাদক'},
 'Jocuri de noroc':{en:'Gambling',es:'Juegos de azar',fr:'Jeux de hasard',de:'Glücksspiel',pt:'Jogos de azar',ru:'Азартные игры',zh:'赌博',ja:'ギャンブル',hi:'जुआ',bn:'জুয়া'},
