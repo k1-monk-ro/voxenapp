@@ -181,6 +181,32 @@ html {
 .globe-lang{display:block;width:100%;padding:9px 14px;background:none;border:none;border-radius:8px;color:var(--text2,#8B88C3);font-family:'Syne',sans-serif;font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:all .1s}
 .globe-lang:hover{background:rgba(83,74,183,.1);color:var(--white,#F0EFF8)}
 .globe-lang.active{color:var(--purple,#534AB7);font-weight:700;background:rgba(83,74,183,.08)}
+/* ═══ NU EȘTI SINGUR ═══ */
+.strata{max-width:680px;margin:24px auto 0;display:flex;flex-direction:column;gap:10px;position:relative;z-index:1}
+.strata-item{display:flex;align-items:center;gap:16px;background:var(--card);border:.5px solid var(--border);border-radius:16px;padding:16px 18px;text-align:left}
+.strata-item.active{border-color:var(--warm);background:linear-gradient(135deg,rgba(212,83,126,.1),var(--card))}
+.strata-num{width:30px;height:30px;border-radius:50%;background:var(--surface);border:.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--soft);flex-shrink:0}
+.strata-item.active .strata-num{background:var(--warm);color:#fff;border-color:var(--warm)}
+.strata-body{flex:1}
+.strata-t{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--white)}
+.strata-d{font-size:13px;color:var(--text2);margin-top:3px;line-height:1.45}
+.strata-soon{font-size:11px;font-weight:600;color:var(--text2);background:var(--surface);border-radius:100px;padding:5px 11px;flex-shrink:0}
+.strata-here{font-size:11px;font-weight:700;color:var(--warm);flex-shrink:0}
+.rg-cat{margin-bottom:26px}
+.rg-cat-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.rg-cat-icon{font-size:22px}
+.rg-cat-title{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:var(--white)}
+.rg-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.rg-card{display:block;background:var(--card);border:.5px solid var(--border);border-radius:16px;padding:18px;text-decoration:none;transition:all .2s}
+.rg-card:hover{border-color:var(--mid);transform:translateY(-2px)}
+.rg-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--white);margin-bottom:6px}
+.rg-desc{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.rg-link{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;color:var(--soft)}
+.rg-crisis{background:rgba(163,45,45,.1);border:.5px solid rgba(163,45,45,.4);border-radius:18px;padding:20px;text-align:center;margin-top:8px}
+.rg-crisis-t{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--white);margin-bottom:12px}
+.rg-crisis-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.rg-crisis-btn{flex:1;min-width:150px;text-align:center;background:rgba(163,45,45,.18);border:.5px solid rgba(163,45,45,.5);color:#E8989B;text-decoration:none;border-radius:12px;padding:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
+.rg-crisis-btn:hover{background:rgba(163,45,45,.28)}
 </style>
 
 <!-- ═══ VOXEN i18n MODULE ═══ -->
@@ -973,113 +999,94 @@ window.voxenHooks = window.voxenHooks || [];
 
 <section class="hero">
   <div class="hero-glow"></div>
-  <div class="hero-chip"><div class="chip-dot"></div><span data-t="gr_chip">Sesiuni live săptămânale · 100% anonime</span></div>
+  <div class="hero-chip"><div class="chip-dot"></div><span data-t="gr_chip">Conexiune în ritmul tău</span></div>
   <h1 class="hero-title"><span data-t="gr_h1" data-t-html>Nu ești singur.<br><em>Niciodată.</em></span></h1>
-  <p class="hero-sub" data-t="gr_sub">Grupuri săptămânale anonime după modelul "Alcoolicii Anonimi" — actualizat pentru era digitală. Un moderator certificat, maximum 12 participanți, 60 de minute de prezență reală.</p>
+  <p class="hero-sub" data-t="gr_sub">Milioane de oameni trec prin exact ce treci tu. Aici găsești conexiune fără să fii nevoit să te expui — de la a vedea că alții se luptă la fel, până la grupuri reale la care poți merge azi. Tu alegi cât de departe mergi.</p>
 
-  <!-- LIVE CIRCLE SIMULATION -->
-  <div class="circle-preview">
-    <div class="circle-header">
-      <div class="circle-title-row">
-        <div class="circle-live-dot"></div>
-        <div>
-          <div class="circle-title" id="circleTitle">Cerc Recuperare Alcool</div>
-          <div class="circle-members" id="circleMembers">7 participanți · Joi 20:00</div>
-        </div>
-      </div>
-      <div class="circle-type-tabs">
-        <div class="circle-tab active" onclick="loadCircle('alcohol',this)">🍷 <span data-t="gr_tab_alcohol">Alcool</span></div>
-        <div class="circle-tab" onclick="loadCircle('gambling',this)">🎰 <span data-t="gr_tab_gambling">Gambling</span></div>
-        <div class="circle-tab" onclick="loadCircle('substances',this)">💊 <span data-t="gr_tab_substances">Substanțe</span></div>
-        <div class="circle-tab" onclick="loadCircle('stress',this)">🧠 <span data-t="gr_tab_stress">Stres</span></div>
-      </div>
+  <!-- CELE TREI STRATURI -->
+  <div class="strata">
+    <div class="strata-item">
+      <div class="strata-num">1</div>
+      <div class="strata-body"><div class="strata-t">Vezi că nu ești singur</div><div class="strata-d">Anonim, fără cuvinte, fără risc — doar dovada vizuală că alții trec prin asta odată cu tine.</div></div>
+      <div class="strata-soon">în curând</div>
     </div>
-
-    <div class="chat-area" id="chatArea"></div>
-
-    <div class="anon-note"><span data-t="gr_anon_note">🔒 Numele tău real nu este niciodată afișat · Mesajele dispar după sesiune</span></div>
-    <div class="chat-input-row">
-      <input class="chat-input" id="chatInput" placeholder="Scrie în cerc... (demo)" data-t="gr_input_ph" maxlength="200" onkeydown="if(event.key==='Enter')sendMsg()">
-      <button class="chat-send" onclick="sendMsg()"><span data-t="gr_send">Trimite</span></button>
+    <div class="strata-item">
+      <div class="strata-num">2</div>
+      <div class="strata-body"><div class="strata-t">Lasă un ecou</div><div class="strata-d">O propoziție anonimă către alții ca tine. Și primești înapoi ecourile lor. Moderate, sigure.</div></div>
+      <div class="strata-soon">în curând</div>
     </div>
-  </div>
-  <p style="font-size:11px;color:var(--text2);position:relative;z-index:1" data-t="gr_demo_note">Simulare demo · Mesajele reale sunt criptate și nu sunt stocate</p>
-</section>
-
-<!-- GROUPS -->
-<section class="section sep reveal">
-  <p class="section-label"><span data-t="gr_circles_label">Toate cercurile</span></p>
-  <h2 class="section-title"><span data-t="gr_circles_title" data-t-html>Alege cercul<br><em>tău.</em></span></h2>
-  <p class="section-sub" data-t="gr_circles_sub">Fiecare cerc e facilitat de un specialist certificat. O dată pe săptămână, 60 de minute, maximum 12 persoane.</p>
-  <div class="groups-grid" id="groupsGrid"></div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="section sep reveal">
-  <p class="section-label" data-t="gr_principles_label">Principii</p>
-  <h2 class="section-title"><span data-t="gr_principles_title" data-t-html>Cum funcționează<br><em>un cerc Voxen.</em></span></h2>
-  <div class="principles">
-    <div class="principle reveal">
-      <div class="principle-icon">🎭</div>
-      <div class="principle-title" data-t="gr_p1_title">Anonimat total</div>
-      <div class="principle-desc" data-t="gr_p1_desc">Numele real nu e niciodată afișat. Alegi un pseudonim la intrare. Nu există profil public.</div>
-    </div>
-    <div class="principle reveal">
-      <div class="principle-icon">🧑‍🏫</div>
-      <div class="principle-title" data-t="gr_p2_title">Moderator certificat</div>
-      <div class="principle-desc" data-t="gr_p2_desc">Fiecare cerc e ghidat de un psiholog sau consilier certificat în terapia de grup.</div>
-    </div>
-    <div class="principle reveal">
-      <div class="principle-icon">🔒</div>
-      <div class="principle-title" data-t="gr_p3_title">Ceea ce se spune rămâne</div>
-      <div class="principle-desc" data-t="gr_p3_desc">Nu există înregistrări. Mesajele sunt criptate end-to-end și șterse la finalul sesiunii.</div>
-    </div>
-    <div class="principle reveal">
-      <div class="principle-icon">👥</div>
-      <div class="principle-title" data-t="gr_p4_title">Max 12 persoane</div>
-      <div class="principle-desc" data-t="gr_p4_desc">Cercuri mici pentru conexiuni reale. Nu audiențe. Fiecare voce contează.</div>
-    </div>
-    <div class="principle reveal">
-      <div class="principle-icon">⌚</div>
-      <div class="principle-title" data-t="gr_p5_title">Biometrice opționale</div>
-      <div class="principle-desc" data-t="gr_p5_desc">Dacă porți un wearable, moderatorul vede agregate anonimizate ale stresului grupului — nu date individuale.</div>
-    </div>
-    <div class="principle reveal">
-      <div class="principle-icon">🌱</div>
-      <div class="principle-title" data-t="gr_p6_title">Progres vizibil</div>
-      <div class="principle-desc" data-t="gr_p6_desc">Milestones împărtășite în grup. Când cineva atinge 30 de zile, întregul cerc celebrează.</div>
+    <div class="strata-item active">
+      <div class="strata-num">3</div>
+      <div class="strata-body"><div class="strata-t">Mergi la un grup real</div><div class="strata-d">Când ești gata de oameni adevărați — grupuri care există acum în România. Mai jos.</div></div>
+      <div class="strata-here">aici ↓</div>
     </div>
   </div>
 </section>
 
-<!-- SESSION TIMELINE -->
+<!-- GRUPURI REALE -->
 <section class="section sep reveal">
-  <p class="section-label"><span data-t="gr_timeline_label">O sesiune tipică</span></p>
-  <h2 class="section-title"><span data-t="gr_timeline_title" data-t-html>60 de minute.<br><em>Ce se întâmplă.</em></span></h2>
-  <div class="session-timeline">
-    <div class="st-item reveal">
-      <div class="st-time">0 min</div>
-      <div class="st-body"><div class="st-title" data-t="gr_t1_title">Check-in</div><div class="st-desc" data-t="gr_t1_desc">Fiecare participant spune un singur cuvânt care descrie cum se simte azi. Fără judecată, fără comentarii.</div></div>
+  <p class="section-label">Grupuri reale, acum</p>
+  <h2 class="section-title">Oameni adevărați,<br><em>la care poți merge azi.</em></h2>
+  <p class="section-sub">Nu inventăm noi grupuri. Astea există de ani de zile în România — gratuite, anonime, cu oameni care au trecut prin exact ce treci tu. Alege după ce te confrunți:</p>
+
+  <div class="rg-cat">
+    <div class="rg-cat-head"><span class="rg-cat-icon">🍷</span><span class="rg-cat-title">Alcool</span></div>
+    <div class="rg-list">
+      <a class="rg-card" href="https://alcooliciianonimi.ro/" target="_blank" rel="noopener">
+        <div class="rg-name">Alcoolicii Anonimi România</div>
+        <div class="rg-desc">Întâlniri gratuite în toată țara, ~40 de grupuri. Singura cerință: dorința de a nu mai bea. Fără cotizații, fără înscriere.</div>
+        <div class="rg-link">alcooliciianonimi.ro →</div>
+      </a>
+      <a class="rg-card" href="tel:0219335">
+        <div class="rg-name">AlcoLine · 021 9335</div>
+        <div class="rg-desc">Linia ALIAT de informare și sprijin psihologic pentru dependența de alcool — pentru tine sau pentru un apropiat.</div>
+        <div class="rg-link">Sună acum →</div>
+      </a>
+      <a class="rg-card" href="https://www.dependenta.ro/" target="_blank" rel="noopener">
+        <div class="rg-name">Crucea Albastră România</div>
+        <div class="rg-desc">Tratament și recuperare pentru dependențe din 1997. Terapie individuală și de grup, centru rezidențial la Șura Mică (Sibiu).</div>
+        <div class="rg-link">dependenta.ro →</div>
+      </a>
     </div>
-    <div class="st-item reveal">
-      <div class="st-time">10 min</div>
-      <div class="st-body"><div class="st-title" data-t="gr_t2_title">Recap săptămânal</div><div class="st-desc" data-t="gr_t2_desc">Moderatorul prezintă (anonim) pattern-urile biometrice agregate ale grupului din ultima săptămână.</div></div>
+  </div>
+
+  <div class="rg-cat">
+    <div class="rg-cat-head"><span class="rg-cat-icon">💊</span><span class="rg-cat-title">Substanțe</span></div>
+    <div class="rg-list">
+      <a class="rg-card" href="https://narcoticii-anonimi.ro/" target="_blank" rel="noopener">
+        <div class="rg-name">Narcoticii Anonimi România</div>
+        <div class="rg-desc">Întâlniri gratuite în București, Cluj, Constanța, Turda și online. Program de 12 pași, fără taxe. Comunitate de foști consumatori.</div>
+        <div class="rg-link">narcoticii-anonimi.ro →</div>
+      </a>
+      <a class="rg-card" href="https://www.dependenta.ro/" target="_blank" rel="noopener">
+        <div class="rg-name">Crucea Albastră România</div>
+        <div class="rg-desc">Tratament pentru dependența de droguri — asistență medicală, psihologică și terapie de grup zilnică.</div>
+        <div class="rg-link">dependenta.ro →</div>
+      </a>
     </div>
-    <div class="st-item reveal">
-      <div class="st-time">20 min</div>
-      <div class="st-body"><div class="st-title" data-t="gr_t3_title">Spațiu de împărtășire</div><div class="st-desc" data-t="gr_t3_desc">Cine vrea, vorbește. Ceilalți ascultă fără să întrerupă. Moderatorul menține spațiul sigur.</div></div>
+  </div>
+
+  <div class="rg-cat">
+    <div class="rg-cat-head"><span class="rg-cat-icon">🎰</span><span class="rg-cat-title">Jocuri de noroc</span></div>
+    <div class="rg-list">
+      <a class="rg-card" href="https://www.dependenta.ro/" target="_blank" rel="noopener">
+        <div class="rg-name">Crucea Albastră România</div>
+        <div class="rg-desc">Unul dintre puținele centre din România care tratează dependența de jocuri de noroc, alături de alcool și droguri.</div>
+        <div class="rg-link">dependenta.ro →</div>
+      </a>
+      <a class="rg-card" href="autoexcludere.html">
+        <div class="rg-name">Autoexcludere ONJN</div>
+        <div class="rg-desc">Pasul concret: te poți autoexclude oficial din toate cazinourile și platformele de pariuri. Voxen te ghidează prin proces.</div>
+        <div class="rg-link">Vezi cum →</div>
+      </a>
     </div>
-    <div class="st-item reveal">
-      <div class="st-time">40 min</div>
-      <div class="st-body"><div class="st-title" data-t="gr_t4_title">Instrument săptămânal</div><div class="st-desc" data-t="gr_t4_desc">Moderatorul ghidează grupul prin unul din cele 18 instrumente Voxen — de ex. Urge Surfing sau Box Breathing în grup.</div></div>
-    </div>
-    <div class="st-item reveal">
-      <div class="st-time">55 min</div>
-      <div class="st-body"><div class="st-title" data-t="gr_t5_title">Intenția pentru săptămâna viitoare</div><div class="st-desc" data-t="gr_t5_desc">Fiecare participant setează un micro-obiectiv pentru 7 zile. Săptămâna viitoare — raportare voluntară.</div></div>
-    </div>
-    <div class="st-item reveal">
-      <div class="st-time">60 min</div>
-      <div class="st-body"><div class="st-title" data-t="gr_t6_title">Check-out</div><div class="st-desc" data-t="gr_t6_desc">Un cuvânt din nou. Înainte și după — adesea diferite. Sesiunea se încheie. Mesajele se șterg.</div></div>
+  </div>
+
+  <div class="rg-crisis">
+    <div class="rg-crisis-t">Ai nevoie de cineva chiar acum?</div>
+    <div class="rg-crisis-btns">
+      <a href="tel:112" class="rg-crisis-btn">112 · Urgență</a>
+      <a href="tel:0800801200" class="rg-crisis-btn">0800 801 200 · TelVerde Antisuicid</a>
     </div>
   </div>
 </section>
@@ -1102,342 +1109,7 @@ document.querySelectorAll('.reveal').forEach(el=>{
   new IntersectionObserver(([e])=>{if(e.isIntersecting)el.classList.add('visible');},{threshold:.1}).observe(el);
 });
 
-// Circle data
-const CIRCLES_DATA = {
-  alcohol:{
-    titles:{ro:'Cerc Recuperare Alcool',en:'Alcohol Recovery Circle',fr:'Cercle Récupération Alcool',de:'Alkohol-Genesungskreis',zh:'戒酒康复圈',ja:'アルコール回復サークル',ru:'Кружок восстановления от алкоголя'},
-    schedules:{ro:'Joi 20:00',en:'Thursday 8pm',fr:'Jeudi 20h',de:'Donnerstag 20:00',zh:'周四 20:00',ja:'木曜 20:00',ru:'Четверг 20:00'},
-    members:7, capacity:12,
-    avatars:['🧑','👩','🧔','👱','👨','🙍','👴'],
-    msgs:{
-      ro:[
-        {type:'system',text:'Sesiunea a început · 7 participanți · Joi 20:00'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Bun venit tuturor. Suntem în siguranță aici. Voi știți câte un cuvânt care descrie cum vă simțiți azi?'},
-        {type:'user',avatar:'🌙',name:'Participant A',text:'Recunoscător. Azi a fost greu, dar am rezistat.'},
-        {type:'user',avatar:'🌊',name:'Participant B',text:'Obosit. Dar prezent. Asta contează.'},
-        {type:'user',avatar:'⭐',name:'Participant C',text:'Am 30 de zile azi! Prima dată când ajung până aici.'},
-        {type:'system',text:'🎉 Participant C — 30 de zile · Întregul cerc celebrează'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'30 de zile înseamnă că ai trecut prin cel mai greu moment. Felicitări. Grupul este cu tine.'},
-      ],
-      en:[
-        {type:'system',text:'Session started · 7 participants · Thursday 8pm'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Welcome everyone. We are safe here. What one word describes how you feel today?'},
-        {type:'user',avatar:'🌙',name:'Participant A',text:'Grateful. Today was hard, but I held on.'},
-        {type:'user',avatar:'🌊',name:'Participant B',text:'Tired. But present. That matters.'},
-        {type:'user',avatar:'⭐',name:'Participant C',text:'30 days today! First time I get this far.'},
-        {type:'system',text:'🎉 Participant C — 30 days · The whole circle celebrates'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'30 days means you made it through the hardest part. Congratulations. The group is with you.'},
-      ],
-      fr:[
-        {type:'system',text:'Session commencée · 7 participants · Jeudi 20h'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'Bienvenue à tous. Nous sommes en sécurité ici. Un mot pour décrire comment vous vous sentez?'},
-        {type:'user',avatar:'🌙',name:'Participant A',text:'Reconnaissant. Aujourd’hui c’était difficile, mais j’ai tenu.'},
-        {type:'user',avatar:'🌊',name:'Participant B',text:'Fatigué. Mais présent. C’est ce qui compte.'},
-        {type:'user',avatar:'⭐',name:'Participant C',text:'30 jours aujourd’hui! Première fois que j’y arrive.'},
-        {type:'system',text:'🎉 Participant C — 30 jours · Tout le cercle célèbre'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'30 jours signifient que vous avez traversé le moment le plus difficile. Félicitations.'},
-      ],
-      de:[
-        {type:'system',text:'Sitzung gestartet · 7 Teilnehmer · Donnerstag 20:00'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Willkommen alle. Wir sind hier sicher. Ein Wort, das beschreibt, wie du dich heute fühlst?'},
-        {type:'user',avatar:'🌙',name:'Teilnehmer A',text:'Dankbar. Heute war es schwer, aber ich hab durchgehalten.'},
-        {type:'user',avatar:'🌊',name:'Teilnehmer B',text:'Müde. Aber präsent. Das zählt.'},
-        {type:'user',avatar:'⭐',name:'Teilnehmer C',text:'30 Tage heute! Das erste Mal, dass ich so weit komme.'},
-        {type:'system',text:'🎉 Teilnehmer C — 30 Tage · Der ganze Kreis feiert'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'30 Tage bedeuten, du hast den schwersten Moment überstanden. Glückwunsch.'},
-      ],
-      zh:[
-        {type:'system',text:'会话已开始 · 7名参与者 · 周四 20:00'},
-        {type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'欢迎大家。我们在这里是安全的。用一个词描述你今天的感受？'},
-        {type:'user',avatar:'🌙',name:'参与者 A',text:'感激。今天很难，但我坚持住了。'},
-        {type:'user',avatar:'🌊',name:'参与者 B',text:'疲惫。但我在场。这很重要。'},
-        {type:'user',avatar:'⭐',name:'参与者 C',text:'今天30天！第一次走到这一步。'},
-        {type:'system',text:'🎉 参与者 C — 30天 · 整个圈子庆祝'},
-        {type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'30天意味着你度过了最艰难的时刻。恭喜你。整个群体与你同在。'},
-      ],
-      ja:[
-        {type:'system',text:'セッション開始 · 7名参加 · 木曜 20:00'},
-        {type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'皆さんようこそ。ここは安全です。今日の気持ちを一言で表すと？'},
-        {type:'user',avatar:'🌙',name:'参加者 A',text:'感謝。今日は辛かったけど、持ちこたえた。'},
-        {type:'user',avatar:'🌊',name:'参加者 B',text:'疲れてる。でも今ここにいる。それで十分。'},
-        {type:'user',avatar:'⭐',name:'参加者 C',text:'今日で30日！ここまで来たのは初めて。'},
-        {type:'system',text:'🎉 参加者 C — 30日達成 · サークル全体でお祝い'},
-        {type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'30日はあなたが最も辛い時期を乗り越えたことを意味します。おめでとうございます。'},
-      ],
-      ru:[
-        {type:'system',text:'Сессия начата · 7 участников · Четверг 20:00'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Добро пожаловать всем. Здесь мы в безопасности. Одно слово, описывающее как ты себя чувствуешь?'},
-        {type:'user',avatar:'🌙',name:'Участник А',text:'Благодарен. Сегодня было трудно, но я держался.'},
-        {type:'user',avatar:'🌊',name:'Участник Б',text:'Устал. Но здесь. Это важно.'},
-        {type:'user',avatar:'⭐',name:'Участник В',text:'30 дней сегодня! Первый раз дошёл до этого.'},
-        {type:'system',text:'🎉 Участник В — 30 дней · Весь кружок празднует'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'30 дней означает, что ты прошёл через самый трудный момент. Поздравляю. Группа с тобой.'},
-      ],
-    }
-  },
-  gambling:{
-    titles:{ro:'Cerc Recuperare Gambling',en:'Gambling Recovery Circle',fr:'Cercle Récupération Jeu',de:'Glücksspiel-Genesungskreis',zh:'戒赌康复圈',ja:'ギャンブル回復サークル',ru:'Кружок восстановления от азарта'},
-    schedules:{ro:'Marți 19:00',en:'Tuesday 7pm',fr:'Mardi 19h',de:'Dienstag 19:00',zh:'周二 19:00',ja:'火曜 19:00',ru:'Вторник 19:00'},
-    members:5, capacity:12,
-    avatars:['👨','👩','🧔','👱','🙍'],
-    msgs:{
-      ro:[
-        {type:'system',text:'Sesiunea a început · 5 participanți · Marți 19:00'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Seara bună. Săptămâna asta am vrut să vorbim despre triggeri. Ce situații au fost dificile?'},
-        {type:'user',avatar:'🎯',name:'Participant D',text:'Vineri seara. Toată lumea ieșea, eu stăteam acasă. Senzația de gol.'},
-        {type:'user',avatar:'🌿',name:'Participant E',text:'Am folosit HALT și mi-am dat seama că eram flămând și singur. M-am dus la o cafenea în schimb.'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Exact asta înseamnă HALT în practică. Participant E, ai transformat un risc într-un succes.'},
-      ],
-      en:[
-        {type:'system',text:'Session started · 5 participants · Tuesday 7pm'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Good evening. This week I wanted to talk about triggers. What situations were difficult?'},
-        {type:'user',avatar:'🎯',name:'Participant D',text:'Friday evening. Everyone was going out, I stayed home. That empty feeling.'},
-        {type:'user',avatar:'🌿',name:'Participant E',text:'I used HALT and realized I was hungry and lonely. I went to a café instead.'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'That is exactly what HALT means in practice. Participant E, you turned a risk into a success.'},
-      ],
-      fr:[{type:'system',text:'Session commencée · 5 participants · Mardi 19h'},{type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'Bonsoir. Cette semaine, parlons des déclencheurs. Quelles situations ont été difficiles?'},{type:'user',avatar:'🎯',name:'Participant D',text:'Vendredi soir. Tout le monde sortait, je restais chez moi. Ce sentiment de vide.'},{type:'user',avatar:'🌿',name:'Participant E',text:'J’ai utilisé HALT et réalisé que j’avais faim et me sentais seul. Je suis allé dans un café.'},{type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'C’est exactement ce que HALT signifie en pratique. Participant E, vous avez transformé un risque en succès.'},],
-      de:[{type:'system',text:'Sitzung gestartet · 5 Teilnehmer · Dienstag 19:00'},{type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Guten Abend. Diese Woche möchte ich über Trigger sprechen. Welche Situationen waren schwierig?'},{type:'user',avatar:'🎯',name:'Teilnehmer D',text:'Freitagabend. Alle gingen aus, ich blieb zuhause. Dieses leere Gefühl.'},{type:'user',avatar:'🌿',name:'Teilnehmer E',text:'Ich nutzte HALT und merkte, dass ich hungrig und einsam war. Ich ging stattdessen in ein Café.'},{type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Genau das bedeutet HALT in der Praxis. Teilnehmer E, du hast ein Risiko in einen Erfolg verwandelt.'},],
-      zh:[{type:'system',text:'会话已开始 · 5名参与者 · 周二 19:00'},{type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'晚上好。本周我想谈谈触发因素。哪些情况很困难？'},{type:'user',avatar:'🎯',name:'参与者 D',text:'周五晚上。所有人都出去了，我待在家里。那种空虚感。'},{type:'user',avatar:'🌿',name:'参与者 E',text:'我使用了HALT，意识到自己又饿又孤独。我去了咖啡馆。'},{type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'这正是HALT在实践中的意义。参与者E，你把风险变成了成功。'},],
-      ja:[{type:'system',text:'セッション開始 · 5名参加 · 火曜 19:00'},{type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'こんばんは。今週はトリガーについて話したいと思います。どんな状況が難しかったですか？'},{type:'user',avatar:'🎯',name:'参加者 D',text:'金曜の夜。みんな出かけて、私は家にいた。あの虚無感。'},{type:'user',avatar:'🌿',name:'参加者 E',text:'HALTを使ったら、お腹が空いて孤独だと気づいた。代わりにカフェに行った。'},{type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'それがHALTの実践的な意味です。参加者E、リスクを成功に変えました。'},],
-      ru:[{type:'system',text:'Сессия начата · 5 участников · Вторник 19:00'},{type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Добрый вечер. На этой неделе хочу поговорить о триггерах. Какие ситуации были трудными?'},{type:'user',avatar:'🎯',name:'Участник Г',text:'Пятница вечером. Все уходили, я оставался дома. Это чувство пустоты.'},{type:'user',avatar:'🌿',name:'Участник Д',text:'Я использовал HALT и понял, что был голоден и одинок. Вместо этого пошёл в кафе.'},{type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Именно это и означает HALT на практике. Участник Д, ты превратил риск в успех.'},],
-    }
-  },
-  substances:{
-    titles:{ro:'Cerc Recuperare Substanțe',en:'Substance Recovery Circle',fr:'Cercle Récupération Substances',de:'Substanz-Genesungskreis',zh:'戒毒康复圈',ja:'薬物回復サークル',ru:'Кружок восстановления от веществ'},
-    schedules:{ro:'Sâmbătă 10:00',en:'Saturday 10am',fr:'Samedi 10h',de:'Samstag 10:00',zh:'周六 10:00',ja:'土曜 10:00',ru:'Суббота 10:00'},
-    members:8, capacity:12,
-    avatars:['👩','🧔','👱','👨','🙍','👴','🧑','👧'],
-    msgs:{
-      ro:[
-        {type:'system',text:'Sesiunea a început · 8 participanți · Sâmbătă 10:00'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Dimineața bună. Astăzi facem o scanare corporală împreună — 5 minute. Găsiți o poziție confortabilă.'},
-        {type:'user',avatar:'🌸',name:'Participant F',text:'M-a ajutat mult săptămâna asta. Când simțeam nevoia, închideam ochii și scaneam.'},
-        {type:'user',avatar:'💫',name:'Participant G',text:'Sunt 90 de zile. Nu mi-a venit să cred că ajung până aici.'},
-        {type:'system',text:'🏆 Participant G — 90 de zile! Milestone major'},
-      ],
-      en:[
-        {type:'system',text:'Session started · 8 participants · Saturday 10am'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Good morning. Today we do a body scan together — 5 minutes. Find a comfortable position.'},
-        {type:'user',avatar:'🌸',name:'Participant F',text:'It helped me a lot this week. When I felt the urge, I closed my eyes and scanned.'},
-        {type:'user',avatar:'💫',name:'Participant G',text:'90 days. I couldn’t believe I would get here.'},
-        {type:'system',text:'🏆 Participant G — 90 days! Major milestone'},
-      ],
-      fr:[{type:'system',text:'Session commencée · 8 participants · Samedi 10h'},{type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'Bonjour. Aujourd’hui nous faisons un scan corporel ensemble — 5 minutes. Trouvez une position confortable.'},{type:'user',avatar:'🌸',name:'Participant F',text:'Ça m’a beaucoup aidé cette semaine. Quand je ressentais l’envie, je fermais les yeux et scannais.'},{type:'user',avatar:'💫',name:'Participant G',text:'90 jours. Je ne pouvais pas croire que j’y arriverais.'},{type:'system',text:'🏆 Participant G — 90 jours! Étape majeure'},],
-      de:[{type:'system',text:'Sitzung gestartet · 8 Teilnehmer · Samstag 10:00'},{type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Guten Morgen. Heute machen wir zusammen einen Körperscan — 5 Minuten. Findet eine bequeme Position.'},{type:'user',avatar:'🌸',name:'Teilnehmer F',text:'Es hat mir diese Woche sehr geholfen. Wenn ich das Verlangen spürte, schloss ich die Augen.'},{type:'user',avatar:'💫',name:'Teilnehmer G',text:'90 Tage. Ich konnte nicht glauben, dass ich das schaffe.'},{type:'system',text:'🏆 Teilnehmer G — 90 Tage! Großer Meilenstein'},],
-      zh:[{type:'system',text:'会话已开始 · 8名参与者 · 周六 10:00'},{type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'早上好。今天我们一起做身体扫描——5分钟。找一个舒适的姿势。'},{type:'user',avatar:'🌸',name:'参与者 F',text:'本周对我很有帮助。当我感到冲动时，我闭上眼睛扫描身体。'},{type:'user',avatar:'💫',name:'参与者 G',text:'90天了。我无法相信自己能走到这一步。'},{type:'system',text:'🏆 参与者 G — 90天！重要里程碑'},],
-      ja:[{type:'system',text:'セッション開始 · 8名参加 · 土曜 10:00'},{type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'おはようございます。今日は一緒にボディスキャンをします——5分間。楽な姿勢を見つけてください。'},{type:'user',avatar:'🌸',name:'参加者 F',text:'今週とても役に立ちました。衝動を感じたとき、目を閉じてスキャンしました。'},{type:'user',avatar:'💫',name:'参加者 G',text:'90日達成。ここまで来られると思わなかった。'},{type:'system',text:'🏆 参加者 G — 90日！大きなマイルストーン'},],
-      ru:[{type:'system',text:'Сессия начата · 8 участников · Суббота 10:00'},{type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Доброе утро. Сегодня делаем сканирование тела вместе — 5 минут. Найди удобное положение.'},{type:'user',avatar:'🌸',name:'Участник Е',text:'Мне это очень помогло на этой неделе. Когда чувствовал тягу, закрывал глаза и сканировал.'},{type:'user',avatar:'💫',name:'Участник Ж',text:'90 дней. Я не мог поверить, что доберусь сюда.'},{type:'system',text:'🏆 Участник Ж — 90 дней! Важная веха'},],
-    }
-  },
-  stress:{
-    titles:{ro:'Cerc Stres & Burnout',en:'Stress & Burnout Circle',fr:'Cercle Stress & Épuisement',de:'Stress & Burnout-Kreis',zh:'压力与倦怠圈',ja:'ストレス＆バーンアウトサークル',ru:'Кружок стресса и выгорания'},
-    schedules:{ro:'Luni 19:30',en:'Monday 7:30pm',fr:'Lundi 19h30',de:'Montag 19:30',zh:'周一 19:30',ja:'月曜 19:30',ru:'Понедельник 19:30'},
-    members:9, capacity:12,
-    avatars:['👩','🧔','👱','👨','🙍','👴','🧑','👧','🙎'],
-    msgs:{
-      ro:[
-        {type:'system',text:'Sesiunea a început · 9 participanți · Luni 19:30'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Cum a fost lunea voastră? Cine vrea să deschidă?'},
-        {type:'user',avatar:'🌻',name:'Participant H',text:'Am avut o prezentare importantă. Am folosit tehnica STOP înainte. A funcționat.'},
-        {type:'user',avatar:'🍃',name:'Participant I',text:'Eu tot încerc limitele. Am zis nu de 2 ori săptămâna asta.'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Două "nu"-uri într-o săptămână. Asta e un progres real. Cum v-ați simțit după?'},
-      ],
-      en:[
-        {type:'system',text:'Session started · 9 participants · Monday 7:30pm'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'How was your Monday? Who wants to open?'},
-        {type:'user',avatar:'🌻',name:'Participant H',text:'I had an important presentation. I used the STOP technique beforehand. It worked.'},
-        {type:'user',avatar:'🍃',name:'Participant I',text:'I keep pushing my limits. I said no twice this week.'},
-        {type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Two "no"s in one week. That is real progress. How did you feel afterwards?'},
-      ],
-      fr:[{type:'system',text:'Session commencée · 9 participants · Lundi 19h30'},{type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'Comment s’est passé votre lundi? Qui veut commencer?'},{type:'user',avatar:'🌻',name:'Participant H',text:'J’avais une présentation importante. J’ai utilisé la technique STOP avant. Ça a marché.'},{type:'user',avatar:'🍃',name:'Participant I',text:'Je continue à tester mes limites. J’ai dit non deux fois cette semaine.'},{type:'mod',avatar:'🧑‍🏫',name:'Modérateur',text:'Deux "non" en une semaine. C’est un vrai progrès. Comment vous êtes-vous senti après?'},],
-      de:[{type:'system',text:'Sitzung gestartet · 9 Teilnehmer · Montag 19:30'},{type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Wie war euer Montag? Wer möchte anfangen?'},{type:'user',avatar:'🌻',name:'Teilnehmer H',text:'Ich hatte eine wichtige Präsentation. Ich nutzte die STOPP-Technik vorher. Es hat funktioniert.'},{type:'user',avatar:'🍃',name:'Teilnehmer I',text:'Ich teste immer meine Grenzen. Diese Woche habe ich zweimal Nein gesagt.'},{type:'mod',avatar:'🧑‍🏫',name:'Moderator',text:'Zweimal Nein in einer Woche. Das ist echter Fortschritt. Wie habt ihr euch danach gefühlt?'},],
-      zh:[{type:'system',text:'会话已开始 · 9名参与者 · 周一 19:30'},{type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'你们的周一怎么样？谁想先开始？'},{type:'user',avatar:'🌻',name:'参与者 H',text:'我有一个重要的演示。我事先使用了STOP技术。它起效了。'},{type:'user',avatar:'🍃',name:'参与者 I',text:'我一直在测试自己的界限。这周我说了两次不。'},{type:'mod',avatar:'🧑‍🏫',name:'主持人',text:'一周内两次说不。这是真正的进步。之后你们感觉如何？'},],
-      ja:[{type:'system',text:'セッション開始 · 9名参加 · 月曜 19:30'},{type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'月曜日はどうでしたか？誰か始めたい人は？'},{type:'user',avatar:'🌻',name:'参加者 H',text:'重要なプレゼンがありました。前にSTOPテクニックを使いました。うまくいきました。'},{type:'user',avatar:'🍃',name:'参加者 I',text:'限界を試し続けています。今週は2回断りました。'},{type:'mod',avatar:'🧑‍🏫',name:'モデレーター',text:'1週間で2回の「ノー」。それは本当の進歩です。その後どう感じましたか？'},],
-      ru:[{type:'system',text:'Сессия начата · 9 участников · Понедельник 19:30'},{type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Как прошёл ваш понедельник? Кто хочет начать?'},{type:'user',avatar:'🌻',name:'Участник З',text:'У меня была важная презентация. Я использовал технику СТОП заранее. Это сработало.'},{type:'user',avatar:'🍃',name:'Участник И',text:'Я продолжаю проверять свои границы. На этой неделе сказал нет дважды.'},{type:'mod',avatar:'🧑‍🏫',name:'Модератор',text:'Два «нет» за неделю. Это настоящий прогресс. Как вы себя чувствовали после?'},],
-    }
-  },
-};
-
-// Get circle data for current language
-function getCircleData(type) {
-  const L = window.voxenLang ? window.voxenLang() : 'ro';
-  const d = CIRCLES_DATA[type];
-  if (!d) return null;
-  return {
-    title: d.titles[L] || d.titles.en,
-    schedule: d.schedules[L] || d.schedules.en,
-    members: d.members,
-    capacity: d.capacity,
-    avatars: d.avatars,
-    msgs: d.msgs[L] || d.msgs.en,
-  };
-}
-
-let activeCircle = 'alcohol';
-
-function loadCircle(type, el) {
-  activeCircle = type;
-  document.querySelectorAll('.circle-tab').forEach(t=>t.classList.remove('active'));
-  if(el) el.classList.add('active');
-  const c = getCircleData(type);
-  if(!c) return;
-  const L = window.voxenLang ? window.voxenLang() : 'ro';
-  const membersLabel = {ro:'participanți',en:'participants',fr:'participants',de:'Teilnehmer',zh:'名参与者',ja:'名参加',ru:'участников'}[L]||'participants';
-  document.getElementById('circleTitle').textContent = c.title;
-  document.getElementById('circleMembers').textContent = c.members + ' ' + membersLabel + ' · ' + c.schedule;
-  renderChat(c.msgs);
-}
-
-function renderChat(msgs) {
-  const area = document.getElementById('chatArea');
-  area.innerHTML = '';
-  msgs.forEach((m,i)=>{
-    setTimeout(()=>{
-      const d = document.createElement('div');
-      if(m.type==='system'){
-        d.className = 'msg system';
-        d.innerHTML = `<div class="msg-text">${m.text}</div>`;
-      } else {
-        d.className = `msg ${m.type==='mod'?'mod':''} ${m.name==='Tu'?'me':''}`;
-        d.innerHTML = `<div class="msg-avatar">${m.avatar}</div><div class="msg-body"><div class="msg-name">${m.name}</div><div class="msg-text">${m.text}</div></div>`;
-      }
-      area.appendChild(d);
-      area.scrollTop = area.scrollHeight;
-    }, i * 300);
-  });
-}
-
-loadCircle('alcohol', null);
-
-function sendMsg() {
-  const inp = document.getElementById('chatInput');
-  const text = inp.value.trim();
-  if(!text) return;
-  const area = document.getElementById('chatArea');
-  const d = document.createElement('div');
-  d.className = 'msg me';
-  d.innerHTML = `<div class="msg-body"><div class="msg-name" style="text-align:right">Tu</div><div class="msg-text">${text}</div></div><div class="msg-avatar">🌟</div>`;
-  area.appendChild(d);
-  area.scrollTop = area.scrollHeight;
-  inp.value = '';
-
-  // Auto-reply from moderator after 1.5s
-  setTimeout(()=>{
-    const L = window.voxenLang ? window.voxenLang() : 'ro';
-    const allReplies = {
-      ro:['Mulțumesc că ai împărtășit asta. Ceilalți din cerc te aud.','Asta ia curaj. Cum te simți acum?','Observ că ai găsit cuvintele potrivite. Asta e progres.','Grupul este cu tine. Nu ești singur în asta.'],
-      en:['Thank you for sharing that. Others in the circle hear you.','That takes courage. How do you feel now?','I notice you found the right words. That itself is progress.','The group is with you. You are not alone in this.'],
-      fr:['Merci de partager ça. Les autres du cercle vous entendent.','Ça demande du courage. Comment vous sentez-vous maintenant?','Je remarque que vous avez trouvé les bons mots. C’est déjà un progrès.','Le groupe est avec vous. Vous n’êtes pas seul dans ça.'],
-      de:['Danke, dass du das teilst. Andere im Kreis hören dich.','Das braucht Mut. Wie fühlst du dich jetzt?','Ich bemerke, dass du die richtigen Worte gefunden hast. Das ist Fortschritt.','Die Gruppe ist bei dir. Du bist damit nicht allein.'],
-      zh:['感谢您分享这些。圈子里的其他人都在听。','这需要勇气。你现在感觉如何？','我注意到你找到了合适的语言。这本身就是进步。','群体与你同在。你并不孤单。'],
-      ja:['シェアしてくれてありがとう。サークルの他の人たちも聞いています。','それには勇気が要ります。今どう感じていますか？','適切な言葉を見つけたと気づきます。それ自体が進歩です。','グループはあなたと共にあります。一人ではありません。'],
-      ru:['Спасибо, что поделился. Другие в кружке слышат тебя.','Это требует смелости. Как ты себя чувствуешь сейчас?','Я замечаю, что ты нашёл правильные слова. Это само по себе прогресс.','Группа с тобой. Ты не один в этом.'],
-    };
-    const replies = allReplies[L] || allReplies.en;
-    const d2 = document.createElement('div');
-    d2.className = 'msg mod';
-    d2.innerHTML = `<div class="msg-avatar">🧑‍🏫</div><div class="msg-body"><div class="msg-name">Moderator</div><div class="msg-text">${replies[Math.floor(Math.random()*replies.length)]}</div></div>`;
-    area.appendChild(d2);
-    area.scrollTop = area.scrollHeight;
-  }, 1500);
-}
-
-// Groups grid
-const GROUPS_DATA = [
-  {icon:'🍷', color:'var(--warm)',  type:'alcohol',    spots:5, members:['🧑','👩','🧔','👱','👨','🙍','👴'],
-   title:{ro:'Recuperare din alcool',en:'Alcohol recovery',fr:'Récupération alcool',de:'Alkohol-Genesung',zh:'戒酒康复',ja:'アルコール回復',ru:'Восстановление от алкоголя'},
-   schedule:{ro:'Joi, 20:00',en:'Thursday, 8pm',fr:'Jeudi, 20h',de:'Donnerstag, 20:00',zh:'周四 20:00',ja:'木曜 20:00',ru:'Четверг, 20:00'},
-   day:{ro:'Joi',en:'Thursday',fr:'Jeudi',de:'Donnerstag',zh:'周四',ja:'木曜',ru:'Четверг'},
-   desc:{ro:'Grup anonim săptămânal. Împărtășire deschisă, sprijin mutual, moderator specializat în dependențe.',en:'Anonymous weekly group. Open sharing, mutual support, addiction specialist moderator.',fr:'Groupe anonyme hebdomadaire. Partage ouvert, soutien mutuel, modérateur spécialisé.',de:'Anonyme wöchentliche Gruppe. Offener Austausch, gegenseitige Unterstützung, Suchtspezialist.',zh:'匿名每周小组。开放分享、互助、成瘾问题专家主持人。',ja:'匿名の週次グループ。オープンな共有、相互サポート、依存症専門モデレーター。',ru:'Анонимная еженедельная группа. Открытое общение, взаимная поддержка, специалист по зависимостям.'}},
-  {icon:'🎰', color:'var(--amber)', type:'gambling',   spots:7, members:['👩','🧔','👱','👨','🙍'],
-   title:{ro:'Recuperare din gambling',en:'Gambling recovery',fr:'Récupération jeu',de:'Glücksspiel-Genesung',zh:'戒赌康复',ja:'ギャンブル回復',ru:'Восстановление от азарта'},
-   schedule:{ro:'Marți, 19:00',en:'Tuesday, 7pm',fr:'Mardi, 19h',de:'Dienstag, 19:00',zh:'周二 19:00',ja:'火曜 19:00',ru:'Вторник, 19:00'},
-   day:{ro:'Marți',en:'Tuesday',fr:'Mardi',de:'Dienstag',zh:'周二',ja:'火曜',ru:'Вторник'},
-   desc:{ro:'Program structurat. Analiza triggerilor, plan de criză personalizat, celebrare milestones împreună.',en:'Structured program. Trigger analysis, personalized crisis plan, milestone celebrations.',fr:'Programme structuré. Analyse des déclencheurs, plan de crise personnalisé.',de:'Strukturiertes Programm. Trigger-Analyse, personalisierter Krisenplan.',zh:'结构化项目。触发因素分析、个性化危机计划、共同庆祝里程碑。',ja:'構造化されたプログラム。トリガー分析、パーソナライズされた危機計画。',ru:'Структурированная программа. Анализ триггеров, персональный план кризиса.'}},
-  {icon:'💊', color:'#7F77DD',      type:'substances', spots:4, members:['👩','🧔','👱','👨','🙍','👴','🧑','👧'],
-   title:{ro:'Recuperare din substanțe',en:'Substance recovery',fr:'Récupération substances',de:'Substanz-Genesung',zh:'戒毒康复',ja:'薬物回復',ru:'Восстановление от веществ'},
-   schedule:{ro:'Sâmbătă, 10:00',en:'Saturday, 10am',fr:'Samedi, 10h',de:'Samstag, 10:00',zh:'周六 10:00',ja:'土曜 10:00',ru:'Суббота, 10:00'},
-   day:{ro:'Sâmbătă',en:'Saturday',fr:'Samedi',de:'Samstag',zh:'周六',ja:'土曜',ru:'Суббота'},
-   desc:{ro:'Grup cu structură 12 pași adaptată digital. Scanare corporală colectivă la fiecare sesiune.',en:'12-step group adapted digitally. Collective body scan at each session.',fr:'Groupe en 12 étapes adapté numériquement. Scan corporel collectif à chaque session.',de:'12-Schritte-Gruppe digital angepasst. Kollektiver Körperscan bei jeder Sitzung.',zh:'数字化适应的12步小组。每次会话集体身体扫描。',ja:'デジタル適応された12ステップグループ。各セッションで集団ボディスキャン。',ru:'Группа 12 шагов цифровая. Коллективное сканирование тела на каждой сессии.'}},
-  {icon:'🧠', color:'var(--teal)',  type:'stress',     spots:3, members:['👩','🧔','👱','👨','🙍','👴','🧑','👧','🙎'],
-   title:{ro:'Stres & Burnout',en:'Stress & Burnout',fr:'Stress & Épuisement',de:'Stress & Burnout',zh:'压力与倦怠',ja:'ストレス＆バーンアウト',ru:'Стресс и выгорание'},
-   schedule:{ro:'Luni, 19:30',en:'Monday, 7:30pm',fr:'Lundi, 19h30',de:'Montag, 19:30',zh:'周一 19:30',ja:'月曜 19:30',ru:'Понедельник, 19:30'},
-   day:{ro:'Luni',en:'Monday',fr:'Lundi',de:'Montag',zh:'周一',ja:'月曜',ru:'Понедельник'},
-   desc:{ro:'Tehnici MBSR și CBT în grup. Focus pe limite sănătoase, managementul energiei, prevenția epuizării.',en:'MBSR and CBT techniques in group. Focus on healthy limits, energy management, burnout prevention.',fr:'Techniques MBSR et TCC en groupe. Focus sur les limites saines, gestion de l’énergie.',de:'MBSR und KBT-Techniken in der Gruppe. Fokus auf gesunde Grenzen, Energiemanagement.',zh:'团体中的MBSR和CBT技术。专注于健康界限、能量管理、预防倦怠。',ja:'グループでのMBSRとCBT技法。健康的な限界、エネルギー管理、バーンアウト予防に焦点。',ru:'Техники MBSR и КПТ в группе. Фокус на здоровых границах, управлении энергией.'}},
-];
-
-// Get groups for current language
-function getGroups() {
-  const L = window.voxenLang ? window.voxenLang() : 'ro';
-  return GROUPS_DATA.map(g => ({
-    icon:g.icon, color:g.color, type:g.type, spots:g.spots, members:g.members,
-    title: g.title[L] || g.title.en,
-    schedule: g.schedule[L] || g.schedule.en,
-    day: g.day[L] || g.day.en,
-    desc: g.desc[L] || g.desc.en,
-  }));
-}
-
-const GROUPS = getGroups();
-
-const gg = document.getElementById('groupsGrid');
-function buildGroupsGrid() {
-  gg.innerHTML = '';
-  const L = window.voxenLang ? window.voxenLang() : 'ro';
-  const labels = {
-    next:{ro:'Următor',en:'Next',fr:'Suivant',de:'Nächste',zh:'下次',ja:'次回',ru:'Следующий'},
-    weekly:{ro:'Săptămânal',en:'Weekly',fr:'Hebdomadaire',de:'Wöchentlich',zh:'每周',ja:'毎週',ru:'Еженедельно'},
-    duration:{ro:'60 minute',en:'60 minutes',fr:'60 minutes',de:'60 Minuten',zh:'60分钟',ja:'60分',ru:'60 минут'},
-    anon:{ro:'100% anonim · Mesaje criptate',en:'100% anonymous · Encrypted',fr:'100% anonyme · Messages chiffrés',de:'100% anonym · Verschlüsselt',zh:'100%匿名 · 消息加密',ja:'100%匿名 · 暗号化メッセージ',ru:'100% анонимно · Зашифровано'},
-    spots:{ro:'locuri libere',en:'spots left',fr:'places libres',de:'Plätze frei',zh:'个空位',ja:'空席',ru:'мест свободно'},
-    join:{ro:'Alătură-te cercului →',en:'Join the circle →',fr:'Rejoindre →',de:'Beitreten →',zh:'加入圈子 →',ja:'参加 →',ru:'Присоединиться →'},
-  };
-  const lbl = k => labels[k]?.[L] || labels[k]?.en || k;
-  const items = getGroups();
-  items.forEach(g=>{
-  const spotsColor = g.spots <= 3 ? '#E24B4A' : g.spots <= 5 ? 'var(--amber)' : 'var(--teal)';
-  const d = document.createElement('div');
-  d.className = 'gr-card reveal';
-  d.innerHTML = `
-    <div class="gr-icon-row">
-      <span class="gr-icon">${g.icon}</span>
-      <span class="gr-next-badge">${lbl('next')}: ${g.day}</span>
-    </div>
-    <div class="gr-title">${g.title}</div>
-    <div class="gr-desc">${g.desc}</div>
-    <div class="gr-meta">
-      <div class="gr-meta-row">📅 ${g.schedule} · ${lbl('weekly')}</div>
-      <div class="gr-meta-row">⏱ ${lbl('duration')}</div>
-      <div class="gr-meta-row">🔒 ${lbl('anon')}</div>
-    </div>
-    <div class="members-row">
-      ${g.members.map(m=>`<div class="member-dot" style="background:var(--surface)">${m}</div>`).join('')}
-      <span class="spots-left" style="color:${spotsColor}">+${g.spots} ${lbl('spots')}</span>
-    </div>
-    <button class="gr-join-btn" style="border-color:${g.color};color:${g.color}" onclick="joinGroup('${g.type}')">${lbl('join')}</button>`;
-  d.onclick = (e)=>{ if(!e.target.classList.contains('gr-join-btn')) loadCircle(g.type, null); };
-  gg.appendChild(d);
-    new IntersectionObserver(([e])=>{if(e.isIntersecting)d.classList.add('visible');},{threshold:.1}).observe(d);
-  });
-}
-buildGroupsGrid();
-
-// Register hooks for language changes
-window.voxenHooks = window.voxenHooks || [];
-window.voxenHooks.push(function(lang){
-  if (typeof buildGroupsGrid === 'function') buildGroupsGrid();
-  if (typeof activeCircle !== 'undefined' && typeof loadCircle === 'function') {
-    loadCircle(activeCircle, null);
-  }
-});
-
-function joinGroup(type) {
-  // Show join modal simulation
-  const names = {alcohol:'Recuperare Alcool',gambling:'Recuperare Gambling',substances:'Recuperare Substanțe',stress:'Stres & Burnout'};
-  const pseudonyms = ['🌙 Luna','⭐ Stea','🌊 Val','🌸 Floare','🌿 Ierba','💫 Licurici','🍃 Frunza'];
-  const pseudonym = pseudonyms[Math.floor(Math.random()*pseudonyms.length)];
-  alert(`✓ ${window.voxenT?window.voxenT('gr_join_btn'):'Te-ai alăturat'} -  "${names[type]}"\n\nPseudonimul tău anonim: ${pseudonym}\n\nVei primi o notificare înainte de sesiune.\n\n(Funcție completă disponibilă la lansare V2)`);
-}
+// (Conținutul fals de chat/grupuri a fost eliminat — grupurile reale sunt în HTML)
 </script>
 <script>
 // ── Optimizare baterie: oprește animațiile când pagina nu e vizibilă ──

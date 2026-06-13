@@ -248,6 +248,29 @@ html {
 .prep-num{width:24px;height:24px;border-radius:50%;background:var(--purple);color:var(--mist);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .prep-text{font-size:14px;color:var(--white);line-height:1.5}
 .prep-loading{font-size:13.5px;color:var(--text2);font-style:italic;padding:8px 0}
+/* Linia de impuls modal */
+.imp-overlay{display:none;position:fixed;inset:0;background:rgba(13,11,26,.97);z-index:2000;align-items:center;justify-content:center;padding:20px}
+.imp-overlay.open{display:flex}
+.imp-modal{background:var(--card);border:.5px solid var(--border);border-radius:24px;padding:32px 26px;max-width:440px;width:100%;position:relative}
+.imp-close{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer}
+.imp-h{font-family:'Instrument Serif',Georgia,serif;font-size:30px;color:var(--white);margin-bottom:10px;text-align:center}
+.imp-p{font-size:14.5px;color:var(--text2);line-height:1.6;text-align:center;margin-bottom:22px}
+.imp-opt{display:flex;align-items:center;gap:14px;width:100%;background:var(--surface);border:.5px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;margin-bottom:12px;text-align:left;transition:border-color .2s}
+.imp-opt:hover{border-color:var(--mid)}
+.imp-opt-icon{font-size:26px}
+.imp-opt-t{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--white)}
+.imp-opt-d{font-size:12.5px;color:var(--text2);margin-top:2px}
+.imp-emergency{margin-top:18px;padding-top:18px;border-top:.5px solid var(--border)}
+.imp-emergency-t{font-size:12.5px;color:var(--text2);text-align:center;margin-bottom:10px}
+.imp-emergency-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.imp-em-btn{flex:1;min-width:130px;text-align:center;background:rgba(163,45,45,.16);border:.5px solid rgba(163,45,45,.5);color:#E8989B;text-decoration:none;border-radius:12px;padding:11px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
+.imp-em-btn:hover{background:rgba(163,45,45,.26)}
+.imp-breathe-stage{height:180px;display:flex;align-items:center;justify-content:center;margin:10px 0}
+.imp-circle{width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(29,158,117,.4),rgba(29,158,117,.1));border:2px solid var(--teal);display:flex;align-items:center;justify-content:center;color:var(--white);font-family:'Syne',sans-serif;font-weight:700;font-size:15px;transition:transform 4s ease-in-out}
+.imp-circle.inhale{transform:scale(1.55)}
+.imp-circle.exhale{transform:scale(1)}
+.imp-count{text-align:center;font-size:14px;color:var(--mid);font-weight:600;min-height:22px}
+.imp-back{display:block;margin:18px auto 0;background:none;border:none;color:var(--text2);font-size:13px;cursor:pointer;text-decoration:underline;font-family:'Syne',sans-serif}
 </style>
 
 <!-- ═══ VOXEN i18n MODULE ═══ -->
@@ -1147,26 +1170,53 @@ window.voxenHooks = window.voxenHooks || [];
     </div>
     <div class="diff-col good">
       <div class="diff-label" style="color:var(--teal)" data-t="th_diff_good_label">✓ Cu Voxen</div>
-      <div class="diff-item"><span>🧠</span><span data-t="th_diff_g1">Terapeutul primește un rezumat anonim de 30 de zile</span></div>
-      <div class="diff-item"><span>📊</span><span data-t="th_diff_g2">Evoluția emoțională, triggerii, momentele critice — vizualizate</span></div>
+      <div class="diff-item"><span>🧠</span><span data-t="th_diff_g1">Îi duci terapeutului un rezumat real al ultimelor săptămâni</span></div>
+      <div class="diff-item"><span>📊</span><span data-t="th_diff_g2">Evoluția emoțională, tiparele, momentele critice — vizualizate</span></div>
       <div class="diff-item"><span>🎯</span><span data-t="th_diff_g3">Prima ședință direct la subiect</span></div>
-      <div class="diff-item"><span>🔄</span><span data-t="th_diff_g4">Terapeutul urmărește progresul între ședințe</span></div>
+      <div class="diff-item"><span>🔄</span><span data-t="th_diff_g4">Urmărești singur progresul, cu dovada pe cer</span></div>
     </div>
   </div>
 </section>
 
 <!-- FAQ -->
 <section class="section sep reveal">
-  <p class="section-label"><span data-t="th_faq_label">Întrebări frecvente</span></p>
-  <h2 class="section-title"><span data-t="th_faq_title" data-t-html>Înainte să<br><em>rezervi.</em></span></h2>
+  <p class="section-label">Întrebări frecvente</p>
+  <h2 class="section-title">Cum funcționează,<br><em>de fapt.</em></h2>
   <div class="faq-list">
-    <div class="faq-item"><div class="faq-q" data-t="th_faq_q1">Datele mele vocale sunt trimise terapeutului?</div><div class="faq-a" data-t="th_faq_a1">Nu. Terapeutul primește DOAR un rezumat text anonim — pattern-uri emoționale, nu înregistrări. Tu controlezi ce se trimite și poți dezactiva în orice moment.</div></div>
-    <div class="faq-item"><div class="faq-q" data-t="th_faq_q2">Sunt terapeuții verificați de Voxen?</div><div class="faq-a" data-t="th_faq_a2">Da. Toți specialiștii din rețea sunt certificați de Colegiul Psihologilor din România sau echivalent în țara lor. Verificăm licențele activ.</div></div>
-    <div class="faq-item"><div class="faq-q" data-t="th_faq_q3">Pot anula sau reprograma?</div><div class="faq-a" data-t="th_faq_a3">Da, cu 24h înainte fără niciun cost. Voxen trimite reminder cu 48h și 2h înainte.</div></div>
-    <div class="faq-item"><div class="faq-q" data-t="th_faq_q4">Ce se întâmplă dacă sunt în criză acum?</div><div class="faq-a" data-t="th_faq_a4">Folosește butonul SOS din modulul de recuperare Voxen pentru ajutor imediat. Programarea la terapeut e pentru suport continuu, nu pentru urgențe acute.</div></div>
-    <div class="faq-item"><div class="faq-q" data-t="th_faq_q5">Terapia online e la fel de eficientă?</div><div class="faq-a" data-t="th_faq_a5">Studiile arată că terapia online are eficiență comparabilă cu cea față în față pentru anxietate, depresie și recuperare din dependențe (meta-analiza Cuijpers, 2019).</div></div>
+    <div class="faq-item"><div class="faq-q">Trebuie să am deja un terapeut?</div><div class="faq-a">Nu. În modul „antrenor solo”, Voxen e alături de tine — îți dai singur teme, îți pregătești săptămâna, ai linia de impuls. Când ești gata pentru un terapeut, rezumatul tău te ajută să începi din primul moment.</div></div>
+    <div class="faq-item"><div class="faq-q">Voxen trimite ceva terapeutului automat?</div><div class="faq-a">Nu. Nimic nu pleacă automat nicăieri. Tu generezi rezumatul, tu decizi dacă și cui îl arăți — îl copiezi sau îl descărci și îl duci la ședință cum vrei tu.</div></div>
+    <div class="faq-item"><div class="faq-q">Ce e „linia de impuls”?</div><div class="faq-a">Butonul pentru momentul critic — o poftă, un impuls, o prăbușire la 2 noaptea. Îl apeși, respiri un minut ghidat sau vorbești cu Voxen, și ai mereu la vedere numerele de urgență. Nu ești singur în acel moment.</div></div>
+    <div class="faq-item"><div class="faq-q">Unde își țin datele?</div><div class="faq-a">Pe dispozitivul tău. Harta emoțională, temele, progresul — totul rămâne local, la tine. Nu construim un profil pe servere despre starea ta mintală.</div></div>
+    <div class="faq-item"><div class="faq-q">Înlocuiește Voxen terapia?</div><div class="faq-a">Nu și nu încearcă. Voxen e antrenorul dintre ședințe, nu terapeutul. Pentru evaluare, diagnostic și tratament ai nevoie de un specialist uman. Voxen te ajută să ajungi acolo și să profiți mai mult de fiecare ședință.</div></div>
+    <div class="faq-item"><div class="faq-q">Ce fac dacă sunt în criză acum?</div><div class="faq-a">Sună imediat la <b>112</b> sau la <b>TelVerde Antisuicid 0800 801 200</b>. Linia de impuls din Voxen îți arată mereu aceste numere. Voxen nu e pentru urgențe acute — oamenii pregătiți să te ajute sunt la un telefon distanță.</div></div>
   </div>
 </section>
+
+<!-- LINIA DE IMPULS — MODAL -->
+<div class="imp-overlay" id="impOverlay">
+  <div class="imp-modal">
+    <button class="imp-close" onclick="closeImpulse()" aria-label="Închide">✕</button>
+    <div class="imp-step" id="impHome">
+      <div class="imp-h">Ești aici.</div>
+      <div class="imp-p">Ai apăsat butonul — asta deja e un pas. Nu trebuie să faci nimic singur acum. Alege ce ai nevoie:</div>
+      <button class="imp-opt" onclick="impBreathe()"><span class="imp-opt-icon">🫁</span><div><div class="imp-opt-t">Respiră un minut cu mine</div><div class="imp-opt-d">Pentru când valul e prea mare acum</div></div></button>
+      <button class="imp-opt" onclick="impTalk()"><span class="imp-opt-icon">🎙️</span><div><div class="imp-opt-t">Vorbește cu Voxen</div><div class="imp-opt-d">Spune cu voce tare ce simți — te ascult</div></div></button>
+      <div class="imp-emergency">
+        <div class="imp-emergency-t">Dacă te gândești să-ți faci rău, sună acum:</div>
+        <div class="imp-emergency-btns">
+          <a href="tel:112" class="imp-em-btn">112 · Urgență</a>
+          <a href="tel:0800801200" class="imp-em-btn">0800 801 200 · TelVerde</a>
+        </div>
+      </div>
+    </div>
+    <div class="imp-step" id="impBreatheStep" style="display:none">
+      <div class="imp-h">Respiră cu cercul.</div>
+      <div class="imp-breathe-stage"><div class="imp-circle" id="impCircle"><span id="impPhase">Gata?</span></div></div>
+      <div class="imp-count" id="impCount"></div>
+      <button class="imp-back" onclick="impStopBreathe()">← Înapoi</button>
+    </div>
+  </div>
+</div>
 
 <footer>
   <div class="fbrand">voxen · <span data-t="footer_brand">terapie</span></div>
@@ -1536,10 +1586,53 @@ function renderPrepEntry(){
   c.innerHTML='<button class="br-btn" onclick="generatePrep()">Pregătește-mi discuția →</button>';
 }
 
-// Импульс line — for now opens the companion (real, working)
+// -- Linia de impuls --
 function openImpulse(){
+  document.getElementById('impHome').style.display='block';
+  document.getElementById('impBreatheStep').style.display='none';
+  document.getElementById('impOverlay').classList.add('open');
+}
+function closeImpulse(){
+  impStopBreathe();
+  document.getElementById('impOverlay').classList.remove('open');
+}
+function impTalk(){
   try{ sessionStorage.setItem('voxen_impulse','1'); }catch(e){}
   window.location.href='companion.html';
+}
+var impRunning=false, impPhase=0, impCycle=0, impT=null, impCd=null;
+var IMP_PHASES=[{t:'Inspiră',cls:'inhale'},{t:'Ține',cls:''},{t:'Expiră',cls:'exhale'},{t:'Ține',cls:''}];
+function impBreathe(){
+  document.getElementById('impHome').style.display='none';
+  document.getElementById('impBreatheStep').style.display='block';
+  impRunning=true; impPhase=0; impCycle=0;
+  impRunPhase();
+}
+function impStopBreathe(){
+  impRunning=false; clearTimeout(impT); clearInterval(impCd);
+  var c=document.getElementById('impCircle'); if(c) c.className='imp-circle';
+  document.getElementById('impHome').style.display='block';
+  document.getElementById('impBreatheStep').style.display='none';
+}
+function impRunPhase(){
+  if(!impRunning) return;
+  var p=IMP_PHASES[impPhase];
+  var c=document.getElementById('impCircle');
+  c.className='imp-circle'+(p.cls?' '+p.cls:'');
+  document.getElementById('impPhase').textContent=p.t;
+  var rem=4; document.getElementById('impCount').textContent=rem;
+  clearInterval(impCd);
+  impCd=setInterval(function(){ rem--; if(rem>0) document.getElementById('impCount').textContent=rem; },1000);
+  impT=setTimeout(function(){
+    clearInterval(impCd);
+    impPhase=(impPhase+1)%4;
+    if(impPhase===0){ impCycle++;
+      if(impCycle>=4){ document.getElementById('impPhase').textContent='🌿';
+        document.getElementById('impCount').textContent='Valul a trecut puțin. Ești tot aici.';
+        impRunning=false; return; }
+    }
+    impRunPhase();
+  }, 4000);
 }
 
 // ── Pregătirea ședinței: 3 puncte din harta reală ──
