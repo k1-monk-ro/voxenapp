@@ -202,6 +202,52 @@ html {
 .globe-lang{display:block;width:100%;padding:9px 14px;background:none;border:none;border-radius:8px;color:var(--text2,#8B88C3);font-family:'Syne',sans-serif;font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:all .1s}
 .globe-lang:hover{background:rgba(83,74,183,.1);color:var(--white,#F0EFF8)}
 .globe-lang.active{color:var(--purple,#534AB7);font-weight:700;background:rgba(83,74,183,.08)}
+/* ═══ PUNTEA ═══ */
+.mode-select{max-width:760px;margin:10px auto 0}
+.mode-q{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;text-align:center;margin-bottom:20px;color:var(--white)}
+.mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.mode-cards{grid-template-columns:1fr}}
+.mode-card{background:var(--card);border:.5px solid var(--border);border-radius:20px;padding:26px;cursor:pointer;transition:all .2s;text-align:left}
+.mode-card:hover{border-color:var(--mid);transform:translateY(-3px)}
+.mode-icon{font-size:34px;margin-bottom:14px}
+.mode-title{font-family:'Syne',sans-serif;font-weight:700;font-size:19px;color:var(--white);margin-bottom:8px}
+.mode-desc{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.mode-pick{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--soft)}
+.bridge{max-width:760px;margin:10px auto 0;display:flex;flex-direction:column;gap:16px}
+.bridge-head{display:flex;align-items:center;justify-content:space-between}
+.bridge-mode{font-size:13px;color:var(--text2);font-family:'Syne',sans-serif}
+.bridge-mode b{color:var(--soft)}
+.bridge-change{background:none;border:.5px solid var(--border);color:var(--text2);font-size:12px;padding:6px 12px;border-radius:100px;cursor:pointer;font-family:'Syne',sans-serif}
+.bridge-change:hover{color:var(--white);border-color:var(--mid)}
+.impulse{background:linear-gradient(135deg,rgba(212,83,126,.14),rgba(83,74,183,.1));border:.5px solid rgba(212,83,126,.3);border-radius:20px;padding:22px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.impulse-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;color:var(--white);margin-bottom:4px}
+.impulse-sub{font-size:13px;color:var(--text2);line-height:1.5;max-width:420px}
+.impulse-btn{background:var(--warm);color:#fff;border:none;border-radius:14px;padding:15px 26px;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.impulse-btn:hover{opacity:.9}
+.tool-block{background:var(--card);border:.5px solid var(--border);border-radius:20px;padding:24px}
+.tool-block-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
+.tool-block-icon{font-size:26px;flex-shrink:0}
+.tool-block-title{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:var(--white)}
+.tool-block-sub{font-size:13.5px;color:var(--text2);margin-top:3px;line-height:1.5}
+.br-btn{background:var(--purple);color:var(--mist);border:none;border-radius:13px;padding:13px 24px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background .2s}
+.br-btn:hover{background:var(--mid)}
+.br-btn.ghost{background:var(--surface);border:.5px solid var(--border)}
+.br-input{width:100%;background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:13px;color:var(--white);font-family:'Syne',sans-serif;font-size:14px;box-sizing:border-box;margin-bottom:10px}
+.hw-templates{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.hw-template{background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:13.5px;color:var(--white);transition:all .15s}
+.hw-template:hover{border-color:var(--mid)}
+.hw-active{background:var(--surface);border:.5px solid var(--border);border-radius:14px;padding:18px}
+.hw-active-goal{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--white);margin-bottom:14px;line-height:1.4}
+.hw-week{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.hw-day{width:38px;height:38px;border-radius:10px;background:var(--void);border:.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:var(--text2);gap:2px}
+.hw-day.done{background:rgba(29,158,117,.18);border-color:var(--teal);color:var(--teal)}
+.hw-day-dot{font-size:13px}
+.hw-proof{font-size:13.5px;color:var(--soft);line-height:1.5;font-style:italic;border-top:.5px solid var(--border);padding-top:14px}
+.prep-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.prep-item{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:14px}
+.prep-num{width:24px;height:24px;border-radius:50%;background:var(--purple);color:var(--mist);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prep-text{font-size:14px;color:var(--white);line-height:1.5}
+.prep-loading{font-size:13.5px;color:var(--text2);font-style:italic;padding:8px 0}
 </style>
 
 <!-- ═══ VOXEN i18n MODULE ═══ -->
@@ -1020,131 +1066,70 @@ window.voxenHooks = window.voxenHooks || [];
 
 <section class="hero">
   <div class="hero-glow"></div>
-  <div class="hero-chip"><div class="chip-dot"></div><span data-t="th_chip">Psihologi · Psihoterapeuți · Consultanți medicali</span></div>
-  <h1 class="hero-title"><span data-t="th_h1" data-t-html>Terapeutul potrivit.<br><em>La momentul potrivit.</em></span></h1>
-  <p class="hero-sub" data-t="th_sub">Voxen nu înlocuiește terapeutul. Îl pregătește. Terapeutul tău primește un rezumat anonim al stării tale emoționale — prima ședință începe acolo unde ai rămas, nu de la zero.</p>
+  <div class="hero-chip"><div class="chip-dot"></div><span data-t="th_chip">Antrenorul tău între ședințe</span></div>
+  <h1 class="hero-title"><span data-t="th_h1" data-t-html>Terapia nu se oprește<br><em>când ieși pe ușă.</em></span></h1>
+  <p class="hero-sub" data-t="th_sub">Terapia se întâmplă în cele 167 de ore dintre ședințe — când ai un impuls la 2 noaptea, când recazi, când ai o zi bună. Voxen e acolo, prin vocea ta, și ține firul neîntrerupt.</p>
 
-  <!-- TYPE TABS -->
-  <div class="type-tabs">
-    <div class="type-tab active" onclick="showType('individual')"><span data-t="th_tab1">🧑‍⚕️ Psiholog / Psihoterapeut</span></div>
-    <div class="type-tab" onclick="showType('online')"><span data-t="th_tab2">💬 Consultație online</span></div>
-    <div class="type-tab" onclick="showType('medical')"><span data-t="th_tab3">🏥 Evaluare medicală</span></div>
-  </div>
-
-  <!-- BOOKING FLOW: INDIVIDUAL -->
-  <div class="booking-flow">
-    <div class="flow-panel active" id="panel-individual">
-      <!-- Step indicator -->
-      <div class="steps-row">
-        <div class="step-dot active" id="si1">1</div>
-        <div class="step-line" id="sl1"></div>
-        <div class="step-dot" id="si2">2</div>
-        <div class="step-line" id="sl2"></div>
-        <div class="step-dot" id="si3">3</div>
-        <div class="step-line" id="sl3"></div>
-        <div class="step-dot" id="si4">4</div>
+  <!-- MODE SELECTOR -->
+  <div class="mode-select" id="modeSelect">
+    <div class="mode-q">Cum folosești Voxen pentru terapie?</div>
+    <div class="mode-cards">
+      <div class="mode-card" onclick="setMode('solo')">
+        <div class="mode-icon">🧭</div>
+        <div class="mode-title">Încă n-am terapeut</div>
+        <div class="mode-desc">Voxen e antrenorul tău. Îți dai singur teme, primești pregătire înainte de fiecare reflecție, și ai linia de impuls pentru momentele grele. Când ești gata, te ajută să găsești un terapeut real.</div>
+        <div class="mode-pick">Alege asta →</div>
       </div>
-
-      <!-- Step 1: Choose therapist -->
-      <div id="step1" class="step-content">
-        <p style="font-size:13px;color:var(--text2);margin-bottom:16px;text-align:left" data-t="th_step1_help">Selectează un specialist din zona ta · Voxen le trimite un sumar anonim (cu acordul tău)</p>
-        <div class="therapists-grid" id="therapistGrid"></div>
-        <div class="btn-row">
-          <button class="btn btn-primary" id="btn1" onclick="goStep(2)" disabled><span data-t="th_btn_cont">Continuă →</span></button>
-        </div>
-      </div>
-
-      <!-- Step 2: Pick date -->
-      <div id="step2" class="step-content" style="display:none">
-        <div class="calendar-wrap">
-          <div class="cal-header">
-            <button class="cal-nav" onclick="prevMonth()">←</button>
-            <div class="cal-month" id="calMonth">Mai 2026</div>
-            <button class="cal-nav" onclick="nextMonth()">→</button>
-          </div>
-          <div class="cal-grid" id="calGrid"></div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-secondary" onclick="goStep(1)"><span data-t="th_btn_back">← Înapoi</span></button>
-          <button class="btn btn-primary" id="btn2" onclick="goStep(3)" disabled data-t="th_btn_cont">Continuă →</button>
-        </div>
-      </div>
-
-      <!-- Step 3: Pick time + AI brief -->
-      <div id="step3" class="step-content" style="display:none">
-        <p style="font-size:13px;color:var(--text2);margin-bottom:14px;text-align:left" data-t="th_pick_time">Alege ora:</p>
-        <div class="slots-grid" id="slotsGrid"></div>
-        <div class="ai-brief">
-          <div class="ai-brief-header">
-            <span class="ai-brief-icon">🧠</span>
-            <div>
-              <div class="ai-brief-title"><span data-t="th_ai_title">Rezumat Voxen AI pentru terapeut</span></div>
-              <div class="ai-brief-sub"><span data-t="th_ai_sub">Trimis anonim · Poți dezactiva oricând</span></div>
-            </div>
-          </div>
-          <div class="ai-brief-content" id="aiBriefText" data-t="th_brief_loading">Se generează rezumatul tău emoțional din ultimele 30 de zile...</div>
-          <span class="ai-brief-toggle" onclick="toggleBrief()"><span data-t='th_ai_hide'>Ascunde rezumatul</span></span>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-secondary" onclick="goStep(2)">← Înapoi</button>
-          <button class="btn btn-primary" id="btn3" onclick="goStep(4)" disabled><span data-t="th_btn_confirm">Confirmă programarea →</span></button>
-        </div>
-      </div>
-
-      <!-- Step 4: Confirmation -->
-      <div id="step4" class="step-content" style="display:none">
-        <div class="confirm-card">
-          <div class="confirm-icon">✅</div>
-          <div class="confirm-title"><span data-t="th_confirm_title">Programare confirmată!</span></div>
-          <div id="confirmDetails"></div>
-          <button class="btn btn-primary" style="margin-top:20px;width:100%;justify-content:center" onclick="resetBooking()"><span data-t="th_btn_reset">Programează altă ședință</span></button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PANEL: ONLINE -->
-    <div class="flow-panel" id="panel-online">
-      <div style="background:var(--card);border:.5px solid rgba(29,158,117,.3);border-radius:20px;padding:28px;text-align:left;max-width:640px;margin:0 auto">
-        <div style="font-size:32px;margin-bottom:14px">💬</div>
-        <h3 style="font-size:20px;font-weight:700;margin-bottom:10px" data-t="th_online_h">Consultație online în 24h</h3>
-        <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px" data-t="th_online_p">Consultant certificat în managementul stresului și recuperare. Video call sau chat securizat. Fără liste de așteptare lungi.</p>
-        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
-          <div style="display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:10px;padding:12px">
-            <span style="font-size:20px">⏱</span>
-            <div><div style="font-size:13px;font-weight:500" data-t="th_online_f1a">Disponibil în 24 ore</div><div style="font-size:11px;color:var(--text2)" data-t="th_online_f1b">Confirmare prin email</div></div>
-          </div>
-          <div style="display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:10px;padding:12px">
-            <span style="font-size:20px">🔒</span>
-            <div><div style="font-size:13px;font-weight:500" data-t="th_online_f2a">Sesiune criptată end-to-end</div><div style="font-size:11px;color:var(--text2)" data-t="th_online_f2b">Nimeni altcineva nu ascultă</div></div>
-          </div>
-          <div style="display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:10px;padding:12px">
-            <span style="font-size:20px">📱</span>
-            <div><div style="font-size:13px;font-weight:500" data-t="th_online_f3a">Video, audio sau chat</div><div style="font-size:11px;color:var(--text2)" data-t="th_online_f3b">Alegi formatul care ți se potrivește</div></div>
-          </div>
-        </div>
-        <button class="btn btn-primary" style="width:100%;justify-content:center;font-size:15px" onclick="alert('Disponibil la lansare V2 — înscrie-te pe lista de așteptare!')" data-t="th_online_btn">Solicită consultație →</button>
-      </div>
-    </div>
-
-    <!-- PANEL: MEDICAL -->
-    <div class="flow-panel" id="panel-medical">
-      <div style="background:var(--card);border:.5px solid rgba(239,159,39,.3);border-radius:20px;padding:28px;text-align:left;max-width:640px;margin:0 auto">
-        <div style="font-size:32px;margin-bottom:14px">🏥</div>
-        <h3 style="font-size:20px;font-weight:700;margin-bottom:10px" data-t="th_med_h">Evaluare medicală psihiatrică</h3>
-        <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px" data-t="th_med_p">Pentru cazuri care necesită evaluare psihiatrică, diagnostic sau tratament medicamentos. Voxen facilitează trimiterea cu context clinic complet.</p>
-        <div style="background:rgba(239,159,39,.1);border:.5px solid rgba(239,159,39,.4);border-radius:12px;padding:14px;margin-bottom:20px">
-          <div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:6px" data-t="th_med_steps_h">⚕️ Proces în 3 pași</div>
-          <div style="font-size:13px;color:var(--soft);line-height:1.8">
-            <span data-t="th_med_steps" data-t-html>1. Voxen AI generează un raport clinic preliminar bazat pe 30 de zile de date vocale<br>2. Ești trimis la un psihiatru/medic specialist din rețeaua noastră<br>3. Urmărire continuă prin aplicație — terapeut + medic + Voxen lucrează împreună</span>
-          </div>
-        </div>
-        <div style="background:var(--surface);border-radius:10px;padding:14px;margin-bottom:20px;font-size:12px;color:var(--text2);line-height:1.6">
-          <strong style="color:var(--white)" data-t="th_med_imp_label">Important:</strong> <span data-t="th_med_imp">Voxen nu înlocuiește consultul medical. Suntem un facilitator care ajută specialistul să înțeleagă mai bine starea ta emoțională.</span>
-        </div>
-        <button class="btn btn-primary" style="background:var(--amber);width:100%;justify-content:center;font-size:15px" onclick="alert('Disponibil la lansare V2 — înscrie-te pe lista de așteptare!')" data-t="th_med_btn">Solicită evaluare medicală →</button>
+      <div class="mode-card" onclick="setMode('therapist')">
+        <div class="mode-icon">🤝</div>
+        <div class="mode-title">Am un terapeut</div>
+        <div class="mode-desc">Voxen umple cele 167 de ore dintre ședințe. Notezi temele primite de la el, îți pregătești următoarea ședință din harta ta, și-i duci rezumatul real al vocii tale.</div>
+        <div class="mode-pick">Alege asta →</div>
       </div>
     </div>
   </div>
+
+  <!-- PUNTEA — workspace -->
+  <div class="bridge" id="bridge" style="display:none">
+    <div class="bridge-head">
+      <div class="bridge-mode" id="bridgeMode"></div>
+      <button class="bridge-change" onclick="resetMode()">schimbă</button>
+    </div>
+
+    <!-- LINIA DE IMPULS -->
+    <div class="impulse">
+      <div class="impulse-l">
+        <div class="impulse-title">Ai nevoie acum?</div>
+        <div class="impulse-sub">Pentru momentul critic — un impuls, o poftă, o prăbușire la 2 noaptea. Vorbește 60 de secunde și Voxen te ține pe linia de plutire.</div>
+      </div>
+      <button class="impulse-btn" onclick="openImpulse()">Am nevoie acum</button>
+    </div>
+
+    <!-- TEME CU DOVADĂ -->
+    <div class="tool-block" id="toolHomework">
+      <div class="tool-block-head">
+        <span class="tool-block-icon">🎯</span>
+        <div>
+          <div class="tool-block-title">Teme cu dovadă</div>
+          <div class="tool-block-sub" id="hwSubtitle">Un angajament mic, urmărit automat prin vocea ta.</div>
+        </div>
+      </div>
+      <div id="hwContent"></div>
+    </div>
+
+    <!-- PREGĂTIREA ȘEDINȚEI -->
+    <div class="tool-block" id="toolPrep">
+      <div class="tool-block-head">
+        <span class="tool-block-icon">🧭</span>
+        <div>
+          <div class="tool-block-title" id="prepTitle">Pregătirea ședinței</div>
+          <div class="tool-block-sub" id="prepSubtitle">Trei lucruri de adus în discuție, scrise din harta ta emoțională.</div>
+        </div>
+      </div>
+      <div id="prepContent"></div>
+    </div>
+  </div>
+
 </section>
 
 <!-- HOW VOXEN HELPS -->
@@ -1420,5 +1405,213 @@ buildGlobeMenu();
 </script>
 
 <script src="i18n.js"></script>
+<script>
+// ═══ PUNTEA — antrenorul între ședințe ═══
+var EMO_LABEL_TH = { calm:'calm', tired:'obosit', sad:'trist', anxious:'anxios', angry:'tensionat', happy:'bine', excited:'energic', confused:'confuz', neutral:'neutru' };
+var CALM_RANK_TH = { angry:1, anxious:2, confused:3, sad:3, tired:4, neutral:5, excited:6, happy:7, calm:8 };
+
+function loadSkyTh(){
+  var s=[]; try{ s=JSON.parse(localStorage.getItem('voxen_sky')||'[]'); }catch(e){ s=[]; }
+  if(!Array.isArray(s)) s=[];
+  s=s.filter(function(x){ return x && typeof x.t==='number' && x.e; });
+  s.sort(function(a,b){ return a.t-b.t; });
+  return s;
+}
+
+// ── Mod (solo / cu terapeut) ──
+function getMode(){ try{ return localStorage.getItem('voxen_th_mode'); }catch(e){ return null; } }
+function setMode(m){ try{ localStorage.setItem('voxen_th_mode', m); }catch(e){} renderBridge(); }
+function resetMode(){ try{ localStorage.removeItem('voxen_th_mode'); }catch(e){} renderBridge(); }
+
+function renderBridge(){
+  var mode=getMode();
+  var sel=document.getElementById('modeSelect');
+  var br=document.getElementById('bridge');
+  if(!sel||!br) return;
+  if(!mode){ sel.style.display='block'; br.style.display='none'; return; }
+  sel.style.display='none'; br.style.display='flex';
+
+  var badge=document.getElementById('bridgeMode');
+  badge.innerHTML = (mode==='therapist')
+    ? 'Mod: <b>cu terapeut</b> · Voxen umple timpul dintre ședințe'
+    : 'Mod: <b>antrenor solo</b> · Voxen e alături până găsești un terapeut';
+
+  document.getElementById('prepTitle').textContent = (mode==='therapist') ? 'Pregătirea ședinței' : 'Pregătirea săptămânii';
+  document.getElementById('prepSubtitle').textContent = (mode==='therapist')
+    ? 'Trei lucruri de adus în discuție la următoarea ședință, scrise din harta ta.'
+    : 'Trei lucruri la care să fii atent săptămâna asta, din harta ta emoțională.';
+
+  renderHomework();
+  renderPrepEntry();
+}
+
+// ── Teme cu dovadă ──
+var HW_TEMPLATES_SOLO = [
+  'Vorbesc cu Voxen 2 minute în fiecare seară',
+  'Fac un exercițiu de respirație când simt o poftă',
+  'Un singur pas mic în fiecare zi'
+];
+var HW_TEMPLATES_TH = [
+  'Tema de la terapeut: vorbesc cu Voxen zilnic',
+  'Observ și înregistrez momentele de impuls',
+  'Fac exercițiul recomandat de terapeut'
+];
+function getHomework(){ try{ return JSON.parse(localStorage.getItem('voxen_homework')||'null'); }catch(e){ return null; } }
+function saveHomework(hw){ try{ localStorage.setItem('voxen_homework', JSON.stringify(hw)); }catch(e){} }
+function clearHomework(){ try{ localStorage.removeItem('voxen_homework'); }catch(e){} renderHomework(); }
+
+function setHomework(goal){
+  if(!goal || goal.trim().length<3) return;
+  saveHomework({ goal:goal.trim(), startTs:Date.now() });
+  renderHomework();
+}
+function setHomeworkFromInput(){
+  var v=document.getElementById('hwInput'); if(v) setHomework(v.value);
+}
+function pickTemplate(idx){
+  if(window._hwTpls && window._hwTpls[idx]) setHomework(window._hwTpls[idx]);
+}
+
+function renderHomework(){
+  var c=document.getElementById('hwContent'); if(!c) return;
+  var hw=getHomework();
+  var mode=getMode();
+  if(!hw){
+    var tpls = (mode==='therapist') ? HW_TEMPLATES_TH : HW_TEMPLATES_SOLO;
+    window._hwTpls = tpls;
+    var html='<div class="hw-templates">';
+    tpls.forEach(function(t,idx){ html+='<div class="hw-template" onclick="pickTemplate('+idx+')">'+escapeHtml(t)+'</div>'; });
+    html+='</div>';
+    html+='<input class="br-input" id="hwInput" placeholder="...sau scrie-ți propria temă"/>';
+    html+='<button class="br-btn" onclick="setHomeworkFromInput()">Setează tema</button>';
+    c.innerHTML=html;
+    return;
+  }
+  // Active homework — show week tracking from sky data
+  var stars=loadSkyTh();
+  var now=new Date(); now.setHours(0,0,0,0);
+  var DNAMES=['D','L','Ma','Mi','J','V','S'];
+  var doneCount=0, weekHtml='';
+  var dayEmotions=[];
+  for(var i=6;i>=0;i--){
+    var day=new Date(now); day.setDate(day.getDate()-i);
+    var dayEnd=new Date(day); dayEnd.setHours(23,59,59,999);
+    var dayStars=stars.filter(function(s){ return s.t>=day.getTime() && s.t<=dayEnd.getTime(); });
+    var done=dayStars.length>0;
+    if(done){ doneCount++; dayEmotions=dayEmotions.concat(dayStars.map(function(s){return s.e;})); }
+    weekHtml+='<div class="hw-day'+(done?' done':'')+'"><span class="hw-day-dot">'+(done?'✦':'·')+'</span>'+DNAMES[day.getDay()]+'</div>';
+  }
+  var proof;
+  if(doneCount===0){
+    proof='Încă nicio zi bifată. Fiecare conversație cu Voxen bifează automat ziua. Hai, prima e cea mai grea.';
+  } else {
+    proof='<b>'+doneCount+' din 7 zile</b> bifate. ';
+    // tendință: compară prima vs a doua jumătate a stelelor săptămânii
+    if(dayEmotions.length>=3){
+      var half=Math.floor(dayEmotions.length/2);
+      var firstAvg=avgRank(dayEmotions.slice(0,half)), lastAvg=avgRank(dayEmotions.slice(half));
+      if(lastAvg-firstAvg>=0.8) proof+='Vocea ta a fost mai liniștită spre final. Se vede.';
+      else if(firstAvg-lastAvg>=0.8) proof+='A fost o săptămână mai grea spre final — ai grijă de tine.';
+      else proof+='Ții ritmul. Constanța bate intensitatea.';
+    } else {
+      proof+='Continuă — dovada se construiește pe cer.';
+    }
+  }
+  c.innerHTML='<div class="hw-active"><div class="hw-active-goal">“'+escapeHtml(hw.goal)+'”</div>'+
+    '<div class="hw-week">'+weekHtml+'</div>'+
+    '<div class="hw-proof">'+proof.replace(/<b>/g,'<b style="color:var(--teal)">')+'</div></div>'+
+    '<button class="br-btn ghost" style="margin-top:14px" onclick="clearHomework()">Schimbă tema</button>';
+}
+function avgRank(emos){ return emos.reduce(function(s,e){return s+(CALM_RANK_TH[e]||5);},0)/emos.length; }
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── Pregătirea ședinței (placeholder entry; AI logic in next step) ──
+function renderPrepEntry(){
+  var c=document.getElementById('prepContent'); if(!c) return;
+  var stars=loadSkyTh();
+  if(stars.length<3){
+    c.innerHTML='<div class="prep-loading">Mai vorbește de câteva ori cu Voxen. Cu suficiente date, pot scrie din harta ta cele 3 lucruri de adus în discuție.</div>';
+    return;
+  }
+  c.innerHTML='<button class="br-btn" onclick="generatePrep()">Pregătește-mi discuția →</button>';
+}
+
+// Импульс line — for now opens the companion (real, working)
+function openImpulse(){
+  try{ sessionStorage.setItem('voxen_impulse','1'); }catch(e){}
+  window.location.href='companion.html';
+}
+
+// ── Pregătirea ședinței: 3 puncte din harta reală ──
+function timeBucketTh(d){var h=d.getHours();if(h>=5&&h<=11)return 'diminețile';if(h>=12&&h<=17)return 'după-amiezele';if(h>=18&&h<=22)return 'serile';return 'nopțile';}
+function dayNameTh(i){return ['duminicile','lunile','marțile','miercurile','joile','vinerile','sâmbetele'][i];}
+
+function generatePrep(){
+  var c=document.getElementById('prepContent');
+  var mode=getMode();
+  c.innerHTML='<div class="prep-loading">Citesc harta ta...</div>';
+  // Build from real data (reliable, grounded — no fabrication)
+  setTimeout(function(){
+    var stars=loadSkyTh();
+    var points=[];
+
+    // 1. Cea mai apăsată perioadă / zi
+    var buckets={};
+    stars.forEach(function(s){ var b=timeBucketTh(new Date(s.t)); (buckets[b]=buckets[b]||[]).push(s); });
+    var bKeys=Object.keys(buckets).filter(function(k){return buckets[k].length>=2;});
+    if(bKeys.length>=2){
+      bKeys.sort(function(a,b){return avgRank(buckets[a].map(function(s){return s.e;}))-avgRank(buckets[b].map(function(s){return s.e;}));});
+      points.push('Vocea ta sună cel mai apăsat <b>'+bKeys[0]+'</b>. Merită explorat ce se întâmplă atunci.');
+    }
+
+    // 2. Emoția dominantă recentă
+    var weekAgo=Date.now()-7*86400000;
+    var recent=stars.filter(function(s){return s.t>=weekAgo;});
+    if(recent.length<2) recent=stars.slice(-5);
+    if(recent.length){
+      var counts={}; recent.forEach(function(s){counts[s.e]=(counts[s.e]||0)+1;});
+      var top=Object.keys(counts).sort(function(a,b){return counts[b]-counts[a];})[0];
+      points.push('Cel mai des, recent, vocea ta a sunat <b>'+(EMO_LABEL_TH[top]||top)+'</b>. Cum se leagă asta de ce trăiești acum?');
+    }
+
+    // 3. Trend sau exerc
+    var thisWeek=stars.filter(function(s){return s.t>=Date.now()-7*86400000;});
+    var lastWeek=stars.filter(function(s){return s.t<Date.now()-7*86400000 && s.t>=Date.now()-14*86400000;});
+    if(thisWeek.length>=2 && lastWeek.length>=2){
+      var diff=avgRank(thisWeek.map(function(s){return s.e;}))-avgRank(lastWeek.map(function(s){return s.e;}));
+      if(diff>=0.8) points.push('Săptămâna asta a fost <b>mai senină</b> decât cea trecută. Ce a fost diferit? Merită păstrat.');
+      else if(diff<=-0.8) points.push('Săptămâna asta a fost <b>mai grea</b> decât cea trecută. Ce s-a schimbat?');
+    }
+    var exStars=stars.filter(function(s){return s.k==='exercise'&&s.before;});
+    if(points.length<3 && exStars.length>=1){
+      var helped=exStars.filter(function(s){return (CALM_RANK_TH[s.e]||5)>(CALM_RANK_TH[s.before]||5);}).length;
+      points.push('Exercițiile te-au ajutat <b>'+helped+' din '+exStars.length+'</b> ori. Care a funcționat cel mai bine pentru tine?');
+    }
+    // Umple până la cel puțin 1 punct
+    if(points.length===0){
+      points.push('Cum a fost săptămâna asta, în câteva cuvinte spuse cu voce tare?');
+    }
+    points=points.slice(0,3);
+
+    var intro = (mode==='therapist')
+      ? 'De adus în discuție la următoarea ședință:'
+      : 'La ce să fii atent săptămâna asta:';
+    var html='<div class="prep-loading" style="margin-bottom:10px">'+intro+'</div><div class="prep-list">';
+    points.forEach(function(p,i){ html+='<div class="prep-item"><span class="prep-num">'+(i+1)+'</span><span class="prep-text">'+p+'</span></div>'; });
+    html+='</div>';
+    if(mode==='therapist'){
+      html+='<button class="br-btn ghost" onclick="goSummary()">Generează rezumatul complet pentru terapeut →</button>';
+    } else {
+      html+='<button class="br-btn ghost" onclick="goCompanion()">Vorbește cu Voxen despre asta →</button>';
+    }
+    c.innerHTML=html;
+  }, 600);
+}
+function goSummary(){ window.location.href='emotional.html#summary'; }
+function goCompanion(){ window.location.href='companion.html'; }
+
+document.addEventListener('DOMContentLoaded', renderBridge);
+window.addEventListener('load', renderBridge);
+</script>
 </body>
 </html>
