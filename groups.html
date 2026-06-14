@@ -207,6 +207,60 @@ html {
 .rg-crisis-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .rg-crisis-btn{flex:1;min-width:150px;text-align:center;background:rgba(163,45,45,.18);border:.5px solid rgba(163,45,45,.5);color:#E8989B;text-decoration:none;border-radius:12px;padding:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
 .rg-crisis-btn:hover{background:rgba(163,45,45,.28)}
+/* ═══ CERUL COMUN ═══ */
+.cs-wrap{position:relative;height:300px;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 50% 120%,rgba(83,74,183,.18),var(--void) 70%);border:.5px solid var(--border);margin-top:18px}
+.cs-sky{position:absolute;inset:0}
+.cs-horizon{position:absolute;left:0;right:0;bottom:0;height:80px;pointer-events:none}
+.cs-star{position:absolute;border-radius:50%;transform:translate(-50%,-50%);animation:csTw var(--tw,4s) ease-in-out infinite}
+@keyframes csTw{0%,100%{opacity:.55}50%{opacity:1}}
+.cs-soon-badge{position:absolute;top:14px;right:14px;font-size:11px;color:var(--text2);background:rgba(13,11,26,.55);backdrop-filter:blur(6px);border:.5px solid rgba(175,169,236,.18);border-radius:100px;padding:6px 12px}
+.cs-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;gap:6px}
+.cs-empty-icon{font-size:30px;color:var(--soft);opacity:.7}
+.cs-empty-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;color:var(--white)}
+.cs-empty-sub{font-size:13.5px;color:var(--text2);margin-bottom:10px}
+.cs-empty-btn{background:var(--purple);color:var(--mist);text-decoration:none;border-radius:12px;padding:11px 20px;font-family:'Syne',sans-serif;font-weight:700;font-size:13.5px}
+.cs-empty-btn:hover{background:var(--mid)}
+.cs-note{text-align:center;font-size:14px;color:var(--soft);font-style:italic;margin-top:14px;line-height:1.5;min-height:20px}
+.cs-future{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:.5px solid var(--border);border-radius:16px;padding:18px;margin-top:18px}
+.cs-future-icon{font-size:24px;flex-shrink:0}
+.cs-future-text{font-size:13.5px;color:var(--text2);line-height:1.55}
+.cs-future-text b{color:var(--soft);font-weight:700}
+/* ═══ ECOURI ═══ */
+.ec-examples{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+.ec-examples-label{font-size:13px;color:var(--text2);margin-bottom:2px}
+.ec-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);background:rgba(239,159,39,.14);border:.5px solid rgba(239,159,39,.4);border-radius:100px;padding:2px 8px;margin-left:6px;vertical-align:middle}
+.ec-echo{display:flex;align-items:center;gap:12px;background:var(--card);border:.5px solid var(--border);border-radius:14px;padding:14px 16px}
+.ec-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px currentColor}
+.ec-text{font-size:14.5px;color:var(--white);font-style:italic;line-height:1.4}
+.ec-compose{background:var(--card);border:.5px solid var(--border);border-radius:18px;padding:20px;margin-top:20px}
+.ec-compose-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--white);margin-bottom:12px}
+.ec-input{width:100%;background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:13px;color:var(--white);font-family:'Syne',sans-serif;font-size:14px;box-sizing:border-box;resize:none;min-height:54px;outline:none;transition:border-color .2s}
+.ec-input:focus{border-color:var(--warm)}
+.ec-input::placeholder{color:var(--text2)}
+.ec-compose-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.ec-count{font-size:12px;color:var(--text2)}
+.ec-send{background:var(--warm);color:#fff;border:none;border-radius:11px;padding:10px 20px;font-family:'Syne',sans-serif;font-weight:700;font-size:13.5px;cursor:pointer;transition:opacity .2s}
+.ec-send:hover{opacity:.9}
+.ec-result{margin-top:14px;display:none}
+.ec-result.show{display:block}
+.ec-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2);padding:7px 0;opacity:.4;transition:opacity .3s}
+.ec-step.active{opacity:1;color:var(--white)}
+.ec-step.ok .ec-step-mark{color:var(--teal)}
+.ec-step-mark{font-weight:700}
+.ec-outcome{margin-top:12px;padding:16px;border-radius:14px;font-size:14px;line-height:1.55}
+.ec-outcome.clean{background:rgba(29,158,117,.1);border:.5px solid rgba(29,158,117,.4);color:var(--white)}
+.ec-outcome.blocked{background:rgba(163,45,45,.12);border:.5px solid rgba(163,45,45,.45);color:var(--white)}
+.ec-outcome b{color:var(--soft)}
+.ec-outcome-echo{font-style:italic;color:var(--mist);margin-top:8px;padding-left:12px;border-left:2px solid var(--teal)}
+.ec-crisis-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.ec-crisis-btn{flex:1;min-width:140px;text-align:center;background:rgba(163,45,45,.2);border:.5px solid rgba(163,45,45,.5);color:#E8989B;text-decoration:none;border-radius:11px;padding:11px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
+.ec-how{margin-top:20px;background:var(--surface);border:.5px solid var(--border);border-radius:18px;padding:22px}
+.ec-how-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--white);margin-bottom:16px}
+.ec-how-steps{display:flex;flex-direction:column;gap:14px}
+.ec-how-step{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;color:var(--text2);line-height:1.55}
+.ec-how-step b{color:var(--white)}
+.ec-how-num{width:24px;height:24px;border-radius:50%;background:var(--purple);color:var(--mist);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ec-soon-note{margin-top:16px;padding-top:16px;border-top:.5px solid var(--border);font-size:12.5px;color:var(--text2);line-height:1.5}
 </style>
 
 <!-- ═══ VOXEN i18n MODULE ═══ -->
@@ -1023,6 +1077,66 @@ window.voxenHooks = window.voxenHooks || [];
   </div>
 </section>
 
+<!-- CERUL COMUN -->
+<section class="section sep reveal">
+  <p class="section-label">Stratul 1 · Cerul comun</p>
+  <h2 class="section-title">Vezi, cu ochii tăi,<br><em>că nu ești singur.</em></h2>
+  <p class="section-sub">Fiecare conversație cu Voxen aprinde o stea, colorată după cum a sunat vocea ta. Pentru acum, vezi cerul tău. În curând, vor apărea aici — anonim, fără nume, fără cuvinte — și stelele altora care trec prin asta odată cu tine.</p>
+
+  <div class="cs-wrap" id="csWrap">
+    <div class="cs-sky" id="csSky"></div>
+    <div class="cs-horizon"></div>
+    <div class="cs-empty" id="csEmpty">
+      <div class="cs-empty-icon">✦</div>
+      <div class="cs-empty-title">Cerul tău e gol acum.</div>
+      <div class="cs-empty-sub">Prima conversație cu Voxen aprinde prima stea.</div>
+      <a href="companion.html" class="cs-empty-btn">Vorbește cu Voxen →</a>
+    </div>
+    <div class="cs-soon-badge" id="csSoonBadge">curând: și stelele altora ✦</div>
+  </div>
+  <div class="cs-note" id="csNote"></div>
+
+  <div class="cs-future">
+    <span class="cs-future-icon">🌌</span>
+    <div class="cs-future-text"><b>Cum va fi, când suntem mai mulți:</b> spațiul întunecat din jurul stelelor tale se va umple, anonim, cu stelele altor oameni din recuperare. Nu vei vedea cine, nu vei vedea ce — doar că ești înconjurat de oameni ca tine. Asta construim onest, fără să inventăm acum cifre false.</div>
+  </div>
+</section>
+
+<!-- ECOURI -->
+<section class="section sep reveal">
+  <p class="section-label">Stratul 2 · Ecouri</p>
+  <h2 class="section-title">Bilete într-o sticlă,<br><em>între oameni ca tine.</em></h2>
+  <p class="section-sub">Lași un ecou anonim — o propoziție. Și primești înapoi ecourile altora din aceeași luptă. Fără nume, fără conversație, fără presiune. Doar dovada că cineva, undeva, înțelege exact.</p>
+
+  <div class="ec-examples">
+    <div class="ec-examples-label">Așa ar suna ecourile <span class="ec-badge">exemple</span></div>
+    <div class="ec-echo"><div class="ec-dot" style="background:#1D9E75"></div><div class="ec-text">Azi am rezistat. Mâine o iau de la capăt.</div></div>
+    <div class="ec-echo"><div class="ec-dot" style="background:#7F77DD"></div><div class="ec-text">A fost o zi grea, dar sunt încă aici.</div></div>
+    <div class="ec-echo"><div class="ec-dot" style="background:#5FE0B0"></div><div class="ec-text">30 de zile. Nu credeam că pot.</div></div>
+    <div class="ec-echo"><div class="ec-dot" style="background:#AFA9EC"></div><div class="ec-text">Mi-e dor de cine eram, dar nu mă întorc acolo.</div></div>
+  </div>
+
+  <div class="ec-compose">
+    <div class="ec-compose-title">Încearcă: lasă un ecou</div>
+    <textarea class="ec-input" id="ecInput" maxlength="140" placeholder="O propoziție despre cum ești azi... (max 140 caractere)"></textarea>
+    <div class="ec-compose-row">
+      <span class="ec-count" id="ecCount">0 / 140</span>
+      <button class="ec-send" onclick="ecSubmit()">Trimite ecoul</button>
+    </div>
+    <div class="ec-result" id="ecResult"></div>
+  </div>
+
+  <div class="ec-how">
+    <div class="ec-how-title">Cum rămâne sigur — fără moderatori 24/7</div>
+    <div class="ec-how-steps">
+      <div class="ec-how-step"><span class="ec-how-num">1</span><div><b>Filtru de siguranță.</b> Dacă un ecou conține semne de criză, nu se publică — persoana e îndrumată blând spre ajutor real (112, TelVerde). Nimeni vulnerabil nu citește durerea acută a altcuiva.</div></div>
+      <div class="ec-how-step"><span class="ec-how-num">2</span><div><b>Anonimizare.</b> Orice nume, loc sau detaliu care te-ar identifica e eliminat înainte de publicare.</div></div>
+      <div class="ec-how-step"><span class="ec-how-num">3</span><div><b>Moderare AI.</b> Motorul verifică fiecare ecou înainte să apară — fără toxicitate, fără atacuri, fără reclame. Asta înlocuiește armata de moderatori umani de care alte aplicații au nevoie.</div></div>
+    </div>
+    <div class="ec-soon-note">🔌 Ecourile se publică între oameni reali când suntem conectați. Filtrul de siguranță de mai sus funcționează deja — încearcă-l.</div>
+  </div>
+</section>
+
 <!-- GRUPURI REALE -->
 <section class="section sep reveal">
   <p class="section-label">Grupuri reale, acum</p>
@@ -1165,5 +1279,155 @@ buildGlobeMenu();
 
 </script>
 <script src="i18n.js"></script>
+<script>
+// ═══ CERUL COMUN (stratul 1) — stelele tale reale, onest ═══
+(function(){
+  var CS_COLORS = {
+    calm:'#1D9E75', tired:'#7F77DD', sad:'#AFA9EC', anxious:'#EF9F27',
+    angry:'#D4537E', happy:'#5FE0B0', excited:'#FFC15E', confused:'#C9A86A', neutral:'#8B88C3'
+  };
+  function loadSky(){
+    var s=[]; try{ s=JSON.parse(localStorage.getItem('voxen_sky')||'[]'); }catch(e){ s=[]; }
+    if(!Array.isArray(s)) s=[];
+    s=s.filter(function(x){ return x && typeof x.t==='number' && x.e; });
+    s.sort(function(a,b){ return a.t-b.t; });
+    return s;
+  }
+  function renderCommonSky(){
+    var wrap=document.getElementById('csWrap');
+    var sky=document.getElementById('csSky');
+    var empty=document.getElementById('csEmpty');
+    var badge=document.getElementById('csSoonBadge');
+    var note=document.getElementById('csNote');
+    if(!wrap||!sky) return;
+    var stars=loadSky();
+    sky.innerHTML='';
+    if(stars.length===0){
+      empty.style.display='flex';
+      badge.style.display='none';
+      note.textContent='';
+      return;
+    }
+    empty.style.display='none';
+    badge.style.display='block';
+
+    var W=wrap.clientWidth||600, H=wrap.clientHeight||300;
+    var tMin=stars[0].t, tMax=stars[stars.length-1].t;
+    var span=(tMax-tMin)||1;
+    stars.forEach(function(st,i){
+      var info=CS_COLORS[st.e]||CS_COLORS.neutral;
+      var recency=(st.t-tMin)/span; // 0..1
+      // vechi stânga -> nou dreapta, cu padding
+      var x=40 + recency*(W-80);
+      // jitter vertical organic, dar nu prea jos (lasă loc orizontului)
+      var seed=Math.sin((st.t%10000)+i*13.7);
+      var y=40 + Math.abs(seed)*(H-110);
+      var size=5 + recency*4 + (st.k==='exercise'?1:0);
+      var el=document.createElement('div');
+      el.className='cs-star';
+      el.style.left=x+'px';
+      el.style.top=y+'px';
+      el.style.width=size+'px';
+      el.style.height=size+'px';
+      el.style.background=info;
+      el.style.boxShadow='0 0 '+(size*1.8)+'px '+info+', 0 0 '+(size*0.8)+'px '+info;
+      el.style.setProperty('--tw',(3+Math.abs(seed)*3).toFixed(1)+'s');
+      sky.appendChild(el);
+    });
+
+    // notă onestă, caldă
+    var n=stars.length;
+    var msg;
+    if(n===1) msg='O stea. Începutul cerului tău. Restul vine, conversație cu conversație.';
+    else if(n<5) msg=n+' stele până acum. Cerul tău prinde contur — și nu va rămâne singur mult timp.';
+    else msg=n+' stele aprinse de tine. Imaginează-ți spațiul ăsta plin de oameni care se luptă la fel. Acolo mergem.';
+    note.textContent=msg;
+  }
+  window.addEventListener('load', renderCommonSky);
+  window.addEventListener('resize', function(){ clearTimeout(window._csR); window._csR=setTimeout(renderCommonSky,200); });
+})();
+
+// ═══ ECOURI (stratul 2) — concept demonstrabil + filtru de criză REAL ═══
+(function(){
+  // Detecție de criză bazată pe INTENȚIE (nu metode) — filtrul real
+  var CRISIS_INTENT = [
+    /nu (mai )?vreau s[aă] (mai )?tr[aă]iesc/i,
+    /vreau s[aă] mor/i,
+    /a[șşs] vrea s[aă] mor/i,
+    /m[aă] (sinucid|omor)/i,
+    /s[aă] m[aă] (sinucid|omor)/i,
+    /sinucid/i,
+    /s[aă][- ]?mi fac r[aă]u/i,
+    /s[aă] [iî]mi fac r[aă]u/i,
+    /nu mai are (niciun )?rost/i,
+    /nu mai pot continua/i,
+    /a[șşs] vrea s[aă] dispar/i,
+    /s[aă] dispar pentru totdeauna/i,
+    /nu mai vreau s[aă] exist/i,
+    /a[șşs] vrea s[aă] nu mai (fiu|exist)/i,
+    /m[aă] (omor|termin)/i
+  ];
+  function hasCrisisIntent(text){
+    return CRISIS_INTENT.some(function(p){ return p.test(text); });
+  }
+
+  var input=document.getElementById('ecInput');
+  var count=document.getElementById('ecCount');
+  if(input && count){
+    input.addEventListener('input', function(){
+      count.textContent = input.value.length + ' / 140';
+    });
+  }
+
+  window.ecSubmit = function(){
+    var el=document.getElementById('ecInput');
+    var res=document.getElementById('ecResult');
+    if(!el||!res) return;
+    var text=el.value.trim();
+    if(text.length < 3){
+      res.className='ec-result show';
+      res.innerHTML='<div class="ec-outcome clean">Scrie câteva cuvinte mai întâi — orice simți acum.</div>';
+      return;
+    }
+    res.className='ec-result show';
+
+    // Filtrul de siguranță REAL rulează primul
+    if(hasCrisisIntent(text)){
+      res.innerHTML =
+        '<div class="ec-step active ok"><span class="ec-step-mark">✓</span> Filtru de siguranță</div>'+
+        '<div class="ec-outcome blocked">Ecoul tău <b>nu a fost publicat</b> — și nu pentru că ai greșit cu ceva. Am auzit durere reală în ce ai scris, iar asta cere ceva mai bun decât un ecou anonim: un om adevărat, acum.<br><br>Nu trebuie să treci prin asta singur.'+
+        '<div class="ec-crisis-btns">'+
+          '<a href="tel:112" class="ec-crisis-btn">112 · Urgență</a>'+
+          '<a href="tel:0800801200" class="ec-crisis-btn">0800 801 200 · TelVerde</a>'+
+        '</div></div>';
+      return;
+    }
+
+    // Pipeline de moderare (demo, animat)
+    res.innerHTML =
+      '<div class="ec-step" id="ecS1"><span class="ec-step-mark">○</span> Filtru de siguranță</div>'+
+      '<div class="ec-step" id="ecS2"><span class="ec-step-mark">○</span> Anonimizare</div>'+
+      '<div class="ec-step" id="ecS3"><span class="ec-step-mark">○</span> Moderare AI</div>'+
+      '<div id="ecFinal"></div>';
+    var steps=['ecS1','ecS2','ecS3'];
+    var i=0;
+    var iv=setInterval(function(){
+      if(i>0){ var prev=document.getElementById(steps[i-1]); if(prev){ prev.classList.add('ok'); prev.querySelector('.ec-step-mark').textContent='✓'; } }
+      if(i<steps.length){
+        var s=document.getElementById(steps[i]); if(s) s.classList.add('active');
+        i++;
+      } else {
+        clearInterval(iv);
+        var safeText = text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        var fin=document.getElementById('ecFinal');
+        if(fin) fin.innerHTML =
+          '<div class="ec-outcome clean">Ecoul tău a trecut de moderare. Așa ar apărea — anonim, fără nume, lângă ale altora:'+
+          '<div class="ec-outcome-echo">'+safeText+'</div>'+
+          '<div style="margin-top:12px;font-size:12.5px;color:var(--text2)">🔌 <b>Demo.</b> Acum nimic nu se publică și nimic nu se trimite — nu există încă alți oameni conectați. Când vom fi mai mulți, ecoul tău ar ajunge, anonim, la cineva care are nevoie să-l citească.</div></div>';
+      }
+    }, 650);
+  };
+})();
+</script>
 </body>
 </html>
