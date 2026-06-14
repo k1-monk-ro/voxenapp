@@ -906,6 +906,31 @@ window.voxenHooks = window.voxenHooks || [];
     applyLang(saved);
   });
 
+  // ── Linia de impuls: întâmpinare caldă când vii dintr-un moment greu ──
+  window.addEventListener('load', function(){
+    var fromImpulse = false;
+    try { fromImpulse = sessionStorage.getItem('voxen_impulse') === '1'; } catch(e){}
+    if(!fromImpulse) return;
+    try { sessionStorage.removeItem('voxen_impulse'); } catch(e){}  // o singură dată
+
+    var IMPULSE_MSG = {
+      ro: { resp:'Ai venit aici dintr-un moment greu. E ok — ai făcut exact ce trebuia. Nu trebuie să spui nimic perfect. Apasă orbul și vorbește-mi cum îți vine, sau doar respiră o clipă. Sunt aici, cu tine.', state:'Ești aici. Apasă orbul când ești gata — nu te grăbește nimeni.' },
+      en: { resp:'You came here from a hard moment. That\u2019s okay \u2014 you did exactly the right thing. You don\u2019t have to say anything perfectly. Tap the orb and talk to me however it comes, or just breathe for a moment. I\u2019m here with you.', state:'You\u2019re here. Tap the orb when you\u2019re ready \u2014 no rush.' },
+      fr: { resp:'Tu es venu ici dans un moment difficile. C\u2019est ok \u2014 tu as fait exactement ce qu\u2019il fallait. Pas besoin de bien dire les choses. Appuie sur l\u2019orbe et parle-moi, ou respire un instant. Je suis l\u00e0, avec toi.', state:'Tu es l\u00e0. Appuie sur l\u2019orbe quand tu es pr\u00eat \u2014 rien ne presse.' },
+      de: { resp:'Du bist in einem schweren Moment hierher gekommen. Das ist in Ordnung \u2014 du hast genau das Richtige getan. Es muss nicht perfekt sein. Tippe auf die Kugel und sprich, oder atme einen Moment. Ich bin hier, bei dir.', state:'Du bist hier. Tippe auf die Kugel, wenn du bereit bist \u2014 keine Eile.' },
+      ru: { resp:'\u0422\u044b \u043f\u0440\u0438\u0448\u0451\u043b \u0441\u044e\u0434\u0430 \u0432 \u0442\u044f\u0436\u0451\u043b\u044b\u0439 \u043c\u043e\u043c\u0435\u043d\u0442. \u042d\u0442\u043e \u043d\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u043e \u2014 \u0442\u044b \u0441\u0434\u0435\u043b\u0430\u043b \u0438\u043c\u0435\u043d\u043d\u043e \u0442\u043e, \u0447\u0442\u043e \u043d\u0443\u0436\u043d\u043e. \u041d\u0430\u0436\u043c\u0438 \u043d\u0430 \u0441\u0444\u0435\u0440\u0443 \u0438 \u0433\u043e\u0432\u043e\u0440\u0438, \u0438\u043b\u0438 \u043f\u0440\u043e\u0441\u0442\u043e \u043f\u043e\u0434\u044b\u0448\u0438. \u042f \u0440\u044f\u0434\u043e\u043c.', state:'\u0422\u044b \u0437\u0434\u0435\u0441\u044c. \u041d\u0430\u0436\u043c\u0438 \u043d\u0430 \u0441\u0444\u0435\u0440\u0443, \u043a\u043e\u0433\u0434\u0430 \u0431\u0443\u0434\u0435\u0448\u044c \u0433\u043e\u0442\u043e\u0432 \u2014 \u043d\u0435 \u0441\u043f\u0435\u0448\u0438.' },
+      zh: { resp:'\u4f60\u5728\u8270\u96be\u7684\u65f6\u523b\u6765\u5230\u8fd9\u91cc\u3002\u6ca1\u5173\u7cfb \u2014 \u4f60\u505a\u4e86\u5b8c\u5168\u6b63\u786e\u7684\u4e8b\u3002\u4e0d\u5fc5\u8bf4\u5f97\u5b8c\u7f8e\u3002\u70b9\u51fb\u5149\u7403\u548c\u6211\u8bf4\u8bdd\uff0c\u6216\u8005\u5148\u547c\u5438\u4e00\u4e0b\u3002\u6211\u5728\u8fd9\u91cc\u966a\u4f60\u3002', state:'\u4f60\u5728\u8fd9\u91cc\u3002\u51c6\u5907\u597d\u4e86\u5c31\u70b9\u5149\u7403 \u2014 \u4e0d\u7740\u6025\u3002' },
+      ja: { resp:'\u3064\u3089\u3044\u77ac\u9593\u306b\u3053\u3053\u306b\u6765\u3066\u304f\u308c\u305f\u306d\u3002\u5927\u4e08\u592b \u2014 \u305d\u308c\u306f\u6b63\u3057\u3044\u9078\u629e\u3060\u3063\u305f\u3002\u3046\u307e\u304f\u8a71\u305b\u306a\u304f\u3066\u3082\u3044\u3044\u3002\u30aa\u30fc\u30d6\u3092\u62bc\u3057\u3066\u8a71\u3057\u3066\u3001\u307e\u305f\u306f\u5c11\u3057\u547c\u5438\u3057\u3066\u3002\u305d\u3070\u306b\u3044\u308b\u3088\u3002', state:'\u3053\u3053\u306b\u3044\u308b\u3088\u3002\u6e96\u5099\u304c\u3067\u304d\u305f\u3089\u30aa\u30fc\u30d6\u3092\u62bc\u3057\u3066 \u2014 \u6025\u304c\u306a\u304f\u3066\u3044\u3044\u3002' }
+    };
+    var lang='ro';
+    try { lang = (typeof getLang==='function' ? getLang() : (localStorage.getItem('vxlang')||'ro')); } catch(e){}
+    var m = IMPULSE_MSG[lang] || IMPULSE_MSG.ro;
+    var rt = document.getElementById('respText');
+    var vs = document.getElementById('voiceState');
+    if(rt){ rt.removeAttribute('data-t'); rt.textContent = m.resp; }
+    if(vs){ vs.removeAttribute('data-t'); vs.textContent = m.state; }
+  });
+
   // Expose globally
   window.voxenT = t;
   window.voxenLang = ()=>LANG;

@@ -186,6 +186,13 @@ html {
 .summary-text{white-space:pre-wrap;word-wrap:break-word;font-family:'Syne',sans-serif;font-size:13.5px;line-height:1.65;color:var(--white);background:var(--surface);border:.5px solid var(--border);border-radius:14px;padding:18px;max-height:340px;overflow-y:auto;margin:8px 0 14px}
 .summary-actions{display:flex;gap:10px;flex-wrap:wrap}
 .summary-disclaimer{font-size:12px;color:var(--text2);line-height:1.5;margin-top:14px;font-style:italic}
+/* Selectoare raport */
+.rep-controls{display:flex;flex-direction:column;gap:14px;margin-bottom:16px}
+.rep-group-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-bottom:7px}
+.rep-toggle{display:flex;gap:6px;flex-wrap:wrap}
+.rep-opt{background:var(--surface);border:.5px solid var(--border);color:var(--text2);border-radius:10px;padding:8px 14px;font-family:'Syne',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all .15s}
+.rep-opt:hover{border-color:var(--mid);color:var(--white)}
+.rep-opt.active{background:var(--purple);border-color:var(--purple);color:var(--mist)}
 /* Check-in & rezultat */
 .ex-skip{display:block;margin:12px auto 0;background:none;border:none;color:var(--text2);font-size:13px;cursor:pointer;text-decoration:underline;font-family:'Syne',sans-serif}
 .ex-skip:hover{color:var(--soft)}
@@ -498,35 +505,53 @@ html {
   <div class="section">
     <div class="section-label">Puntea către terapie</div>
     <h2 class="section-title serif">Prima ședință,<br>fără să iei totul de la zero.</h2>
-    <p class="section-sub" style="font-size:15px;color:var(--text2);line-height:1.6;max-width:520px;margin-bottom:20px">Cel mai greu lucru la prima ședință e să explici de unde vii. Voxen transformă cerul tău emoțional într-un rezumat clar pe care îl poți duce terapeutului — generat din vocea ta, nu din ce-ți amintești pe loc.</p>
+    <p class="section-sub" style="font-size:15px;color:var(--text2);line-height:1.6;max-width:520px;margin-bottom:20px">Cel mai greu lucru la prima ședință e să explici de unde vii. Voxen transformă cerul tău emoțional într-un raport clar — pe zi, săptămână sau lună — pe care îl poți citi tu sau îl poți duce terapeutului. Generat din vocea ta, nu din ce-ți amintești pe loc.</p>
     <div class="summary-card">
       <div class="summary-card-head">
         <span class="summary-card-icon">📄</span>
         <div>
-          <div class="summary-card-title">Rezumatul tău emoțional</div>
+          <div class="summary-card-title">Raportul tău emoțional</div>
           <div class="summary-card-sub" id="summaryStatus">Generat din conversațiile tale cu Voxen</div>
         </div>
       </div>
-      <button class="ex-btn" style="margin-top:0" onclick="openSummary()">Generează rezumatul meu →</button>
+      <button class="ex-btn" style="margin-top:0" onclick="openSummary()">Generează raportul →</button>
     </div>
   </div>
 
   <!-- OVERLAY REZUMAT -->
   <div class="ex-overlay" id="summaryOverlay">
-    <div class="ex-modal" style="max-width:520px;text-align:left">
+    <div class="ex-modal" style="max-width:540px;text-align:left">
       <button class="ex-close" onclick="closeSummary()" aria-label="Închide">✕</button>
-      <div class="ex-h" style="text-align:left">Rezumat pentru terapeut</div>
+      <div class="ex-h" style="text-align:left" id="summaryTitle">Raportul tău</div>
       <div id="summaryEmpty" style="display:none">
-        <p class="ex-p">Cerul tău e încă gol. Vorbește de câteva ori cu Voxen, fă câteva exerciții, și apoi pot genera un rezumat care chiar spune ceva. Acum n-ar fi nimic de pus pe hârtie.</p>
+        <p class="ex-p">Cerul tău e încă gol. Vorbește de câteva ori cu Voxen, fă câteva exerciții, și apoi pot genera un raport care chiar spune ceva. Acum n-ar fi nimic de pus pe hârtie.</p>
         <a href="companion.html" class="ex-btn" style="display:inline-block;text-decoration:none">Vorbește cu Voxen →</a>
       </div>
       <div id="summaryBody" style="display:none">
+        <div class="rep-controls">
+          <div class="rep-group">
+            <div class="rep-group-label">Perioada</div>
+            <div class="rep-toggle" id="repPeriod">
+              <button class="rep-opt" data-period="day" onclick="setPeriod('day',this)">Azi</button>
+              <button class="rep-opt active" data-period="week" onclick="setPeriod('week',this)">Săptămâna</button>
+              <button class="rep-opt" data-period="month" onclick="setPeriod('month',this)">Luna</button>
+              <button class="rep-opt" data-period="all" onclick="setPeriod('all',this)">Tot</button>
+            </div>
+          </div>
+          <div class="rep-group">
+            <div class="rep-group-label">Pentru cine</div>
+            <div class="rep-toggle" id="repAudience">
+              <button class="rep-opt active" data-aud="me" onclick="setAudience('me',this)">Pentru mine</button>
+              <button class="rep-opt" data-aud="therapist" onclick="setAudience('therapist',this)">Pentru terapeut</button>
+            </div>
+          </div>
+        </div>
         <pre class="summary-text" id="summaryText"></pre>
         <div class="summary-actions">
           <button class="ex-btn" style="margin-top:0" onclick="copySummary()" id="copySummaryBtn">Copiază textul</button>
           <button class="ex-btn" style="margin-top:0;background:var(--surface);border:.5px solid var(--border)" onclick="downloadSummary()">Descarcă (.txt)</button>
         </div>
-        <p class="summary-disclaimer">Acest rezumat reflectă cum a <em>sunat</em> vocea ta, nu un diagnostic. E un punct de plecare pentru discuția cu specialistul. Datele rămân la tine — nimic nu se trimite automat.</p>
+        <p class="summary-disclaimer" id="summaryDisclaimer">Acest raport reflectă cum a <em>sunat</em> vocea ta, nu un diagnostic. Datele rămân la tine — nimic nu se trimite automat.</p>
       </div>
     </div>
   </div>
@@ -745,45 +770,123 @@ function renderPatterns(stars){
   p.innerHTML = html;
 }
 
-// ═══ REZUMAT PENTRU TERAPEUT (din datele reale ale cerului) ═══
+// ═══ RAPOARTE (din datele reale ale cerului) — perioade + 2 variante ═══
 function stripTags(s){ return s.replace(/<\/?[^>]+>/g, ''); }
 function fmtDate(ts){ var d=new Date(ts); return d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear(); }
 
-function buildTherapistSummary(stars){
-  if(stars.length === 0) return null;
+var repPeriod = 'week';   // day | week | month | all
+var repAudience = 'me';   // me | therapist
+
+function periodInfo(period){
+  var now = new Date();
+  if(period==='day'){ var d=new Date(now); d.setHours(0,0,0,0); return {from:d.getTime(), label:'azi'}; }
+  if(period==='week'){ return {from:now.getTime()-7*86400000, label:'ultima săptămână'}; }
+  if(period==='month'){ return {from:now.getTime()-30*86400000, label:'ultima lună'}; }
+  return {from:0, label:'tot istoricul'};
+}
+function filterByPeriod(stars, period){
+  var info = periodInfo(period);
+  return stars.filter(function(s){ return s.t >= info.from; });
+}
+
+function setPeriod(p, el){
+  repPeriod = p;
+  var btns = document.querySelectorAll('#repPeriod .rep-opt');
+  btns.forEach(function(b){ b.classList.remove('active'); });
+  if(el) el.classList.add('active');
+  renderReport();
+}
+function setAudience(a, el){
+  repAudience = a;
+  var btns = document.querySelectorAll('#repAudience .rep-opt');
+  btns.forEach(function(b){ b.classList.remove('active'); });
+  if(el) el.classList.add('active');
+  renderReport();
+}
+
+function emotionDistribution(stars){
+  var counts = {};
+  stars.forEach(function(s){ counts[s.e] = (counts[s.e]||0)+1; });
+  return Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; }).map(function(k){
+    return { emo:k, n:counts[k], pct:Math.round(counts[k]/stars.length*100) };
+  });
+}
+
+// Varianta PENTRU TINE — caldă, cu progres și încurajare
+function buildReportMe(stars, period){
+  var info = periodInfo(period);
+  var L = [];
+  L.push('RAPORTUL TĂU · ' + info.label);
+  L.push('');
+  L.push('Ai vorbit cu Voxen de ' + stars.length + (stars.length===1?' dată':' ori') + ' în această perioadă.');
+  L.push('');
+
+  var weather = computeWeather(stars);
+  if(weather){
+    var wMe = {
+      'Senin':'În mare, ai sunat calm și echilibrat. Ai grijă de tine — se vede.',
+      'Variabil':'A fost o perioadă cu suișuri și coborâșuri. E firesc. Important e că ai continuat să vorbești.',
+      'Înnorat':'A fost o perioadă mai grea — multă oboseală sau tristețe în voce. Ai trecut prin ea, și asta contează.',
+      'Apăsător':'A fost o perioadă încordată. Faptul că ai venit aici, de fiecare dată, e deja un act de curaj.'
+    };
+    L.push('Cum a fost: ' + (wMe[weather.label]||''));
+    L.push('');
+  }
+
+  var dist = emotionDistribution(stars);
+  if(dist.length){
+    L.push('Cel mai des, vocea ta a sunat ' + (EMO_LABEL[dist[0].emo]||dist[0].emo) + '.');
+    L.push('');
+  }
+
+  var patterns = computePatterns(stars);
+  if(patterns.length > 0){
+    L.push('Ce am observat la tine:');
+    patterns.forEach(function(it){ L.push('  • ' + stripTags(it.text)); });
+    L.push('');
+  }
+
+  var exStars = stars.filter(function(s){ return s.k==='exercise' && s.before; });
+  if(exStars.length > 0){
+    var helped = exStars.filter(function(s){ return (CALM_RANK[s.e]||5) > (CALM_RANK[s.before]||5); }).length;
+    L.push('Ai făcut ' + exStars.length + (exStars.length===1?' exercițiu':' exerciții') + ' de reglare. Te-au liniștit de ' + helped + ' ori — asta e progres real, nu o părere.');
+    L.push('');
+  }
+
+  // Închidere caldă
+  if(stars.length >= 3) L.push('Fiecare conversație e o stea pe cerul tău. Nu te grăbi. Ești pe drum.');
+  else L.push('E un început. Mai vorbește cu Voxen — cu cât sunt mai multe stele, cu atât raportul spune mai mult.');
+  return L.join('\n');
+}
+
+// Varianta PENTRU TERAPEUT — factuală, clinică, fără diagnostic
+function buildReportTherapist(stars, period){
+  var info = periodInfo(period);
   var first = stars[0].t, last = stars[stars.length-1].t;
   var L = [];
-  L.push('REZUMAT EMOȚIONAL — VOXEN');
-  L.push('Perioada: ' + fmtDate(first) + ' – ' + fmtDate(last));
+  L.push('RAPORT EMOȚIONAL — VOXEN');
+  L.push('Perioada raportului: ' + info.label + ' (' + fmtDate(first) + ' – ' + fmtDate(last) + ')');
   L.push(stars.length + ' interacțiuni vocale înregistrate');
   L.push('');
 
-  // Stare generală (vremea)
   var weather = computeWeather(stars);
   if(weather){
     var wDesc = {
       'Senin':'predominant calmă, echilibrată',
-      'Variabil':'amestecată, cu suișuri și coborâșuri',
+      'Variabil':'amestecată, cu fluctuații',
       'Înnorat':'predominant scăzută — oboseală, tristețe',
       'Apăsător':'predominant încordată — tensiune, anxietate'
     };
-    L.push('STARE GENERALĂ (ultima săptămână)');
-    L.push('  ' + weather.label + ': ' + (wDesc[weather.label]||'') );
+    L.push('STARE GENERALĂ');
+    L.push('  ' + weather.label + ': ' + (wDesc[weather.label]||''));
     L.push('');
   }
 
-  // Distribuția emoțiilor
-  var counts = {};
-  stars.forEach(function(s){ counts[s.e] = (counts[s.e]||0)+1; });
-  var ordered = Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; });
-  L.push('CUM A SUNAT VOCEA (frecvență)');
-  ordered.forEach(function(k){
-    var pct = Math.round(counts[k]/stars.length*100);
-    L.push('  • ' + (EMO_LABEL[k]||k) + ': de ' + counts[k] + ' ori (' + pct + '%)');
-  });
+  var dist = emotionDistribution(stars);
+  L.push('DISTRIBUȚIA EMOȚIONALĂ (din prozodie)');
+  dist.forEach(function(d){ L.push('  • ' + (EMO_LABEL[d.emo]||d.emo) + ': ' + d.n + ' (' + d.pct + '%)'); });
   L.push('');
 
-  // Tipare
   var patterns = computePatterns(stars);
   if(patterns.length > 0){
     L.push('TIPARE OBSERVATE');
@@ -791,22 +894,46 @@ function buildTherapistSummary(stars){
     L.push('');
   }
 
-  // Exerciții
   var exStars = stars.filter(function(s){ return s.k==='exercise' && s.before; });
   if(exStars.length > 0){
     var helped = exStars.filter(function(s){ return (CALM_RANK[s.e]||5) > (CALM_RANK[s.before]||5); }).length;
     L.push('EXERCIȚII DE REGLARE');
     L.push('  ' + exStars.length + ' exerciții cu check-in vocal înainte/după.');
-    L.push('  Vocea s-a liniștit după exercițiu în ' + helped + ' din ' + exStars.length + ' cazuri.');
+    L.push('  Reducere a încordării vocale post-exercițiu în ' + helped + ' din ' + exStars.length + ' cazuri.');
     L.push('');
   }
 
   L.push('NOTĂ METODOLOGICĂ');
-  L.push('Acest rezumat e generat automat din analiza prozodiei (pitch, energie, ritm, pauze) a');
-  L.push('înregistrărilor vocale ale persoanei în aplicația Voxen. Reflectă cum a SUNAT vocea,');
-  L.push('estimat de un algoritm — NU este un diagnostic și nu înlocuiește evaluarea clinică.');
-  L.push('Este oferit ca punct de plecare pentru prima discuție.');
+  L.push('Raport generat automat din analiza prozodiei (pitch, energie, ritm, pauze) a');
+  L.push('înregistrărilor vocale în aplicația Voxen. Reflectă estimarea algoritmică a tonului');
+  L.push('vocal — NU este un diagnostic și nu înlocuiește evaluarea clinică. Punct de plecare');
+  L.push('pentru discuție.');
   return L.join('\n');
+}
+
+function buildReport(stars, period, audience){
+  if(stars.length === 0) return null;
+  return (audience==='therapist') ? buildReportTherapist(stars, period) : buildReportMe(stars, period);
+}
+
+function renderReport(){
+  var all = loadSky();
+  var stars = filterByPeriod(all, repPeriod);
+  var titleEl = document.getElementById('summaryTitle');
+  var txtEl = document.getElementById('summaryText');
+  var discEl = document.getElementById('summaryDisclaimer');
+  if(titleEl) titleEl.textContent = (repAudience==='therapist') ? 'Raport pentru terapeut' : 'Raportul tău';
+  if(discEl){
+    discEl.innerHTML = (repAudience==='therapist')
+      ? 'Raport factual din analiza vocală — nu un diagnostic. Datele rămân la tine; nimic nu se trimite automat.'
+      : 'Acest raport reflectă cum a <em>sunat</em> vocea ta, nu un diagnostic. Datele rămân la tine.';
+  }
+  if(stars.length === 0){
+    var info = periodInfo(repPeriod);
+    txtEl.textContent = 'Nicio conversație în perioada „' + info.label + '”.\n\nVorbește cu Voxen în acest interval și raportul va avea ce să spună. Sau alege o perioadă mai lungă mai sus.';
+    return;
+  }
+  txtEl.textContent = buildReport(stars, repPeriod, repAudience);
 }
 
 function openSummary(){
@@ -819,7 +946,7 @@ function openSummary(){
   }
   document.getElementById('summaryEmpty').style.display = 'none';
   document.getElementById('summaryBody').style.display = 'block';
-  document.getElementById('summaryText').textContent = buildTherapistSummary(stars);
+  renderReport();
 }
 function closeSummary(){ document.getElementById('summaryOverlay').classList.remove('open'); }
 function copySummary(){
@@ -844,7 +971,7 @@ function downloadSummary(){
     var blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
-    a.href = url; a.download = 'rezumat-emotional-voxen.txt';
+    a.href = url; a.download = 'raport-voxen-' + repPeriod + '-' + (repAudience==='therapist'?'terapeut':'eu') + '.txt';
     document.body.appendChild(a); a.click();
     document.body.removeChild(a);
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
